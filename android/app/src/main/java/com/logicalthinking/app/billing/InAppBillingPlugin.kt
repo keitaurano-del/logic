@@ -297,22 +297,9 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         val client = billingClient ?: run { call.reject("Billing client not initialized"); return }
 
         try {
-            // billing（非ktx）ではコールバック版を suspendCancellableCoroutine でラップする
-            // billing:7.0.0 のコールバックは (BillingResult, List<Purchase>) -> Unit
-            data class QueryResult(val billingResult: BillingResult, val purchasesList: List<Purchase>)
-            val result = suspendCancellableCoroutine<QueryResult> { cont ->
-                client.queryPurchasesAsync(
-                    QueryPurchasesParams.newBuilder().setProductType(productType).build()
-                ) { billingResult, purchases ->
-                    if (cont.isActive) cont.resume(QueryResult(billingResult, purchases))
-                }
-            }
-
-            if (result.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                Log.w(TAG, "queryPurchases failed: ${result.billingResult.responseCode}")
-                call.resolve(JSObject().apply { put("purchases", JSArray()) })
-                return
-            }
+            val result = client.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(productType).build()
+            )
 
             val purchases = JSArray()
             result.purchasesList

@@ -48,11 +48,9 @@ android {
             } else {
                 logger.warn('[logic] key.properties が無いため release は debug 鍵で署名されます (Play Store 提出には key.properties が必要)')
             }
-            // 診断用: ProGuard を一時無効化してクラッシュ原因を切り分ける
-            // これで起動すれば ProGuard が原因確定 → 恒久対応後に true に戻す
-            minifyEnabled false
-            shrinkResources false
-            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -74,11 +72,11 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
     
-    // Google Play Billing Library (SCRUM-116)
-    // billing（非ktx）に戻す: billing-ktx が GMS 依存で起動クラッシュを引き起こすため
-    // queryPurchasesAsync はコールバック版を suspendCancellableCoroutine でラップして使う
-    implementation 'com.android.billingclient:billing:7.0.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1"
+    // Google Play Billing Library (SCRUM-116: Google Play Billing実装)
+    // billing-ktx は billing を推移的に含む。queryPurchasesAsync suspend 版を提供するため必須。
+    implementation 'com.android.billingclient:billing-ktx:7.0.0'
+    // coroutines を明示宣言（billing-ktx の transitive 依存に頼らず固定）
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 }
 
 apply from: 'capacitor.build.gradle'
