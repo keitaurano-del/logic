@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 // 署名情報は android/key.properties から読み込む（コミット禁止・gitignore済）。
 // CI 等で key.properties が無い場合は環境変数からのフォールバックを試す。
