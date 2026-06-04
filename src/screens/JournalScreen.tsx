@@ -54,9 +54,7 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
-        <div>
-          <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '-0.01em' }}>{t('journal.subtitle')}</div>
-        </div>
+        <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '-0.01em' }}>{t('journal.subtitle')}</div>
       </div>
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -210,9 +208,7 @@ export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCours
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
       <div className="journal-hero">
-        <div>
-          <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '-0.01em' }}>{t('journal.subtitle')}</div>
-        </div>
+        <div style={{ fontSize: '1.0667rem', fontWeight: 800, letterSpacing: '-0.01em' }}>{t('journal.subtitle')}</div>
         <div className="journal-hero__actions">
           <StreakBadge streak={streak} size="sm" />
           <button
