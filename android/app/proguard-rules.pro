@@ -95,6 +95,17 @@
 -keep class kotlinx.coroutines.android.AndroidDispatcherFactory { *; }
 
 # ============================================================
+# Android エントリーポイント — Manifest 参照クラスを明示保持
+# shrinkResources / R8 が Manifest の相対パス参照(.MainActivity 等)を
+# EntryPoint として正しく解決できない問題を防ぐ
+# ============================================================
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+
+# ============================================================
 # AndroidX / Support Library
 # ============================================================
 -keep class androidx.** { *; }

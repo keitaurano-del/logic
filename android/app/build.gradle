@@ -49,8 +49,8 @@ android {
                 logger.warn('[logic] key.properties が無いため release は debug 鍵で署名されます (Play Store 提出には key.properties が必要)')
             }
             minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
