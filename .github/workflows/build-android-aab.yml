@@ -82,7 +82,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}-${{ github.run_number }}
           restore-keys: gradle-
 
       - name: Verify required secrets
@@ -121,7 +121,7 @@ jobs:
 
       - name: Build release AAB
         working-directory: android
-        run: ./gradlew :app:bundleRelease --stacktrace --no-daemon
+        run: ./gradlew clean :app:bundleRelease --stacktrace --no-daemon
 
       - name: Show AAB info
         run: |

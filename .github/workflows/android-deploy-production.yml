@@ -93,7 +93,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}-${{ github.run_number }}
           restore-keys: gradle-
 
       - name: Restore keystore and write key.properties
@@ -118,7 +118,7 @@ jobs:
 
       - name: Build release AAB
         working-directory: android
-        run: ./gradlew bundleRelease --stacktrace
+        run: ./gradlew clean bundleRelease --stacktrace
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v7
