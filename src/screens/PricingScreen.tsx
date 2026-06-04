@@ -235,11 +235,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               fontSize: '0.7333rem', fontWeight: 800, letterSpacing: '.08em',
               padding: '3px 10px', borderRadius: 8,
             }}>
-              期間限定
+              {t('pricing.campaignBadge')}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
               <div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 2 }}>キャンペーン年額</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 2 }}>{t('pricing.campaignPlanName')}</div>
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}>
                   <span style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1 }}>
                     ¥{PLAN_PRICES.campaignYearly.toLocaleString()}
@@ -247,13 +247,13 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                   <span style={{ fontSize: '0.8667rem', color: 'var(--text-muted)', paddingBottom: 3 }}>/年</span>
                 </div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 3 }}>
-                  月々 <strong>¥{Math.round(PLAN_PRICES.campaignYearly / 12)}</strong>
+                  {t('pricing.campaignMonthlyEquiv', { monthly: `¥${Math.round(PLAN_PRICES.campaignYearly / 12)}` })}
                   <span style={{
                     marginLeft: 6, fontSize: '0.72rem', fontWeight: 800,
                     background: 'color-mix(in srgb, var(--warm) 18%, transparent)',
                     color: 'var(--warm)', borderRadius: 5, padding: '1px 5px',
                   }}>
-                    通常より{Math.round((1 - PLAN_PRICES.campaignYearly / PLAN_PRICES.yearly) * 100)}% OFF
+                    {t('pricing.campaignDiscount', { pct: String(Math.round((1 - PLAN_PRICES.campaignYearly / PLAN_PRICES.yearly) * 100)) })}
                   </span>
                 </div>
               </div>
@@ -271,11 +271,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
                   whiteSpace: 'nowrap',
                 }}
               >
-                {loading === 'campaign_yearly' ? '処理中...' : 'このプランにする'}
+                {loading === 'campaign_yearly' ? t('pricing.campaignProcessing') : t('pricing.campaignCta')}
               </button>
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-              ※ キャンペーン価格は予告なく終了する場合があります
+              {t('pricing.campaignNote')}
             </div>
           </div>
         )}
