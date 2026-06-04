@@ -48,8 +48,7 @@ android {
             } else {
                 logger.warn('[logic] key.properties が無いため release は debug 鍵で署名されます (Play Store 提出には key.properties が必要)')
             }
-            minifyEnabled true
-            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -73,10 +72,7 @@ dependencies {
     implementation project(':capacitor-cordova-android-plugins')
     
     // Google Play Billing Library (SCRUM-116: Google Play Billing実装)
-    // billing-ktx は billing を推移的に含む。queryPurchasesAsync suspend 版を提供するため必須。
-    implementation 'com.android.billingclient:billing-ktx:7.0.0'
-    // coroutines を明示宣言（billing-ktx の transitive 依存に頼らず固定）
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    implementation 'com.android.billingclient:billing:7.0.0'
 }
 
 apply from: 'capacitor.build.gradle'
