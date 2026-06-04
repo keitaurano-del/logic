@@ -37,6 +37,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
 
     override fun handleOnDestroy() {
         cancelPendingReconnect()
+        scope.cancel()
         try {
             billingClient?.endConnection()
         } catch (e: Exception) {
@@ -50,9 +51,14 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
     fun initialize(call: PluginCall) {
         val context = context ?: run { call.reject("Context not available"); return }
 
-        if (billingClient?.isReady == true) {
-            call.resolve(JSObject().apply { put("success", true) })
-            return
+        val existing = billingClient
+        if (existing != null) {
+            if (existing.isReady) {
+                call.resolve(JSObject().apply { put("success", true) })
+                return
+            }
+            // 接続中または切断中のクライアントは破棄してから再生成する
+            try { existing.endConnection() } catch (_: Exception) {}
         }
 
         billingClient = BillingClient.newBuilder(context)
@@ -154,7 +160,12 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             .setProductList(productList)
             .build()
 
-        billingClient?.queryProductDetailsAsync(params) { result, detailsList ->
+        val client = billingClient ?: run {
+            call.reject("Billing client not initialized")
+            return
+        }
+
+        client.queryProductDetailsAsync(params) { result, detailsList ->
             if (result.responseCode != BillingClient.BillingResponseCode.OK) {
                 Log.w(TAG, "queryProductDetails failed: ${result.responseCode}")
                 call.resolve(JSObject().apply { put("products", JSArray()) })
@@ -207,10 +218,16 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             ))
             .build()
 
-        val result = billingClient?.launchBillingFlow(activity, params)
-        if (result?.responseCode != BillingClient.BillingResponseCode.OK) {
+        val billingClientSnapshot = billingClient ?: run {
             pendingPurchaseCall = null
-            call.reject("Failed to launch billing flow: ${result?.responseCode}")
+            call.reject("Billing client not initialized")
+            return
+        }
+
+        val result = billingClientSnapshot.launchBillingFlow(activity, params)
+        if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+            pendingPurchaseCall = null
+            call.reject("Failed to launch billing flow: ${result.responseCode}")
         }
         // 購入結果は onPurchasesUpdated で処理される
     }
@@ -333,7 +350,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
 
             val resultCode = suspendCancellableCoroutine<Int> { cont ->
                 client.acknowledgePurchase(ackParams) { ackResult ->
-                    cont.resume(ackResult.responseCode)
+                    if (cont.isActive) cont.resume(ackResult.responseCode)
                 }
             }
 
