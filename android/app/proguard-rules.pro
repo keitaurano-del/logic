@@ -73,6 +73,28 @@
 }
 
 # ============================================================
+# Kotlin Coroutines（billing-ktx が依存。これがないと即クラッシュ）
+# ============================================================
+# MainDispatcherFactory: Dispatchers.Main の解決に必須。
+# ProGuard がこのクラスを削除すると ServiceLoader で見つけられず
+# IllegalStateException → アプリが起動直後にクラッシュする。
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
+
+# atomicfu（coroutines 内部の atomic 変数最適化）。volatile フィールドを保持しないと
+# ConcurrentModificationException 等の不定クラッシュが起きる。
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+-keepclassmembers class kotlin.coroutines.** { *; }
+
+# ServiceLoader で読み込まれる coroutines のファクトリクラス
+-keep class kotlinx.coroutines.internal.MainDispatcherFactory { *; }
+-keep class kotlinx.coroutines.android.AndroidDispatcherFactory { *; }
+
+# ============================================================
 # AndroidX / Support Library
 # ============================================================
 -keep class androidx.** { *; }
