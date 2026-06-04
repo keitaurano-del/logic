@@ -7,12 +7,23 @@
 -renamesourcefileattribute SourceFile
 
 # ============================================================
+# アノテーション全般（Capacitor プラグイン名解決に必須）
+# ============================================================
+-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes Exceptions
+
+# ============================================================
 # Capacitor / Cordova bridge
 # ============================================================
 -keep class com.getcapacitor.** { *; }
 -keep class org.apache.cordova.** { *; }
 -dontwarn com.getcapacitor.**
 -dontwarn org.apache.cordova.**
+
+# @CapacitorPlugin アノテーションが付いたクラスを完全保持
+# （ProGuard がアノテーションを除去するとプラグイン名が解決できなくなる）
+-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }
 
 # アプリ固有プラグイン
 -keep class com.logicalthinking.app.** { *; }
