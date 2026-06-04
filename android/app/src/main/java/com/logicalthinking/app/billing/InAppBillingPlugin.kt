@@ -297,14 +297,14 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         val client = billingClient ?: run { call.reject("Billing client not initialized"); return }
 
         try {
-            val result = client.queryPurchasesAsync(
+            val result: QueryPurchasesResult = client.queryPurchasesAsync(
                 QueryPurchasesParams.newBuilder().setProductType(productType).build()
             )
 
             val purchases = JSArray()
-            result.purchasesList
-                .filter { purchase -> purchase.purchaseState == Purchase.PurchaseState.PURCHASED }
-                .forEach { p ->
+            val purchasedList: List<Purchase> = result.purchasesList
+                .filter { purchase: Purchase -> purchase.purchaseState == Purchase.PurchaseState.PURCHASED }
+            for (p in purchasedList) {
                     // restorePurchases で取得した未 acknowledge 購入を補填 acknowledge する
                     if (!p.isAcknowledged) {
                         val ackOk = acknowledgeWithRetry(p.purchaseToken)
@@ -319,7 +319,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
                         put("purchaseTime", p.purchaseTime)
                         put("purchaseState", p.purchaseState)
                     })
-                }
+            }
 
             call.resolve(JSObject().apply { put("purchases", purchases) })
         } catch (e: Exception) {
@@ -350,7 +350,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
 
             val resultCode = suspendCancellableCoroutine<Int> { cont ->
                 client.acknowledgePurchase(ackParams) { ackResult ->
-                    if (cont.isActive) cont.resume(ackResult.responseCode)
+                    if (cont.isActive) cont.resumeWith(Result.success(ackResult.responseCode))
                 }
             }
 
