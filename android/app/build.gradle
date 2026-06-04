@@ -52,6 +52,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // AAB split APK 配信で split_config.en.apk 等に classes.dex が含まれず
+    // ClassNotFoundException が発生する問題を防ぐため、split を無効化して
+    // 全クラスを base APK に収める。
+    bundle {
+        language { enableSplit = false }
+        density  { enableSplit = false }
+        abi      { enableSplit = false }
+    }
 }
 
 repositories {
