@@ -8,8 +8,8 @@ import com.getcapacitor.JSArray
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
+import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
-import com.getcapacitor.annotation.CapacitorPluginMethod
 import kotlinx.coroutines.*
 
 @CapacitorPlugin(name = "InAppBillingPlugin")
@@ -46,7 +46,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         super.handleOnDestroy()
     }
 
-    @CapacitorPluginMethod
+    @PluginMethod
     fun initialize(call: PluginCall) {
         val context = context ?: run { call.reject("Context not available"); return }
 
@@ -135,7 +135,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         reconnectRunnable = null
     }
 
-    @CapacitorPluginMethod
+    @PluginMethod
     fun getProducts(call: PluginCall) {
         val productIds = call.getArray("productIds")?.toList<String>() ?: emptyList()
         if (productIds.isEmpty()) {
@@ -181,7 +181,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         }
     }
 
-    @CapacitorPluginMethod
+    @PluginMethod
     fun purchaseProduct(call: PluginCall) {
         val productId = call.getString("productId") ?: run { call.reject("productId required"); return }
         val activity = activity ?: run { call.reject("Activity not available"); return }
@@ -215,12 +215,12 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
         // 購入結果は onPurchasesUpdated で処理される
     }
 
-    @CapacitorPluginMethod
+    @PluginMethod
     fun restorePurchases(call: PluginCall) {
         scope.launch { queryPurchases(BillingClient.ProductType.SUBS, call) }
     }
 
-    @CapacitorPluginMethod
+    @PluginMethod
     fun queryPurchaseHistory(call: PluginCall) {
         val type = if (call.getString("productType") == "inapp")
             BillingClient.ProductType.INAPP else BillingClient.ProductType.SUBS
@@ -245,16 +245,33 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             return
         }
 
-        pending.resolve(JSObject().apply {
-            put("success", true)
-            put("purchase", JSObject().apply {
-                put("purchaseToken", purchase.purchaseToken)
-                put("productId", purchase.products.firstOrNull() ?: "")
-                put("orderId", purchase.orderId ?: "")
-                put("purchaseTime", purchase.purchaseTime)
-                put("purchaseState", purchase.purchaseState)
+        if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) {
+            pending.reject("購入が完了していません (state=${purchase.purchaseState})")
+            return
+        }
+
+        // acknowledgePurchase: Google Play は 3 日以内に acknowledge しないと自動返金するため必須
+        // acknowledge 完了を待ってから JS に結果を返す（fire-and-forget 解消）
+        scope.launch {
+            if (!purchase.isAcknowledged) {
+                val ackOk = acknowledgeWithRetry(purchase.purchaseToken)
+                if (!ackOk) {
+                    Log.e(TAG, "acknowledgePurchase failed after retries: token=${purchase.purchaseToken}")
+                    // acknowledge 失敗でも購入自体は成功しているため JS には成功を返すが警告ログを残す
+                }
+            }
+
+            pending.resolve(JSObject().apply {
+                put("success", true)
+                put("purchase", JSObject().apply {
+                    put("purchaseToken", purchase.purchaseToken)
+                    put("productId", purchase.products.firstOrNull() ?: "")
+                    put("orderId", purchase.orderId ?: "")
+                    put("purchaseTime", purchase.purchaseTime)
+                    put("purchaseState", purchase.purchaseState)
+                })
             })
-        })
+        }
     }
 
     // ── Private ───────────────────────────────────────────────────
@@ -271,6 +288,13 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             result.purchasesList
                 .filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }
                 .forEach { p ->
+                    // restorePurchases で取得した未 acknowledge 購入を補填 acknowledge する
+                    if (!p.isAcknowledged) {
+                        val ackOk = acknowledgeWithRetry(p.purchaseToken)
+                        if (!ackOk) {
+                            Log.e(TAG, "acknowledge failed in queryPurchases for token=${p.purchaseToken}")
+                        }
+                    }
                     purchases.put(JSObject().apply {
                         put("purchaseToken", p.purchaseToken)
                         put("productId", p.products.firstOrNull() ?: "")
@@ -285,6 +309,47 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             Log.e(TAG, "queryPurchases failed", e)
             call.reject("Query failed: ${e.message}")
         }
+    }
+
+    /**
+     * acknowledgePurchase をリトライ付きで実行する。
+     * 失敗した場合は 500ms 待機して最大 [maxAttempts] 回まで再試行する。
+     * @return 最終的に成功したか否か
+     */
+    private suspend fun acknowledgeWithRetry(
+        purchaseToken: String,
+        maxAttempts: Int = 3
+    ): Boolean {
+        val ackParams = AcknowledgePurchaseParams.newBuilder()
+            .setPurchaseToken(purchaseToken)
+            .build()
+
+        repeat(maxAttempts) { attempt ->
+            val client = billingClient
+            if (client == null) {
+                Log.w(TAG, "acknowledgeWithRetry: BillingClient is null, abort (attempt=${attempt + 1})")
+                return false
+            }
+
+            val resultCode = suspendCancellableCoroutine<Int> { cont ->
+                client.acknowledgePurchase(ackParams) { ackResult ->
+                    cont.resume(ackResult.responseCode)
+                }
+            }
+
+            if (resultCode == BillingClient.BillingResponseCode.OK) {
+                Log.d(TAG, "acknowledgePurchase succeeded (attempt=${attempt + 1}): token=$purchaseToken")
+                return true
+            }
+
+            Log.w(TAG, "acknowledgePurchase failed (attempt=${attempt + 1}/$maxAttempts): responseCode=$resultCode, token=$purchaseToken")
+            if (attempt < maxAttempts - 1) {
+                delay(500L)
+            }
+        }
+
+        Log.e(TAG, "acknowledgePurchase failed after $maxAttempts attempts: token=$purchaseToken")
+        return false
     }
 }
 
