@@ -84,17 +84,17 @@ jobs:
           grep -E "versionCode|versionName" "$GRADLE"
 
       # ── 10. Gradle キャッシュ ─────────────────────────────
-      # キャッシュキーに日付を入れてキャッシュを強制リセット（古いDEXキャッシュが
-      # ClassNotFoundException の原因になりうるため）
-      - name: Cache Gradle
+      # Kotlin コンパイルタスクがキャッシュにより SKIPPED になり
+      # MainActivity 等が DEX に含まれない問題を防ぐため、
+      # キャッシュを完全に無効化してクリーンビルドを強制する。
+      # （gradle-wrapper だけキャッシュして依存ダウンロードを節約）
+      - name: Cache Gradle wrapper only
         uses: actions/cache@v5
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}-${{ github.run_number }}
+          path: ~/.gradle/wrapper
+          key: gradle-wrapper-${{ hashFiles('**/gradle-wrapper.properties') }}
           restore-keys: |
-            gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}-
+            gradle-wrapper-
 
       # ── 11. キーストアをSecretからリストアして key.properties を作成 ──
       - name: Restore keystore and write key.properties
