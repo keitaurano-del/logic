@@ -29,12 +29,23 @@
 -keep class com.logicalthinking.app.** { *; }
 
 # ============================================================
-# WebView — JavaScript インターフェース
+# WebView — JavaScript インターフェース & XML layout inflation
 # ============================================================
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
 -keepattributes JavascriptInterface
+
+# CapacitorWebView は XML layout (capacitor_bridge_layout_main.xml) で参照される
+# カスタム View クラス。ProGuard が難読化・削除すると inflate 時にクラスが見つからず
+# BridgeActivity.onCreate が no_webview layout に fallback → WebView/JS が動かなくなる。
+# コンストラクタを明示的に保持してクラスローダーが解決できるようにする。
+-keep class com.getcapacitor.CapacitorWebView { *; }
+-keep public class * extends android.webkit.WebView { *; }
+-keepclassmembers class * extends android.webkit.WebView {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
 
 # ============================================================
 # Google Play Billing
