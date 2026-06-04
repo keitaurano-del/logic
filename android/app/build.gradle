@@ -75,8 +75,7 @@ dependencies {
     // Google Play Billing Library (SCRUM-116: Google Play Billing実装)
     // billing-ktx は billing を推移的に含む。queryPurchasesAsync suspend 版を提供するため必須。
     implementation 'com.android.billingclient:billing-ktx:7.0.0'
-    // coroutines を明示宣言（billing-ktx の transitive 依存に頼らず固定）
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    // coroutines は billing-ktx の推移的依存に任せる（明示固定すると版不一致クラッシュの原因になる）
 }
 
 apply from: 'capacitor.build.gradle'
