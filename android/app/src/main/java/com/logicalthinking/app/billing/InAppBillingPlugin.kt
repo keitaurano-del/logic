@@ -301,7 +301,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
                 client.queryPurchasesAsync(
                     QueryPurchasesParams.newBuilder().setProductType(productType).build()
                 ) { billingResult, purchases ->
-                    if (cont.isActive) cont.resume(Pair(billingResult, purchases))
+                    if (cont.isActive) cont.resumeWith(Result.success(Pair(billingResult, purchases)))
                 }
             }
 
