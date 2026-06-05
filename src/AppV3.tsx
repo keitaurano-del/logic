@@ -823,7 +823,7 @@ function AppV3() {
         <AccountSettingsScreen
           onBack={handleBack}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
-          onOpenLogin={() => navigate({ type: 'login' })}
+          
           onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
         />
       )}
@@ -831,7 +831,7 @@ function AppV3() {
         <ProfileEditScreen
           onBack={handleBack}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
-          onOpenLogin={() => navigate({ type: 'login' })}
+          
           onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
         />
       )}

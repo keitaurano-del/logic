@@ -22,7 +22,6 @@ interface Props {
   // FB-31: プロフィール編集とアカウントを統合。アカウント操作（メール変更・
   // ログイン/ログアウト）に必要な情報・コールバックを受け取る。
   currentUser: { email: string } | null
-  onOpenLogin: () => void
   onLogout: () => void
 }
 
@@ -54,7 +53,7 @@ const OCCUPATION_ORDER: Occupation[] = [
  *
  * 文言は中立的な丁寧体で書く (feedback-app-copy-neutral 準拠)。
  */
-export function ProfileEditScreen({ onBack, currentUser, onOpenLogin, onLogout }: Props) {
+export function ProfileEditScreen({ onBack, currentUser, onLogout }: Props) {
   const currentYear = getCurrentYear()
   const profile = loadUserProfile()
 

@@ -10,7 +10,6 @@ import { t } from '../i18n'
 interface Props {
   onBack: () => void
   currentUser: { email: string } | null
-  onOpenLogin: () => void
   onLogout: () => void
 }
 
@@ -28,7 +27,7 @@ function recordNameChange() {
   localStorage.setItem(NAME_CHANGE_KEY, new Date().toISOString())
 }
 
-export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogout }: Props) {
+export function AccountSettingsScreen({ onBack, currentUser, onLogout }: Props) {
   const [editingName, setEditingName] = useState(false)
   const [nameInput, setNameInput] = useState(getDisplayName())
   const [nameSaving, setNameSaving] = useState(false)
