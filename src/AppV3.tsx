@@ -345,7 +345,6 @@ function AppV3() {
     // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
-      if (user) await syncOnLogin(user.id)
       const initial = getInitialScreen(user)
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')
@@ -353,6 +352,7 @@ function AppV3() {
       setAuthReady(true)
       clearTimeout(splashTimer)
       void hideSplash()
+      if (user) void syncOnLogin(user.id)
     }).catch(async () => {
       // ネットワークエラー等でも必ずSplashを閉じてホームへ遷移させる
       await ensureMinBoot()
@@ -364,14 +364,15 @@ function AppV3() {
       setCurrentUser(user)
       setSentryUser(user ? { id: user.id, email: user.email ?? null } : null)
       if (user) {
-        await syncOnLogin(user.id)
         // preview=onboarding 中はホームに戻さない
         const isPreview = typeof location !== 'undefined' && new URL(location.href).searchParams.get('preview') === 'onboarding'
         if (!isPreview) {
-          // ログイン直後（login / onboarding 画面からの遷移）はウェルカム画面を表示
+          // ログイン直後（login / onboarding 画面からの遷移）はウェルカム画面を即座に表示
           setScreen((s) => (s.type === 'login' || s.type === 'onboarding') ? { type: 'welcome' } : s)
           // チュートリアルは右下FABから任意で起動
         }
+        // syncOnLogin はバックグラウンドで実行（画面遷移をブロックしない）
+        void syncOnLogin(user.id)
       } else {
         syncOnLogout()
       }
