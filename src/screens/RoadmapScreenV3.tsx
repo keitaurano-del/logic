@@ -1685,6 +1685,7 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
 
 // ──────── パーソナルコース誘導バナー（トレーニング画面トップ） ────────
 const PERSONAL_COURSE_BANNER_DISMISSED_KEY = 'logic-personal-course-banner-dismissed'
+const PERSONAL_COURSE_CARD_DISMISSED_KEY = 'logic-personal-course-card-dismissed'
 
 function PersonalCourseBanner({
   onOpenPersonalCourse,
@@ -1698,6 +1699,9 @@ function PersonalCourseBanner({
   const completed = new Set(getCompletedLessons())
   const [dismissed, setDismissed] = React.useState(
     () => localStorage.getItem(PERSONAL_COURSE_BANNER_DISMISSED_KEY) === '1'
+  )
+  const [dismissedCard, setDismissedCard] = React.useState(
+    () => localStorage.getItem(PERSONAL_COURSE_CARD_DISMISSED_KEY) === '1'
   )
 
   // 診断未受検 → 「実力診断テスト」誘導カード（閉じるボタン付き）
@@ -1764,7 +1768,7 @@ function PersonalCourseBanner({
     )
   }
 
-  if (!onOpenPersonalCourse) return null
+  if (!onOpenPersonalCourse || dismissedCard) return null
 
   const lessons = course.lessonIds.map(id => flat[id]).filter((l): l is LessonData => !!l)
   const completedCount = course.lessonIds.filter(id => completed.has(`lesson-${id}`)).length
@@ -1773,47 +1777,69 @@ function PersonalCourseBanner({
   const weakest = course.axisOrder[0]
 
   return (
-    <button
-      type="button"
-      onClick={onOpenPersonalCourse}
-      style={{
-        background: `linear-gradient(135deg, color-mix(in srgb, var(--brand) 96%, transparent), color-mix(in srgb, var(--brand) 75%, transparent))`,
-        borderRadius: 16,
-        padding: '16px 18px',
-        boxShadow: 'var(--shadow-v3-card-inset)',
-        cursor: 'pointer',
-        color: 'var(--accent-fg)',
-        position: 'relative',
-        overflow: 'hidden',
-        border: 'none',
-        width: '100%',
-        textAlign: 'left',
-        font: 'inherit',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-        <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.14)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalBadge')}</div>
-        {allDone && (
-          <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.18)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalDoneBadge')}</div>
-        )}
-      </div>
-      <div style={{ fontSize: '1.0667rem', fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
-      <div style={{ fontSize: '0.8rem', lineHeight: 1.55, marginBottom: 10 }}>
-        {weakest ? t('roadmap.personalSubtitleWeak', { axis: axisLabel(weakest).label, total }) : t('roadmap.personalSubtitleDefault', { total })}
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--accent-fg)', borderRadius: 2, transition: 'width .3s' }} />
+    <div style={{ position: 'relative' }}>
+      <button
+        type="button"
+        onClick={onOpenPersonalCourse}
+        style={{
+          background: `linear-gradient(135deg, color-mix(in srgb, var(--brand) 96%, transparent), color-mix(in srgb, var(--brand) 75%, transparent))`,
+          borderRadius: 16,
+          padding: '16px 18px',
+          boxShadow: 'var(--shadow-v3-card-inset)',
+          cursor: 'pointer',
+          color: 'var(--accent-fg)',
+          position: 'relative',
+          overflow: 'hidden',
+          border: 'none',
+          width: '100%',
+          textAlign: 'left',
+          font: 'inherit',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, paddingRight: 24 }}>
+          <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.14)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalBadge')}</div>
+          {allDone && (
+            <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.18)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalDoneBadge')}</div>
+          )}
         </div>
-        <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>{completedCount}/{total}</div>
-      </div>
-      <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>
-          {allDone ? t('roadmap.personalCtaRedo') : completedCount > 0 ? t('roadmap.personalCtaContinue') : t('roadmap.personalCtaStart')}
+        <div style={{ fontSize: '1.0667rem', fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
+        <div style={{ fontSize: '0.8rem', lineHeight: 1.55, marginBottom: 10 }}>
+          {weakest ? t('roadmap.personalSubtitleWeak', { axis: axisLabel(weakest).label, total }) : t('roadmap.personalSubtitleDefault', { total })}
         </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-    </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--accent-fg)', borderRadius: 2, transition: 'width .3s' }} />
+          </div>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>{completedCount}/{total}</div>
+        </div>
+        <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>
+            {allDone ? t('roadmap.personalCtaRedo') : completedCount > 0 ? t('roadmap.personalCtaContinue') : t('roadmap.personalCtaStart')}
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </button>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          localStorage.setItem(PERSONAL_COURSE_CARD_DISMISSED_KEY, '1')
+          setDismissedCard(true)
+        }}
+        aria-label="閉じる"
+        style={{
+          position: 'absolute', top: 10, right: 10,
+          width: 24, height: 24, borderRadius: '50%',
+          background: 'rgba(10,31,77,0.25)', border: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', color: 'rgba(255,255,255,0.8)',
+        }}
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
   )
 }
 
