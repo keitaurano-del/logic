@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   startCheckout,
   startCampaignCheckout,
@@ -8,6 +8,8 @@ import {
   PLAN_PRICES,
   CAMPAIGN_ACTIVE,
 } from '../subscription'
+import { getProducts } from '../billing'
+import { PLAY_PRODUCTS } from '../billing/products'
 import { Header } from '../components/platform/Header'
 import { t } from '../i18n'
 
@@ -67,6 +69,12 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   const [error, setError] = useState('')
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('yearly')
   const campaignActive = CAMPAIGN_ACTIVE
+
+  // マウント時に Play Store からプロダクト情報をプリフェッチする。
+  // purchaseProduct() を呼ぶ前に getProducts() が必要なため、ここで事前呼び出し。
+  useEffect(() => {
+    void getProducts([PLAY_PRODUCTS.monthly, PLAY_PRODUCTS.yearly, PLAY_PRODUCTS.campaignYearly])
+  }, [])
 
   const state = getSubscriptionState()
   const isCurrentlyPaid = isPaid()
