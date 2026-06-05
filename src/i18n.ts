@@ -1466,7 +1466,7 @@ const STRINGS: Record<Locale, Strings> = {
     'personalCourse.diagnosisLine': '診断で「{axis}（{from}〜{to}）」が伸びしろと判定されました。',
 
     // AI カスタムコース生成（あなた専用コース）
-    'customCourse.sectionTitle': 'あなた専用コース',
+    'customCourse.sectionTitle': 'あなた専用',
     'customCourse.sectionDesc': 'AIが組んだ、あなたの目的に合わせた学習コースです。',
     'customCourse.createButton': 'AIで自分専用コースを作る',
     'customCourse.createButtonDesc': '学びたいことを伝えると、最適なレッスンでコースを組みます。',
