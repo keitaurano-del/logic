@@ -3,7 +3,7 @@
  * 仕様: docs/DESIGN_V3.md §3.2
  * モックアップ: lv3-courses.html
  */
-import { useState, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Header } from '../components/platform/Header'
 import { ActionSheet } from '../components/ActionSheet'
@@ -1684,6 +1684,8 @@ function CategoryDetailView({ category, onOpenLesson, onBack }: { category: stri
 }
 
 // ──────── パーソナルコース誘導バナー（トレーニング画面トップ） ────────
+const PERSONAL_COURSE_BANNER_DISMISSED_KEY = 'logic-personal-course-banner-dismissed'
+
 function PersonalCourseBanner({
   onOpenPersonalCourse,
   onOpenPlacementTest,
@@ -1694,47 +1696,71 @@ function PersonalCourseBanner({
   const course = loadPersonalCourse()
   const flat = getAllLessonsFlat()
   const completed = new Set(getCompletedLessons())
+  const [dismissed, setDismissed] = React.useState(
+    () => localStorage.getItem(PERSONAL_COURSE_BANNER_DISMISSED_KEY) === '1'
+  )
 
-  // 診断未受検 → 「実力診断テスト」誘導カード
+  // 診断未受検 → 「実力診断テスト」誘導カード（閉じるボタン付き）
   if (!course) {
-    if (!onOpenPlacementTest) return null
+    if (!onOpenPlacementTest || dismissed) return null
     return (
-      <button
-        type="button"
-        onClick={onOpenPlacementTest}
-        style={{
-          background: 'var(--bg-card)',
-          borderRadius: 16,
-          padding: '14px 16px',
-          boxShadow: 'var(--shadow-v3-card-inset)',
-          border: `1.5px dashed color-mix(in srgb, var(--brand) 31%, transparent)`,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          width: '100%',
-          textAlign: 'left',
-          font: 'inherit',
-          color: 'inherit',
-        }}
-      >
-        <div style={{
-          width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-          background: 'var(--accent-soft)', color: 'var(--brand)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
-          </svg>
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('roadmap.personalCreateTitle')}</div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>
-            {t('roadmap.personalCreateDesc')}
+      <div style={{ position: 'relative' }}>
+        <button
+          type="button"
+          onClick={onOpenPlacementTest}
+          style={{
+            background: 'var(--bg-card)',
+            borderRadius: 16,
+            padding: '14px 16px',
+            boxShadow: 'var(--shadow-v3-card-inset)',
+            border: `1.5px dashed color-mix(in srgb, var(--brand) 31%, transparent)`,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            width: '100%',
+            textAlign: 'left',
+            font: 'inherit',
+            color: 'inherit',
+          }}
+        >
+          <div style={{
+            width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+            background: 'var(--accent-soft)', color: 'var(--brand)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+            </svg>
           </div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+          <div style={{ flex: 1, minWidth: 0, paddingRight: 24 }}>
+            <div style={{ fontSize: '0.9333rem', fontWeight: 700, color: 'var(--text-primary)' }}>{t('roadmap.personalCreateTitle')}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.5 }}>
+              {t('roadmap.personalCreateDesc')}
+            </div>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            localStorage.setItem(PERSONAL_COURSE_BANNER_DISMISSED_KEY, '1')
+            setDismissed(true)
+          }}
+          aria-label="閉じる"
+          style={{
+            position: 'absolute', top: 10, right: 10,
+            width: 24, height: 24, borderRadius: '50%',
+            background: 'var(--bg-secondary)', border: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', color: 'var(--text-muted)',
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
     )
   }
 
