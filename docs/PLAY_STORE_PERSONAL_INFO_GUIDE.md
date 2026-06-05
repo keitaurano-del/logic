@@ -26,7 +26,7 @@ Play Store に表示される連絡先は **アプリ単位** と **デベロッ
 |------|-----------|---------|
 | メールアドレス | 個人メールが表示されている | `support@logicalthinking.app` 等のエイリアスに変更（※後述） |
 | 電話番号 | 設定されていれば削除 | 空欄のまま（任意項目） |
-| ウェブサイト | 個人サイト or 空欄 | `https://logic-u5wn.onrender.com` でも可（なければ空欄も可） |
+| ウェブサイト | 個人サイト or 空欄 | 空欄推奨（Logic はモバイル専用アプリのため）。設定するなら Play Store URL: `https://play.google.com/store/apps/details?id=com.logicalthinking.app` |
 
 6. 変更後「**変更を保存**」をクリック
 7. ストアの審査は不要（連絡先変更のみ即時反映）
