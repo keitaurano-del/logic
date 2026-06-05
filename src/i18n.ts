@@ -538,6 +538,9 @@ const STRINGS: Record<Locale, Strings> = {
     'pricing.welcomeToastTitle': '有料プランへようこそ',
     'pricing.welcomeToastBody': 'AI 問題生成が無制限で使えるようになりました。早速試してみよう。',
     'pricing.welcomeToastCta': 'AI 問題生成を試す',
+    'pricing.welcomeModalTitle': 'プレミアムへようこそ！',
+    'pricing.welcomeModalBody': 'すべての機能が使えるようになりました。',
+    'pricing.welcomeModalCta': 'さっそく使う',
 
     // Categories
     'category.logical': 'ロジカルシンキング',
@@ -2566,6 +2569,9 @@ const STRINGS: Record<Locale, Strings> = {
     'pricing.welcomeToastTitle': 'Welcome to the paid plan',
     'pricing.welcomeToastBody': 'AI problem generation is now unlimited. Try it out right away.',
     'pricing.welcomeToastCta': 'Try AI problem generation',
+    'pricing.welcomeModalTitle': 'Welcome to Premium!',
+    'pricing.welcomeModalBody': 'All features are now unlocked.',
+    'pricing.welcomeModalCta': 'Get Started',
 
     // Categories
     'category.logical': 'Logical Thinking',

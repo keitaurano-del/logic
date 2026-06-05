@@ -222,6 +222,7 @@ export function setPaidPlan(plan: SubscriptionPlan, expiresAt: string, playStore
   s.expiresAt = expiresAt
   if (playStoreToken) s.playStoreToken = playStoreToken
   save(s)
+  window.dispatchEvent(new CustomEvent('subscription:updated'))
 }
 
 export function getPlanLabel(): string {

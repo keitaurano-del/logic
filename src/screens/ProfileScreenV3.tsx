@@ -2,7 +2,7 @@
  * ProfileScreenV3 - Logic v3 redesign
  * 仕様: docs/DESIGN_V3.md §3.6
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS, localDateStr } from '../stats'
 import { getCompletionCount } from '../db/completionCountDb'
 import { getAllLessonsFlat } from '../lessonData'
@@ -56,6 +56,14 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   const showTrialBanner = shouldShowTrialEndingBanner(isLoggedIn)
   const [sheet, setSheet] = useState<Sheet>(null)
   const [titleSheetOpen, setTitleSheetOpen] = useState(false)
+  const [planLabel, setPlanLabel] = useState(getPlanLabel)
+
+  // 購入完了後などにプラン表示を即時更新する
+  useEffect(() => {
+    const handler = () => setPlanLabel(getPlanLabel())
+    window.addEventListener('subscription:updated', handler)
+    return () => window.removeEventListener('subscription:updated', handler)
+  }, [])
   const streak = getLessonStreak()
   const completed = getCompletedCount()
   const xp = getXp()
@@ -260,7 +268,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={onOpenNotifications} />
           {/* FB-32: 言語・テーマ・文字サイズを「環境設定」に集約 */}
           <SettingRow icon="palette" name={t('profile.preferences')} sub={preferencesSub} onClick={onOpenPreferences} />
-          <SettingRow icon="card" name={t('profile.plan')} sub={getPlanLabel()} onClick={onOpenPricing} extra={showTrialBadge ? <TrialBadge /> : undefined} />
+          <SettingRow icon="card" name={t('profile.plan')} sub={planLabel} onClick={onOpenPricing} extra={showTrialBadge ? <TrialBadge /> : undefined} />
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')} />
           <SettingRow icon="shield" name={t('profile.privacy')} sub="" onClick={() => window.open(localizedHtmlPath('privacy'), '_blank')} />

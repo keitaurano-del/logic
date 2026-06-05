@@ -23,8 +23,14 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
   const canFetch = !!userId && !!supabaseUrl && !!supabaseAnonKey
   const [loading, setLoading] = useState(canFetch)
 
-  const localState = getSubscriptionState()
+  const [localState, setLocalState] = useState(getSubscriptionState)
   const isAndroid = isAndroidNative()
+
+  useEffect(() => {
+    const handler = () => setLocalState(getSubscriptionState())
+    window.addEventListener('subscription:updated', handler)
+    return () => window.removeEventListener('subscription:updated', handler)
+  }, [])
 
   useEffect(() => {
     if (!canFetch) return

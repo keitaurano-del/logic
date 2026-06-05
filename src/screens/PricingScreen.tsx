@@ -68,6 +68,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   const [loading, setLoading] = useState<PaidPlanId | null>(null)
   const [error, setError] = useState('')
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('yearly')
+  const [purchaseSuccess, setPurchaseSuccess] = useState(false)
   const campaignActive = CAMPAIGN_ACTIVE
 
   // マウント時に Play Store からプロダクト情報をプリフェッチする。
@@ -103,6 +104,8 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         return
       }
       await startCheckout(targetPlanId)
+      setLoading(null)
+      setPurchaseSuccess(true)
     } catch (e: unknown) {
       setError((e as Error).message || t('pricing.purchaseError'))
       setLoading(null)
@@ -119,10 +122,17 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         return
       }
       await startCampaignCheckout()
+      setLoading(null)
+      setPurchaseSuccess(true)
     } catch (e: unknown) {
       setError((e as Error).message || t('pricing.purchaseError'))
       setLoading(null)
     }
+  }
+
+  const handleCloseSuccessModal = () => {
+    setPurchaseSuccess(false)
+    onBack()
   }
 
   const FEATURES = getFeatures()
@@ -130,6 +140,78 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--bg-primary)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif" }}>
       <Header title={t('pricing.title')} onBack={onBack} />
+
+      {/* ─── ウェルカムモーダル（購入成功後） ─── */}
+      {purchaseSuccess && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="welcome-modal-title"
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.55)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '24px',
+          }}
+        >
+          <div style={{
+            background: 'var(--bg-card)',
+            borderRadius: 20,
+            padding: '32px 24px',
+            maxWidth: 360,
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+          }}>
+            <div style={{
+              fontSize: '2.4rem',
+              marginBottom: 16,
+              lineHeight: 1,
+            }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="12" fill="var(--brand)" opacity="0.12" />
+                <polyline points="20 6 9 17 4 12" stroke="var(--brand)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div
+              id="welcome-modal-title"
+              style={{
+                fontSize: '1.4667rem',
+                fontWeight: 800,
+                color: 'var(--text-primary)',
+                marginBottom: 10,
+              }}
+            >
+              {t('pricing.welcomeModalTitle')}
+            </div>
+            <div style={{
+              fontSize: '1rem',
+              color: 'var(--text-secondary)',
+              marginBottom: 28,
+              lineHeight: 1.6,
+            }}>
+              {t('pricing.welcomeModalBody')}
+            </div>
+            <button
+              type="button"
+              onClick={handleCloseSuccessModal}
+              style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: 14,
+                border: 'none',
+                background: 'var(--brand)',
+                color: 'var(--accent-fg)',
+                fontSize: '1.0667rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+              }}
+            >
+              {t('pricing.welcomeModalCta')}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div style={{ flex: 1, padding: '0 16px 100px', overflowY: 'auto' }}>
         {/* ─── Hero copy ─── */}
