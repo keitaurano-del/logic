@@ -14,16 +14,9 @@ import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
 import { t, getLocale, localizedHtmlPath } from '../i18n'
-import { getMode } from '../theme'
-import { FONT_SCALES, loadFontScale } from '../fontScale'
 import { TrialEndingBanner } from '../components/TrialStatus'
 import { shouldShowTrialEndingBanner } from '../trialStatus'
 import '../components/levelup.css'
-
-function getFontSizeLabel(): string {
-  const id = loadFontScale()
-  return FONT_SCALES.find((f) => f.id === id)?.name ?? FONT_SCALES[0].name
-}
 
 
 interface ProfileScreenV3Props {
@@ -55,12 +48,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   const { pct: levelPct, current: levelXp, needed } = getXpProgress(xp)
   const currentTitleKey = getTitleKeyForLevel(lv.level)
 
-  // FB-32: 環境設定行のサブ表示（言語・テーマ・文字サイズの現在値を要約）
-  const preferencesSub = [
-    getLocale() === 'ja' ? t('profile.languageJa') : t('profile.languageEn'),
-    getMode() === 'light' ? t('profile.themeLight') : t('profile.themeDark'),
-    getFontSizeLabel(),
-  ].join(' · ')
+
 
   const handleLogout = async () => {
     await logout()
@@ -247,11 +235,11 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
           {/* FB-31: プロフィール編集 + アカウント統合行 */}
           {onOpenProfileEdit && (
-            <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={onOpenProfileEdit} />
+            <SettingRow icon="user" name={t('profile.account')} sub="" onClick={onOpenProfileEdit} />
           )}
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={onOpenNotifications} />
           {/* FB-32: 言語・テーマ・文字サイズを「環境設定」に集約 */}
-          <SettingRow icon="palette" name={t('profile.preferences')} sub={preferencesSub} onClick={onOpenPreferences} />
+          <SettingRow icon="palette" name={t('profile.preferences')} sub="" onClick={onOpenPreferences} />
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')} />
           <SettingRow icon="shield" name={t('profile.privacy')} sub="" onClick={() => window.open(localizedHtmlPath('privacy'), '_blank')} />
