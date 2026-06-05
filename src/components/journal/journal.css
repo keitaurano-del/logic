@@ -1912,9 +1912,9 @@
 /* ── Journal Hero (with streak badge top-right) ───────── */
 .journal-hero {
   /* 2026-05-16: Android WebView だと env(safe-area-inset-top) が 0 を返すケースがあり、
-     端末の時計と被るバグがあった。fallback を 56px まで持ち上げ、最低でもステータスバーぶんは
-     余白を確保する。実機の safe-area が大きい iPhone は env() 値が優先される。 */
-  padding: calc(env(safe-area-inset-top, 56px) + 6px) 20px 8px;
+     端末の時計と被るバグがあった。max() で最低でも 44px を確保しつつ、
+     実機の safe-area が大きい iPhone は env() 値が優先される。 */
+  padding: calc(max(env(safe-area-inset-top), 44px) + 6px) 20px 8px;
   background: var(--hero-grad-dark);
   color: var(--text-on-hero, #fff);
   display: flex;

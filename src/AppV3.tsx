@@ -230,6 +230,14 @@ function AppV3() {
   const isPopNavRef = useRef(false)
   void isAdmin() // reserved for future admin checks
 
+  // subscription:updated イベントで canUseJournal() / isPaid() を再評価するためのチック
+  const [, setSubTick] = useState(0)
+  useEffect(() => {
+    const handler = () => setSubTick(t => t + 1)
+    window.addEventListener('subscription:updated', handler)
+    return () => window.removeEventListener('subscription:updated', handler)
+  }, [])
+
   // SCRUM-200: 新規インストール時にlocalStorageリセット（アンインストール後のデータ残留対策）
   // useEffect に移すことで React Strict Mode の二重レンダリングでの意図しない複数回実行を防ぐ
   useEffect(() => {
