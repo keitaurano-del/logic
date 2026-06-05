@@ -136,7 +136,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 
       {titleSheetOpen && <TitleBadgeSheet xp={xp} onClose={() => setTitleSheetOpen(false)} />}
 
-      <div style={{ flex: 1, padding: '16px 16px 100px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ flex: 1, padding: '12px 16px 100px', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {/* 今週の学習サマリー — タップで StudyTimeScreen */}
         {(() => {
           const week = getStudiedThisWeek()
