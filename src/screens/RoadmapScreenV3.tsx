@@ -1797,54 +1797,55 @@ function PersonalCourseBanner({
   }
 
   return (
-    <div style={{ borderRadius: 16, overflow: 'hidden' }}>
-      {/* ヘッダー行（常時表示・折りたたみトグル） */}
-      <div style={{ ...cardStyle, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
-        onClick={collapsed ? onOpenPersonalCourse : undefined}
+    <div style={{ position: 'relative' }}>
+      <button
+        type="button"
+        onClick={onOpenPersonalCourse}
+        style={{ ...cardStyle, display: 'block', cursor: 'pointer' }}
       >
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: collapsed ? 0 : 6, paddingRight: 28 }}>
           <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.14)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalBadge')}</div>
           {allDone && <div style={{ fontSize: '0.6667rem', fontWeight: 800, letterSpacing: '.1em', background: 'rgba(10,31,77,0.18)', padding: '2px 8px', borderRadius: 6 }}>{t('roadmap.personalDoneBadge')}</div>}
           {collapsed && <div style={{ fontSize: '0.9333rem', fontWeight: 800, marginLeft: 4 }}>{course.title}</div>}
         </div>
-        <button
-          type="button"
-          onClick={toggleCollapsed}
-          aria-label={collapsed ? '開く' : '閉じる'}
-          style={{ background: 'rgba(10,31,77,0.20)', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', color: 'rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7333rem', fontWeight: 700 }}
-        >
-          {collapsed ? '開く' : '閉じる'}
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <polyline points={collapsed ? '6 9 12 15 18 9' : '18 15 12 9 6 15'} />
-          </svg>
-        </button>
-      </div>
-
-      {/* 展開時コンテンツ */}
-      {!collapsed && (
-        <button
-          type="button"
-          onClick={onOpenPersonalCourse}
-          style={{ ...cardStyle, display: 'block', borderTop: '1px solid rgba(10,31,77,0.15)', borderRadius: '0 0 16px 16px', cursor: 'pointer' }}
-        >
-          <div style={{ fontSize: '1.0667rem', fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
-          <div style={{ fontSize: '0.8rem', lineHeight: 1.55, marginBottom: 10 }}>
-            {weakest ? t('roadmap.personalSubtitleWeak', { axis: axisLabel(weakest).label, total }) : t('roadmap.personalSubtitleDefault', { total })}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--accent-fg)', borderRadius: 2, transition: 'width .3s' }} />
+        {!collapsed && (
+          <>
+            <div style={{ fontSize: '1.0667rem', fontWeight: 800, lineHeight: 1.35, marginBottom: 4 }}>{course.title}</div>
+            <div style={{ fontSize: '0.8rem', lineHeight: 1.55, marginBottom: 10 }}>
+              {weakest ? t('roadmap.personalSubtitleWeak', { axis: axisLabel(weakest).label, total }) : t('roadmap.personalSubtitleDefault', { total })}
             </div>
-            <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>{completedCount}/{total}</div>
-          </div>
-          <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>
-              {allDone ? t('roadmap.personalCtaRedo') : completedCount > 0 ? t('roadmap.personalCtaContinue') : t('roadmap.personalCtaStart')}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ flex: 1, height: 4, background: 'rgba(10,31,77,0.20)', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${(completedCount / Math.max(1, total)) * 100}%`, background: 'var(--accent-fg)', borderRadius: 2, transition: 'width .3s' }} />
+              </div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>{completedCount}/{total}</div>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </button>
-      )}
+            <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>
+                {allDone ? t('roadmap.personalCtaRedo') : completedCount > 0 ? t('roadmap.personalCtaContinue') : t('roadmap.personalCtaStart')}
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </>
+        )}
+      </button>
+      {/* 折りたたみ chevron（テキストなし） */}
+      <button
+        type="button"
+        onClick={toggleCollapsed}
+        aria-label={collapsed ? '展開する' : '折りたたむ'}
+        style={{
+          position: 'absolute', top: 10, right: 10,
+          width: 24, height: 24, borderRadius: '50%',
+          background: 'rgba(10,31,77,0.20)', border: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', color: 'rgba(255,255,255,0.85)',
+        }}
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+          <polyline points={collapsed ? '6 9 12 15 18 9' : '18 15 12 9 6 15'} />
+        </svg>
+      </button>
     </div>
   )
 }
