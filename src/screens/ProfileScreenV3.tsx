@@ -58,7 +58,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   return (
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* Hero */}
-      <div style={{ background: 'var(--hero-grad-dark)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 56px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--hero-grad-dark)', padding: 'calc(env(safe-area-inset-top, 44px) + 14px) 20px 36px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', right: -50, top: -50, width: 200, height: 200, borderRadius: '50%', background: 'rgba(108,142,245,0.10)', filter: 'blur(40px)', pointerEvents: 'none' }}></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18, position: 'relative', zIndex: 1 }}>
           <button
@@ -136,7 +136,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
 
       {titleSheetOpen && <TitleBadgeSheet xp={xp} onClose={() => setTitleSheetOpen(false)} />}
 
-      <div style={{ flex: 1, padding: '12px 16px 100px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ flex: 1, padding: '8px 16px 100px', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {/* 今週の学習サマリー — タップで StudyTimeScreen */}
         {(() => {
           const week = getStudiedThisWeek()
