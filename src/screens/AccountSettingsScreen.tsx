@@ -214,17 +214,12 @@ export function AccountSettingsScreen({ onBack, currentUser, onOpenLogin, onLogo
 
         {/* ログイン/ログアウト */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-          {currentUser ? (
+          {currentUser && (
             <button
               type="button"
               onClick={handleLogout}
               style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: '1rem', fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
             >{t('accountSettings.logout')}</button>
-          ) : (
-            <button type="button" onClick={() => onOpenLogin()} style={{ padding: '16px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', border: 'none', color: 'inherit', font: 'inherit', textAlign: 'left', width: '100%', minHeight: 44 }}>
-              <span style={{ fontSize: '1rem', fontWeight: 600 }}>{t('accountSettings.emailLogin')}</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={'var(--text-muted)'} strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
           )}
         </div>
 
