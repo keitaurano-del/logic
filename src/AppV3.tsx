@@ -77,7 +77,7 @@ import { onAuthChange, getInitialUser, type User } from './supabase'
 import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
-import { syncOnLogin, syncOnLogout } from './syncService'
+import { syncOnLogin, syncOnLogout, syncSubscriptionFromRemote } from './syncService'
 import { canUseJournal, getJournalTrialDaysLeft, isPaid } from './subscription'
 import { initBilling } from './billing'
 import { SparklesIcon } from './icons'
@@ -353,6 +353,9 @@ function AppV3() {
     // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
+      // subscription 状態だけ先に同期（admin_overrides / subscriptions を読む軽い処理）
+      // これにより「ログインし直すと有料状態が消える」を防ぐ
+      if (user) await syncSubscriptionFromRemote().catch(() => {/* silent */})
       const initial = getInitialScreen(user)
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')

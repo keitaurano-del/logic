@@ -495,7 +495,7 @@ function mergeArrays(local: string[], remote: string[]): string[] {
   return [...new Set([...remote, ...local])]
 }
 
-async function syncSubscriptionFromRemote(): Promise<void> {
+export async function syncSubscriptionFromRemote(): Promise<void> {
   if (!supabase || !_currentUserId) return
   try {
     // admin_overrides を最優先（自動付与プラン）
