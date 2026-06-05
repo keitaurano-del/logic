@@ -16,6 +16,7 @@ import { getDisplayName, setDisplayName } from '../stats'
 import { updateDisplayName, logout, updateUserEmail } from '../supabase'
 import { confirm as confirmDialog } from '../platform/dialog'
 import { CheckIcon } from '../icons'
+import { getSubscriptionState, isPaid } from '../subscription'
 
 interface Props {
   onBack: () => void
@@ -23,6 +24,7 @@ interface Props {
   // ログイン/ログアウト）に必要な情報・コールバックを受け取る。
   currentUser: { email: string } | null
   onLogout: () => void
+  onOpenPlan: () => void
 }
 
 const GENDER_ORDER: Gender[] = ['male', 'female', 'other', 'na']
@@ -53,7 +55,14 @@ const OCCUPATION_ORDER: Occupation[] = [
  *
  * 文言は中立的な丁寧体で書く (feedback-app-copy-neutral 準拠)。
  */
-export function ProfileEditScreen({ onBack, currentUser, onLogout }: Props) {
+function getPlanLabel(): string {
+  const state = getSubscriptionState()
+  if (state.plan === 'paid_yearly') return t('profile.planPaidYearly')
+  if (state.plan === 'paid_monthly') return t('profile.planPaidMonthly')
+  return t('profile.planFree')
+}
+
+export function ProfileEditScreen({ onBack, currentUser, onLogout, onOpenPlan }: Props) {
   const currentYear = getCurrentYear()
   const profile = loadUserProfile()
 
@@ -68,6 +77,14 @@ export function ProfileEditScreen({ onBack, currentUser, onLogout }: Props) {
   const [saving, setSaving] = useState(false)
   const [savedFlash, setSavedFlash] = useState(false)
   const [error, setError] = useState('')
+  const [planLabel, setPlanLabel] = useState(getPlanLabel)
+
+  // 購入完了後などにプラン表示を即時更新する
+  useEffect(() => {
+    const handler = () => setPlanLabel(getPlanLabel())
+    window.addEventListener('subscription:updated', handler)
+    return () => window.removeEventListener('subscription:updated', handler)
+  }, [])
 
   // FB-31: アカウント — メールアドレス変更
   const [editingEmail, setEditingEmail] = useState(false)
@@ -378,6 +395,21 @@ export function ProfileEditScreen({ onBack, currentUser, onLogout }: Props) {
                   {t('accountSettings.emailVerifySent', { email: emailSentTo })}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* プラン（ログイン済みのみ表示） */}
+          {currentUser && (
+            <div style={{ ...FIELD, borderBottom: '1px solid var(--border)' }}>
+              <span style={LABEL}>{t('profile.plan')}</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                <div style={{ fontSize: '0.9333rem', color: 'var(--text-secondary)' }}>{planLabel}</div>
+                <button
+                  type="button"
+                  onClick={onOpenPlan}
+                  style={{ fontSize: '0.8667rem', color: 'var(--brand)', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', background: 'transparent', border: 'none', minHeight: 32, flexShrink: 0 }}
+                >{isPaid() ? t('profile.managePlan') : t('profile.viewPlan')}</button>
+              </div>
             </div>
           )}
 

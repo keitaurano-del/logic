@@ -2,7 +2,7 @@
  * ProfileScreenV3 - Logic v3 redesign
  * 仕様: docs/DESIGN_V3.md §3.6
  */
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getCompletedCount, getLessonStreak, getXp, getCompletedLessons, getXpLogThisMonth, XP_EVENT_LABEL, XP_REWARDS, localDateStr } from '../stats'
 import { getCompletionCount } from '../db/completionCountDb'
 import { getAllLessonsFlat } from '../lessonData'
@@ -10,15 +10,14 @@ import { getCurrentLevel, getXpProgress, getTitleKeyForLevel, getTitleI18nKey, g
 import { resolveAssetUrl } from '../lessonAssets'
 import { TitleBadgeSheet } from '../components/TitleBadgeSheet'
 import { logout } from '../supabase'
-import { getSubscriptionState } from '../subscription'
 import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
 import { t, getLocale, localizedHtmlPath } from '../i18n'
 import { getMode } from '../theme'
 import { FONT_SCALES, loadFontScale } from '../fontScale'
-import { TrialBadge, TrialEndingBanner } from '../components/TrialStatus'
-import { shouldShowTrial, shouldShowTrialEndingBanner } from '../trialStatus'
+import { TrialEndingBanner } from '../components/TrialStatus'
+import { shouldShowTrialEndingBanner } from '../trialStatus'
 import '../components/levelup.css'
 
 function getFontSizeLabel(): string {
@@ -26,12 +25,6 @@ function getFontSizeLabel(): string {
   return FONT_SCALES.find((f) => f.id === id)?.name ?? FONT_SCALES[0].name
 }
 
-function getPlanLabel(): string {
-  const state = getSubscriptionState()
-  if (state.plan === 'paid_yearly') return t('profile.planPaidYearly')
-  if (state.plan === 'paid_monthly') return t('profile.planPaidMonthly')
-  return t('profile.planFree')
-}
 
 interface ProfileScreenV3Props {
   userName: string
@@ -52,18 +45,9 @@ type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
   const { userName, onOpenProfileEdit, onOpenNotifications, onOpenPreferences, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenStudyTime, isLoggedIn = false } = props
-  const showTrialBadge = shouldShowTrial(isLoggedIn)
   const showTrialBanner = shouldShowTrialEndingBanner(isLoggedIn)
   const [sheet, setSheet] = useState<Sheet>(null)
   const [titleSheetOpen, setTitleSheetOpen] = useState(false)
-  const [planLabel, setPlanLabel] = useState(getPlanLabel)
-
-  // 購入完了後などにプラン表示を即時更新する
-  useEffect(() => {
-    const handler = () => setPlanLabel(getPlanLabel())
-    window.addEventListener('subscription:updated', handler)
-    return () => window.removeEventListener('subscription:updated', handler)
-  }, [])
   const streak = getLessonStreak()
   const completed = getCompletedCount()
   const xp = getXp()
@@ -263,12 +247,11 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
           {/* FB-31: プロフィール編集 + アカウント統合行 */}
           {onOpenProfileEdit && (
-            <SettingRow icon="user" name={t('profile.editProfile')} sub={userName || t('home.guestName')} onClick={onOpenProfileEdit} />
+            <SettingRow icon="user" name={t('profile.account')} sub={userName || t('home.guestName')} onClick={onOpenProfileEdit} />
           )}
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={onOpenNotifications} />
           {/* FB-32: 言語・テーマ・文字サイズを「環境設定」に集約 */}
           <SettingRow icon="palette" name={t('profile.preferences')} sub={preferencesSub} onClick={onOpenPreferences} />
-          <SettingRow icon="card" name={t('profile.plan')} sub={planLabel} onClick={onOpenPricing} extra={showTrialBadge ? <TrialBadge /> : undefined} />
           <SettingRow icon="message" name={t('profile.feedbackName')} sub={t('profile.feedbackSub')} onClick={onOpenFeedback} />
           <SettingRow icon="doc" name={t('profile.terms')} sub="" onClick={() => window.open(localizedHtmlPath('terms'), '_blank')} />
           <SettingRow icon="shield" name={t('profile.privacy')} sub="" onClick={() => window.open(localizedHtmlPath('privacy'), '_blank')} />

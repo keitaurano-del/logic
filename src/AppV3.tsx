@@ -35,6 +35,7 @@ const AppearanceSettingsScreen = lazy(() => import('./screens/AppearanceSettings
 const FontSizeSettingsScreen = lazy(() => import('./screens/FontSizeSettingsScreen').then(m => ({ default: m.FontSizeSettingsScreen })))
 const PreferencesScreen = lazy(() => import('./screens/PreferencesScreen').then(m => ({ default: m.PreferencesScreen })))
 const CompletedLessonsScreen = lazy(() => import('./screens/CompletedLessonsScreen').then(m => ({ default: m.CompletedLessonsScreen })))
+const SubscriptionManagement = lazy(() => import('./SubscriptionManagement').then(m => ({ default: m.default })))
 const StudyTimeScreen = lazy(() => import('./screens/StudyTimeScreen').then(m => ({ default: m.StudyTimeScreen })))
 const LanguageScreen = lazy(() => import('./screens/LanguageScreen').then(m => ({ default: m.LanguageScreen })))
 const RankScreen = lazy(() => import('./screens/RankScreen').then(m => ({ default: m.RankScreen })))
@@ -89,6 +90,7 @@ import { addNotificationTapListener, rescheduleAllReminders } from './notificati
 import { checkAndInitInstall } from './installReset'
 import { ReviewPreviewScreen } from './screens/ReviewPreviewScreen'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { Header } from './components/platform/Header'
 
 const ONBOARDED_KEY = 'logic-onboarded'
 
@@ -134,6 +136,7 @@ type Screen =
   | { type: 'streak' }
   | { type: 'account-settings' }
   | { type: 'profile-edit' }
+  | { type: 'account-plan' }
   | { type: 'notification-settings' }
   | { type: 'appearance-settings' }
   | { type: 'font-size-settings' }
@@ -834,9 +837,15 @@ function AppV3() {
         <ProfileEditScreen
           onBack={handleBack}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
-          
           onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
+          onOpenPlan={() => isPaid() ? navigate({ type: 'account-plan' }) : navigate({ type: 'pricing' })}
         />
+      )}
+      {screen.type === 'account-plan' && (
+        <div className="stack" style={{ padding: '0 16px 24px' }}>
+          <Header title={t('profile.plan')} onBack={handleBack} />
+          <SubscriptionManagement userId={currentUser?.id ?? null} onChangePlan={() => navigate({ type: 'pricing' })} />
+        </div>
       )}
       {screen.type === 'notification-settings' && (
         <NotificationSettingsScreen onBack={handleBack} />
