@@ -121,7 +121,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
   }
 
   return (
-    <div className="stack">
+    <div className="stack" style={{ padding: '0 16px 24px' }}>
       <Header title={`${session.cursor + 1} / ${TOTAL_QUESTIONS}`} onBack={onBack} />
       <div className="progress">
         <div className="progress-fill" style={{ width: `${progress}%` }} />
@@ -149,6 +149,7 @@ export function PlacementTestScreen({ onComplete, onBack }: PlacementTestScreenP
               display: 'flex',
               alignItems: 'center',
               gap: 'var(--s-3)',
+              border: '1.5px solid var(--border)',
             }}
           >
             <span style={{
@@ -203,7 +204,7 @@ function ResultView({
   )
 
   return (
-    <div className="stack">
+    <div className="stack" style={{ padding: '0 16px 24px' }}>
       <Header title={t('placement.resultHeader')} onBack={onBack} />
 
       <div className="eyebrow accent">SKILL ASSESSMENT</div>
@@ -285,7 +286,7 @@ function ResultView({
 function ReviewView({ result, onBack }: { result: PlacementResult; onBack: () => void }) {
   const answers = result.answers
   return (
-    <div className="stack">
+    <div className="stack" style={{ padding: '0 16px 24px' }}>
       <Header title={t('placement.explanationHeader')} onBack={onBack} />
 
       <div className="eyebrow accent">REVIEW</div>
