@@ -2074,6 +2074,13 @@ const STRINGS: Record<Locale, Strings> = {
     'reviewPreview.wrongAnswersDesc': '間違えた問題を再挑戦して苦手を克服できます。',
     'reviewPreview.savedItemsTitle': '保存アイテム',
     'reviewPreview.savedItemsDesc': '保存したレッスンや問題をまとめて確認できます。',
+
+    // Subscription management
+    'subscription.yourPlan': 'あなたのプラン',
+    'subscription.price': '価格',
+    'subscription.nextRenewal': '次回更新日',
+    'subscription.changeNote': 'プランを変更する場合は、まず Google Play でサブスクリプションを解約してから、新しいプランをご購入ください。',
+    'subscription.manageOnPlayStore': 'Google Playで管理する',
   },
 
   en: {
@@ -4107,6 +4114,13 @@ const STRINGS: Record<Locale, Strings> = {
     'reviewPreview.wrongAnswersDesc': 'Retry questions you got wrong to overcome weak spots.',
     'reviewPreview.savedItemsTitle': 'Saved Items',
     'reviewPreview.savedItemsDesc': 'Access all your saved lessons and problems in one place.',
+
+    // Subscription management
+    'subscription.yourPlan': 'YOUR PLAN',
+    'subscription.price': 'Price',
+    'subscription.nextRenewal': 'Next renewal',
+    'subscription.changeNote': 'To change your plan, first cancel your current subscription on Google Play, then subscribe to a new plan.',
+    'subscription.manageOnPlayStore': 'Manage on Google Play',
   },
 }
 

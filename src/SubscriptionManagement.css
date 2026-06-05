@@ -16,6 +16,34 @@
   margin: 0 0 12px;
 }
 
+/* 有料プラン eyebrow（"あなたのプラン" / "YOUR PLAN"） */
+.sm-eyebrow {
+  font-size: 0.7333rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+}
+
+/* カード内の価格テキスト */
+.sm-price-text {
+  font-size: 0.9333rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* プラン変更注記 */
+.sm-change-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
 .sm-card {
   background: var(--bg-card);
   border: 1px solid var(--border);

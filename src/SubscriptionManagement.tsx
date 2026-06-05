@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { getSubscriptionState, isAndroidNative, PLAN_PRICES, normalizeLegacyPlan } from './subscription'
 import type { SubscriptionPlan } from './subscription'
+import { t } from './i18n'
 import './SubscriptionManagement.css'
 
 type SubData = {
@@ -63,10 +64,18 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
     })
   }
 
-  const planLabel = () => {
-    if (plan === 'paid_yearly') return `年額プラン (¥${PLAN_PRICES.yearly.toLocaleString()}/年)`
-    if (plan === 'paid_monthly') return `月額プラン (¥${PLAN_PRICES.monthly.toLocaleString()}/月)`
+  // バッジ表示用の短いラベル
+  const planBadgeLabel = () => {
+    if (plan === 'paid_yearly') return '年額プラン'
+    if (plan === 'paid_monthly') return '月額プラン'
     return '無料プラン'
+  }
+
+  // カード内に表示する価格テキスト
+  const planPriceText = () => {
+    if (plan === 'paid_yearly') return `¥${PLAN_PRICES.yearly.toLocaleString()} / 年`
+    if (plan === 'paid_monthly') return `¥${PLAN_PRICES.monthly.toLocaleString()} / 月`
+    return null
   }
 
   const isActive = plan === 'paid_monthly' || plan === 'paid_yearly'
@@ -92,45 +101,64 @@ export default function SubscriptionManagement({ userId, onChangePlan }: Props) 
 
   return (
     <div className="sm-container">
-      <h3 className="sm-title">サブスクリプション</h3>
+      {isActive ? (
+        <>
+          {/* 有料プラン：「あなたのプラン」セクション */}
+          <p className="sm-eyebrow">{t('subscription.yourPlan')}</p>
 
-      {/* 現在のプラン */}
-      <div className="sm-card">
-        <div className="sm-row">
-          <span className="sm-label">現在のプラン</span>
-          <span className={`sm-plan-badge sm-plan-${plan}`}>{planLabel()}</span>
-        </div>
+          <div className="sm-card">
+            <div className="sm-row">
+              <span className={`sm-plan-badge sm-plan-${plan}`}>{planBadgeLabel()}</span>
+              {planPriceText() && (
+                <span className="sm-price-text">{planPriceText()}</span>
+              )}
+            </div>
 
-        {periodEnd && isActive && (
-          <div className="sm-row sm-row-sub">
-            <span className="sm-label">次回更新日</span>
-            <span className="sm-value">{formatDate(periodEnd)}</span>
+            {periodEnd && (
+              <div className="sm-row sm-row-sub">
+                <span className="sm-label">{t('subscription.nextRenewal')}</span>
+                <span className="sm-value">{formatDate(periodEnd)}</span>
+              </div>
+            )}
           </div>
-        )}
 
-        {!isActive && (
-          <div className="sm-row sm-row-sub">
-            <span className="sm-label">ステータス</span>
-            <span className="sm-value sm-inactive">{status === 'canceled' ? '解約済み' : '未加入'}</span>
+          {/* プラン変更注記 */}
+          <p className="sm-change-note">{t('subscription.changeNote')}</p>
+
+          {/* Google Play 管理ボタン */}
+          <div className="sm-actions">
+            <button
+              className="sm-btn sm-btn-secondary"
+              onClick={handleOpenPlayStoreManagement}
+            >
+              {t('subscription.manageOnPlayStore')}
+            </button>
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        <>
+          {/* 無料プラン：従来のUI */}
+          <h3 className="sm-title">サブスクリプション</h3>
 
-      {/* アクションボタン */}
-      <div className="sm-actions">
-        <button className="sm-btn sm-btn-primary" onClick={onChangePlan}>
-          プランを変更
-        </button>
+          <div className="sm-card">
+            <div className="sm-row">
+              <span className="sm-label">現在のプラン</span>
+              <span className={`sm-plan-badge sm-plan-${plan}`}>{planBadgeLabel()}</span>
+            </div>
 
-        {isActive && (
-          <button
-            className="sm-btn sm-btn-secondary"
-            onClick={handleOpenPlayStoreManagement}
-          >
-            Google Playで管理
-          </button>
-        )}
-      </div>
+            <div className="sm-row sm-row-sub">
+              <span className="sm-label">ステータス</span>
+              <span className="sm-value sm-inactive">{status === 'canceled' ? '解約済み' : '未加入'}</span>
+            </div>
+          </div>
+
+          <div className="sm-actions">
+            <button className="sm-btn sm-btn-primary" onClick={onChangePlan}>
+              プランを変更
+            </button>
+          </div>
+        </>
+      )}
 
       {!userId && (
         <div className="sm-note">
