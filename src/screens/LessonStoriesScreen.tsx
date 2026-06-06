@@ -15,6 +15,7 @@ import { LessonThumbnail } from '../components/LessonThumbnail'
 import { resolveAssetUrl } from '../lessonAssets'
 import { API_BASE } from './apiBase'
 import { t, getLocale } from '../i18n'
+import { WritingScoreResult } from '../components/WritingScoreResult'
 import * as tts from '../ttsService'
 import { TtsControlPanel } from '../components/TtsControlPanel'
 import { isCoursePlayCurrent, advanceCoursePlay, clearCoursePlay } from '../ttsCoursePlay'
@@ -1468,60 +1469,7 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
 
       {/* 採点結果カード */}
       {scoreResult && (
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', marginBottom: 20, border: `1.5px solid color-mix(in srgb, var(--brand) 30%, transparent)` }}>
-          {/* ヘッダー */}
-          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', marginBottom: 14 }}>
-            {t('stories.scoreResult')}
-          </div>
-
-          {/* 総合スコア */}
-          <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreOverall')}</div>
-            <div style={{ fontSize: '2.8rem', fontWeight: 900, color: 'var(--brand)', lineHeight: 1 }}>
-              {scoreResult.scores.overall}
-            </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>/ 100</div>
-          </div>
-
-          {/* PREP軸スコア */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 16, justifyContent: 'center' }}>
-            {([
-              { key: 'point', label: t('stories.scorePrepPoint') },
-              { key: 'reason', label: t('stories.scorePrepReason') },
-              { key: 'example', label: t('stories.scorePrepExample') },
-            ] as const).map(({ key, label }) => (
-              <div key={key} style={{ flex: 1, textAlign: 'center', background: `color-mix(in srgb, var(--brand) 8%, transparent)`, borderRadius: 10, padding: '8px 4px' }}>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand)' }}>{scoreResult.scores[key]}</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.3 }}>{label}</div>
-                <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>/ 5</div>
-              </div>
-            ))}
-          </div>
-
-          {/* コメント */}
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreComment')}</div>
-            <div style={{ fontSize: '0.8667rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
-              {locale === 'en' ? scoreResult.comments.en : scoreResult.comments.ja}
-            </div>
-          </div>
-
-          {/* 良かった点 */}
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreStrengths')}</div>
-            <div style={{ fontSize: '0.8667rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
-              {locale === 'en' ? scoreResult.strengths.en : scoreResult.strengths.ja}
-            </div>
-          </div>
-
-          {/* 改善点 */}
-          <div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreImprovements')}</div>
-            <div style={{ fontSize: '0.8667rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
-              {locale === 'en' ? scoreResult.improvements.en : scoreResult.improvements.ja}
-            </div>
-          </div>
-        </div>
+        <WritingScoreResult result={scoreResult} locale={locale} />
       )}
 
       {/* モデル解答（開示後） */}
