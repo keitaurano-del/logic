@@ -3173,7 +3173,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | LW-2 | think ステップの双方向化（入力→AI採点表示） | P1 | DONE（2026-06-06 commit 8404ce0: ThinkSlide にテキスト入力→POST /api/writing-score→採点結果表示フロー追加。i18n ja/en 12キー追加。tsc 0 errors / eslint 0 errors / deploy queued 27052588843） | dev-logic |
 | LW-3 | writing-score API 実装（Claude tool_use で構造化スコア出力） | P1 | DONE（2026-06-06 commit 395dc00: POST /api/writing-score 実装・rate-limit・23 unit tests green） | dev-logic |
 | LW-4 | 採点ルーブリック設計（PREP各軸の配点・誤フィードバック防止プロンプト） | P1 | DONE（2026-06-06 commit 30bb985: docs/SCORING_RUBRIC.md 作成・Point/Reason/Example 5段階基準・誤採点防止ガード・ja/en採点サンプル3件・system prompt テンプレート。logic-coach MECE監査4件修正済み。SYSTEM_PROMPT 更新。tsc 0 errors / eslint 0 errors / vitest 23 tests green / deploy 27053070647） | content-creator + logic-coach |
-| LW-5 | 採点結果UI（スコア＋軸別コメント・ストアスクショ兼用デザイン） | P1 | TODO | designer |
+| LW-5 | 採点結果UI（スコア＋軸別コメント・ストアスクショ兼用デザイン） | P1 | DONE（2026-06-06 commit 6496824: src/components/WritingScoreResult.tsx 新規作成。全体スコア円形バッジ＋PREP軸スコアバー＋強み/改善点フィードバックカード。CSS vars 徹底（hex禁止）・SVGアイコン使用・ThinkSlide の inline JSX を component 化。tsc 0 errors / eslint 0 errors / deploy triggered） | designer |
 | LW-6 | マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較） | P2 | TODO | Masayoshi（記録のみ・実施は別途） |
 | LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | TODO | Keita |
 | LW-8 | i18n 両対応（採点UI・結果テキスト・エラー文言 ja/en） | P1 | TODO | dev-logic（LW-2/3/5 と並行） |
