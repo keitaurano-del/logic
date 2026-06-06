@@ -24,6 +24,7 @@ interface Props {
   // ログイン/ログアウト）に必要な情報・コールバックを受け取る。
   currentUser: { email: string } | null
   onLogout: () => void
+  onOpenLogin: () => void
   onOpenPlan: () => void
 }
 
@@ -62,7 +63,7 @@ function getPlanLabel(): string {
   return t('profile.planFree')
 }
 
-export function ProfileEditScreen({ onBack, currentUser, onLogout, onOpenPlan }: Props) {
+export function ProfileEditScreen({ onBack, currentUser, onLogout, onOpenLogin, onOpenPlan }: Props) {
   const currentYear = getCurrentYear()
   const profile = loadUserProfile()
 
@@ -420,6 +421,15 @@ export function ProfileEditScreen({ onBack, currentUser, onLogout, onOpenPlan }:
               onClick={handleLogout}
               style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--md-sys-color-error)', fontSize: '1rem', fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
             >{t('accountSettings.logout')}</button>
+          )}
+
+          {/* ログインする（未ログイン時のみ表示） */}
+          {!currentUser && (
+            <button
+              type="button"
+              onClick={onOpenLogin}
+              style={{ padding: '16px 18px', cursor: 'pointer', color: 'var(--brand)', fontSize: '1rem', fontWeight: 700, textAlign: 'center', background: 'transparent', border: 'none', width: '100%', font: 'inherit', minHeight: 44 }}
+            >{t('profile.loginCta')}</button>
           )}
         </div>
       </div>

@@ -838,6 +838,7 @@ function AppV3() {
           onBack={handleBack}
           currentUser={currentUser ? { email: currentUser.email ?? '' } : null}
           onLogout={() => { setCurrentUser(null); navigate({ type: 'profile' }) }}
+          onOpenLogin={() => navigate({ type: 'login' })}
           onOpenPlan={() => isPaid() ? navigate({ type: 'account-plan' }) : navigate({ type: 'pricing' })}
         />
       )}
