@@ -3176,7 +3176,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | LW-5 | 採点結果UI（スコア＋軸別コメント・ストアスクショ兼用デザイン） | P1 | DONE（2026-06-06 commit 6496824: src/components/WritingScoreResult.tsx 新規作成。全体スコア円形バッジ＋PREP軸スコアバー＋強み/改善点フィードバックカード。CSS vars 徹底（hex禁止）・SVGアイコン使用・ThinkSlide の inline JSX を component 化。tsc 0 errors / eslint 0 errors / deploy triggered） | designer |
 | LW-6 | マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較） | P2 | TODO | Masayoshi（記録のみ・実施は別途） |
 | LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | TODO | Keita |
-| LW-8 | i18n 両対応（採点UI・結果テキスト・エラー文言 ja/en） | P1 | TODO | dev-logic（LW-2/3/5 と並行） |
+| LW-8 | i18n 両対応（採点UI・結果テキスト・エラー文言 ja/en） | P1 | DONE（2026-06-06 commit pending: ja/en 12キー完備確認（stories.scoreMyAnswer〜scoreError）・LessonStoriesScreen の重複型定義削除→server/routes/writing-score から import type に統一。tsc 0 errors / eslint 0 errors） | dev-logic（LW-2/3/5 と並行） |
 | LW-9 | レート制限・コスト分散（writing-score API のスロットル・旧箱ルーティング検討） | P2 | TODO | dev-logic（LW-3 完了後） |
 
 ---

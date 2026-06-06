@@ -30,6 +30,7 @@ import { useStudyTimer } from '../hooks/useStudyTimer'
 import '../visuals/visuals.css'
 import '../visuals/visuals-phase3a.css'
 import '../visuals/visuals-fullbleed.css'
+import type { ScoringResult } from '../../server/routes/writing-score'
 
 type WrongAnswerCapture = {
   slideIndex: number
@@ -1360,13 +1361,6 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
 // ─────────────────────────────────────────────
 // ThinkSlide: 自由記述思考問題 (type: 'think')
 // ─────────────────────────────────────────────
-type ScoringResult = {
-  scores: { point: number; reason: number; example: number; overall: number }
-  comments: { ja: string; en: string }
-  strengths: { ja: string; en: string }
-  improvements: { ja: string; en: string }
-}
-
 function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides').LessonSlide, { kind: 'think' }>; onNext: () => void }) {
   const [revealed, setRevealed] = useState(false)
   const [userInput, setUserInput] = useState('')
