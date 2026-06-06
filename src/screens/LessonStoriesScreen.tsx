@@ -4,7 +4,7 @@
  * モックアップ: lv3-lesson.html
  */
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, BrainIcon, ClipboardListIcon, FlagIcon, HeadphonesIcon } from '../icons'
+import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, SparklesIcon, LightbulbIcon, ClipboardListIcon, FlagIcon, HeadphonesIcon } from '../icons'
 import type { LessonSlide } from '../lessonSlides'
 import { convertLessonToSlides } from '../lessonSlides'
 import { RichLessonText } from '../components/RichLessonText'
@@ -1359,8 +1359,40 @@ function SlideContent({ slide, quizAnswered, multiSelected, onToggleMulti, onSub
 // ─────────────────────────────────────────────
 // ThinkSlide: 自由記述思考問題 (type: 'think')
 // ─────────────────────────────────────────────
+type ScoringResult = {
+  scores: { point: number; reason: number; example: number; overall: number }
+  comments: { ja: string; en: string }
+  strengths: { ja: string; en: string }
+  improvements: { ja: string; en: string }
+}
+
 function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides').LessonSlide, { kind: 'think' }>; onNext: () => void }) {
   const [revealed, setRevealed] = useState(false)
+  const [userInput, setUserInput] = useState('')
+  const [scoring, setScoring] = useState(false)
+  const [scoreResult, setScoreResult] = useState<ScoringResult | null>(null)
+  const [scoreError, setScoreError] = useState(false)
+
+  const locale = getLocale()
+
+  const handleScore = async () => {
+    setScoring(true)
+    setScoreError(false)
+    try {
+      const res = await fetch(`${API_BASE}/api/writing-score`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: userInput }),
+      })
+      if (!res.ok) throw new Error('scoring failed')
+      const data = await res.json() as ScoringResult
+      setScoreResult(data)
+    } catch {
+      setScoreError(true)
+    } finally {
+      setScoring(false)
+    }
+  }
 
   return (
     <>
@@ -1384,15 +1416,110 @@ function ThinkSlide({ slide, onNext }: { slide: Extract<import('../lessonSlides'
         </div>
       )}
 
-      {/* 考える時間のプレースホルダー */}
-      {!revealed && (
-        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '20px', marginBottom: 20, border: `1.5px dashed ${'var(--border)'}` }}>
-          <div style={{ fontSize: '0.8667rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--warm)', fontWeight: 700 }}>
-              <BrainIcon width={14} height={14} />
-              <span>{t('stories.thinkOwnAnswer')}</span>
-            </span><br />
-            <span style={{ fontSize: '0.8rem' }}>{t('stories.readyHint')}</span>
+      {/* テキスト入力エリア（採点前） */}
+      {!scoreResult && (
+        <div style={{ marginBottom: 20 }}>
+          <textarea
+            value={userInput}
+            onChange={e => setUserInput(e.target.value)}
+            placeholder={t('stories.thinkInputPlaceholder')}
+            rows={5}
+            style={{
+              width: '100%',
+              boxSizing: 'border-box',
+              background: 'var(--bg-card)',
+              border: `1.5px solid var(--border)`,
+              borderRadius: 12,
+              padding: '12px 14px',
+              fontSize: '0.9333rem',
+              lineHeight: 1.7,
+              color: 'var(--text-primary)',
+              resize: 'vertical',
+              outline: 'none',
+              fontFamily: 'inherit',
+            }}
+          />
+          {scoreError && (
+            <div style={{ marginTop: 8, fontSize: '0.8rem', color: 'var(--error, #e53e3e)' }}>
+              {t('stories.scoreError')}
+            </div>
+          )}
+          <button
+            onClick={handleScore}
+            disabled={userInput.trim().length === 0 || scoring}
+            style={{
+              marginTop: 10,
+              width: '100%',
+              padding: '13px 0',
+              borderRadius: 14,
+              border: 'none',
+              background: userInput.trim().length === 0 || scoring ? 'var(--border)' : 'var(--brand)',
+              color: userInput.trim().length === 0 || scoring ? 'var(--text-muted)' : '#fff',
+              fontSize: '0.9333rem',
+              fontWeight: 700,
+              cursor: userInput.trim().length === 0 || scoring ? 'not-allowed' : 'pointer',
+              transition: 'background 0.15s',
+            }}
+          >
+            {scoring ? t('stories.scoring') : t('stories.scoreMyAnswer')}
+          </button>
+        </div>
+      )}
+
+      {/* 採点結果カード */}
+      {scoreResult && (
+        <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: '18px 20px', marginBottom: 20, border: `1.5px solid color-mix(in srgb, var(--brand) 30%, transparent)` }}>
+          {/* ヘッダー */}
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand)', letterSpacing: '.06em', marginBottom: 14 }}>
+            {t('stories.scoreResult')}
+          </div>
+
+          {/* 総合スコア */}
+          <div style={{ textAlign: 'center', marginBottom: 16 }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreOverall')}</div>
+            <div style={{ fontSize: '2.8rem', fontWeight: 900, color: 'var(--brand)', lineHeight: 1 }}>
+              {scoreResult.scores.overall}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>/ 100</div>
+          </div>
+
+          {/* PREP軸スコア */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16, justifyContent: 'center' }}>
+            {([
+              { key: 'point', label: t('stories.scorePrepPoint') },
+              { key: 'reason', label: t('stories.scorePrepReason') },
+              { key: 'example', label: t('stories.scorePrepExample') },
+            ] as const).map(({ key, label }) => (
+              <div key={key} style={{ flex: 1, textAlign: 'center', background: `color-mix(in srgb, var(--brand) 8%, transparent)`, borderRadius: 10, padding: '8px 4px' }}>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand)' }}>{scoreResult.scores[key]}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: 2, lineHeight: 1.3 }}>{label}</div>
+                <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>/ 5</div>
+              </div>
+            ))}
+          </div>
+
+          {/* コメント */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreComment')}</div>
+            <div style={{ fontSize: '0.8667rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
+              {locale === 'en' ? scoreResult.comments.en : scoreResult.comments.ja}
+            </div>
+          </div>
+
+          {/* 良かった点 */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreStrengths')}</div>
+            <div style={{ fontSize: '0.8667rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
+              {locale === 'en' ? scoreResult.strengths.en : scoreResult.strengths.ja}
+            </div>
+          </div>
+
+          {/* 改善点 */}
+          <div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>{t('stories.scoreImprovements')}</div>
+            <div style={{ fontSize: '0.8667rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
+              {locale === 'en' ? scoreResult.improvements.en : scoreResult.improvements.ja}
+            </div>
           </div>
         </div>
       )}
