@@ -3170,7 +3170,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
 | LW-1 | 【親】ロジカルライティング即採点エージェント MVP | P1 | TODO | dev-logic（技術リード）+ content-creator + designer |
-| LW-2 | think ステップの双方向化（入力→AI採点表示） | P1 | TODO | dev-logic |
+| LW-2 | think ステップの双方向化（入力→AI採点表示） | P1 | DONE（2026-06-06 commit 8404ce0: ThinkSlide にテキスト入力→POST /api/writing-score→採点結果表示フロー追加。i18n ja/en 12キー追加。tsc 0 errors / eslint 0 errors / deploy queued 27052588843） | dev-logic |
 | LW-3 | writing-score API 実装（Claude tool_use で構造化スコア出力） | P1 | DONE（2026-06-06 commit 395dc00: POST /api/writing-score 実装・rate-limit・23 unit tests green） | dev-logic |
 | LW-4 | 採点ルーブリック設計（PREP各軸の配点・誤フィードバック防止プロンプト） | P1 | TODO | content-creator + logic-coach |
 | LW-5 | 採点結果UI（スコア＋軸別コメント・ストアスクショ兼用デザイン） | P1 | TODO | designer |
