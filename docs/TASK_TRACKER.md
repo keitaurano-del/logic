@@ -3172,7 +3172,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | LW-1 | 【親】ロジカルライティング即採点エージェント MVP | P1 | TODO | dev-logic（技術リード）+ content-creator + designer |
 | LW-2 | think ステップの双方向化（入力→AI採点表示） | P1 | DONE（2026-06-06 commit 8404ce0: ThinkSlide にテキスト入力→POST /api/writing-score→採点結果表示フロー追加。i18n ja/en 12キー追加。tsc 0 errors / eslint 0 errors / deploy queued 27052588843） | dev-logic |
 | LW-3 | writing-score API 実装（Claude tool_use で構造化スコア出力） | P1 | DONE（2026-06-06 commit 395dc00: POST /api/writing-score 実装・rate-limit・23 unit tests green） | dev-logic |
-| LW-4 | 採点ルーブリック設計（PREP各軸の配点・誤フィードバック防止プロンプト） | P1 | TODO | content-creator + logic-coach |
+| LW-4 | 採点ルーブリック設計（PREP各軸の配点・誤フィードバック防止プロンプト） | P1 | DONE（2026-06-06 commit 30bb985: docs/SCORING_RUBRIC.md 作成・Point/Reason/Example 5段階基準・誤採点防止ガード・ja/en採点サンプル3件・system prompt テンプレート。logic-coach MECE監査4件修正済み。SYSTEM_PROMPT 更新。tsc 0 errors / eslint 0 errors / vitest 23 tests green / deploy 27053070647） | content-creator + logic-coach |
 | LW-5 | 採点結果UI（スコア＋軸別コメント・ストアスクショ兼用デザイン） | P1 | TODO | designer |
 | LW-6 | マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較） | P2 | TODO | Masayoshi（記録のみ・実施は別途） |
 | LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | TODO | Keita |
