@@ -16,6 +16,7 @@ import { createFeatureFlagsRouter } from './routes/feature-flags.js'
 import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
 import { createTtsRouter } from './routes/tts.js'
 import { createSearchRouter } from './routes/search.js'
+import { createWritingScoreRouter } from './routes/writing-score.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -234,6 +235,15 @@ const searchLimiter = makeLimiter({
   msgEn: 'Too many search requests. Please wait a moment and try again.',
 })
 
+// ロジカルライティング採点用: 1 分 10 回（tool_use 呼び出し1回）
+const writingScoreLimiter = makeLimiter({
+  windowMs: 60 * 1000,
+  max: 10,
+  msgJa: 'ライティング採点のリクエストが多すぎます。少し待ってからお試しください。',
+  msgEn: 'Too many writing score requests. Please wait a moment and try again.',
+  useUserId: true,
+})
+
 // グローバル制限を /api/* に適用 (ヘルスチェックは除外)
 app.use((req, res, next) => {
   if (req.path === '/api/health') return next()
@@ -267,6 +277,9 @@ app.use('/api/tts', createTtsRouter(ttsLimiter))
 
 // AI セマンティック検索（POST /api/search）
 app.use('/api/search', createSearchRouter(client, searchLimiter))
+
+// ロジカルライティング採点（POST /api/writing-score）
+app.use('/api/writing-score', createWritingScoreRouter(client, writingScoreLimiter))
 
 
 // 静的ファイル（public/ → dist/）は配信する
