@@ -231,7 +231,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-35 | 「学ぶ」画面上部の検索を右上アイコンに格納（デフォルト非表示） | P2 | DONE（2026-06-03 Keita 指示で REVIEW 一括完了。実装・本番反映済。元REVIEWメモ: 2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
 | FB-36 | 全体的な動作の遅さ改善（特にフェルミランキングが毎回読込に数秒。キャッシュ/初回描画/不要再取得の最適化） | P2 | DONE（2026-06-03 実装・本番反映済 `851ec53`・テスト担保。フェルミランキングをSWRキャッシュ化＝前回値即描画で体感即時。根因=サーバ2往復+cold start） | dev-logic | パフォーマンス |
 | FB-38 | Play Store 掲載情報を最新化（説明文・スクショ・アイコン等、古いまま放置）。草案: Apollo 成果物「PlayStore掲載文_草案_2026-06-04.md」 | P1 | TODO（2026-06-04 Keita「デフォルトのストアの掲載情報も古いままだから更新しないといけない」。Keita 確認後にスクショ自動生成→Play Console 登録） | 林（草案作成済）+ Keita（Play Console 登録） | リリース |
-| FB-39 | Play Store の掲載情報に載っている Keita の個人情報を非表示にする | P0 | REVIEW（2026-06-04 林が手順書作成完了 `docs/PLAY_STORE_PERSONAL_INFO_GUIDE.md`。対応箇所=①アプリ単位の連絡先（Play Console → ストアの設定 → 連絡先）②デベロッパーアカウントの連絡先（Play Console → 設定 → アカウントの詳細）。メールはGmailエイリアス keita.urano+logic-support@gmail.com に変更推奨。Keita が Play Console で実操作すれば完了。2026-06-05 林 REVIEW 検証: 手順書の内容正確性確認済み・ウェブサイト欄の推奨URL誤り修正済み（Render APIエンドポイント→Play Store URL推奨/空欄推奨に変更、commit 7683e27）。Keita の Play Console 操作完了後 DONE） | Keita（Play Console 操作）+ 林（手順案内・REVIEW検証 完了） | セキュリティ・プライバシー |
+| FB-39 | Play Store の掲載情報に載っている Keita の個人情報を非表示にする | P0 | CANCELLED | Keita（Play Console 操作）+ 林（手順案内・REVIEW検証 完了） | セキュリティ・プライバシー |
 | FB-37 | デイリーフェルミのフィルタで各選択肢の件数（それぞれいくつあるか）を非表示にする | P3 | DONE（2026-06-03 実装・push済み・本番反映済 run26861643743。難易度/分野チップの件数span削除・countAvailableWithFilterは0件判定で残置・未使用CSS削除。tsc0/eslint0/vitest620） | dev-logic | UX・情報整理 |
 | MB-1 | 指標ダッシュボードを立ち上げる（Supabaseネイティブで代替・Metabase不要に方針転換） | P1 | DONE（2026-06-03 Supabaseネイティブで立ち上げ完了。daily_activity 稼働でDAU/WAU/MAU・継続率コホート、subscriptions で課金/プラン、profiles で登録推移/属性が SQL Editor で取得可能。SQL は会話展開済＋supabase/sql/dashboards/。Reportsチャート化は任意follow） | 林（SQL整備・誘導）+ Keita（SQL Editor貼付） | 指標基盤 |
 | MB-2 | クライアント活動ログ(studyDates)をSupabaseに同期しDAU・継続率を可視化可能にする | P1 | DONE（2026-06-03 Keita が Supabase SQL Editor で migration 037 適用→daily_activity 作成成功(HTTP200)。同期コード本番反映済 `851ec53`。バックフィル実働確認＝Keita 端末同期で21行(2026-05-01〜06-03)流入。以降ユーザー同期毎に増加し DAU/継続率が実数化） | dev-logic（実装+migration SQL）+ Keita（migration適用） | DAU・継続率の土台 |
@@ -1180,7 +1180,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | AM-L | T-L | グラデーション除去（カスタムコース生成カード／今日の1問カード） | P1 | DONE（2026-05-29。Daily Fermi カード〔HomeScreenV3:184〕の --brand-grad-h グラデ廃止→フラット var(--accent)＋青グロー boxShadow を accent追従に。カスタムコース生成カード〔RoadmapScreenV3:697「AIで自分専用コースを作る」〕の linear-gradient 廃止→フラット var(--accent)＋内部アイコンを accent-fg 追従に。両方テーマ追従） | dev-logic | T-S／T-T 根本原因A と統合実装 |
 | AM-M | T-M | 「・今日の一問」の先頭「・」除去＋表記ゆれ統一 | P2 | DONE（2026-05-29。表記ゆれを「今日の1問」に統一〔pricing.heroSub/featFermi・savedItems.filterFermi/emptyFermi/typeFermi の ja を 今日の一問→今日の1問。en は変更なし〕。先頭中黒「・」は現ソースに literal/JSX前置/CSS ::before いずれも存在せず＝grep 全量確認で付与元なし。home カード先頭の装飾ドットは中黒文字でなく styled div の小円なので対象外として維持） | dev-logic | 表記は home 主導線の「今日の1問」に寄せた |
 | AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | DONE（2026-06-01 本番反映完了。dev-logic が `am-n-tokushoho-confirmed-values` を main へ --no-ff merge〔commit `1eebc22`、payload は public/tokushoho.html・tokushoho-en.html・delete-account.html・delete-account-en.html の4ファイルのみ、98コミット古いブランチだが3-wayで巻き戻しゼロ確認〕→ push 成功〔85c4b75..1eebc22〕→ deploy-production.yml run 26743434702 success〔Render 本番〕＋ android-deploy.yml run 26743432158 success〔内部テスター rollout〕。品質ゲート: tsc -b green / eslint .〔CI同等リポ全体〕0 error・19 warning。本番反映確認〔https://logic-u5wn.onrender.com〕: tokushoho.html ja〔運営責任者 柴田圭太/電話は請求があれば開示/7日無料/最終更新2026-05-31〕、tokushoho-en.html en〔同等〕、delete-account(-en).html は account-deletion(-en).html へリダイレクト一本化。[[feedback-review-agent-verify-then-done]] 準拠＝本番反映も完了済み。commit `13041a3`〔法務文言〕＋`e1f16f0`〔削除ページ一本化〕を内包） | dev-logic（本番反映完了） | 確定値: アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2450・電話非掲載/開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Googleログイン記述削除済。AM-O 課金実態と整合必須（トライアルは年額のみ・Play Console Offer と整合） |
-| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | BLOCKED（Keita の Play Console SKU 登録待ち。コード結線 DONE・SKU セット確定済） | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
+| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | DONE | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
 | AM-P | T-P | フェルミランキング累計スコアのダミーを毎日ランダム増分 | P2 | DONE（2026-05-29 commit 1c18ebb。固定スコア廃止→「期間トップ実スコア×日次シード倍率」で動的化。実データ isMock:false は不変。main push＋backend を deploy-production.yml で本番デプロイ完了〔run 26629582944 success〕。ローカル smoke で週/月 mock スコアが降順・日替わり検証済） | dev-logic | server/routes/fermi.ts。リクエスト時算出方式＝cron 不要で運用が軽い |
 | AM-Q | T-Q | トレーニング検索の改修（右上虫眼鏡＋AI検索） | P1 | DONE（2026-05-29 commit 6a3c985〔別アクター実装〕。RoadmapScreenV3 右上虫眼鏡＋検索オーバーレイ、server/routes/search.ts〔POST /api/search, haiku-4-5, rate-limit 20/min〕、src/aiSearch.ts、i18n ja/en、vitest 13。backend は deploy-production.yml で本番反映済〔run 26629582944 success〕＝T-X と両方充足） | designer＋dev-logic | **T-X（トレーニングのAI検索）と同一依頼＝T-X も DONE**。重複起票しない |
 | AM-R | BLOCKED | DONE | dev-logic が 2026-05-30 本番 DB 書き換え実行完了。固有タグ41→36種・9統合・誤統合ゼロ・他ユーザー波及ゼロ。snapshot `public._backfill_journal_tags_20260530`〔15行〕＋undo SQL 保持中、安定確認後 DROP 可 |
@@ -3171,11 +3171,11 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 |----|---------|--------|-----------|--------|
 | LW-1 | 【親】ロジカルライティング即採点エージェント MVP | P1 | TODO | dev-logic（技術リード）+ content-creator + designer |
 | LW-2 | think ステップの双方向化（入力→AI採点表示） | P1 | TODO | dev-logic |
-| LW-3 | writing-score API 実装（Claude tool_use で構造化スコア出力） | P1 | TODO | dev-logic |
+| LW-3 | writing-score API 実装（Claude tool_use で構造化スコア出力） | P1 | DONE（2026-06-06 commit 395dc00: POST /api/writing-score 実装・rate-limit・23 unit tests green） | dev-logic |
 | LW-4 | 採点ルーブリック設計（PREP各軸の配点・誤フィードバック防止プロンプト） | P1 | TODO | content-creator + logic-coach |
 | LW-5 | 採点結果UI（スコア＋軸別コメント・ストアスクショ兼用デザイン） | P1 | TODO | designer |
 | LW-6 | マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較） | P2 | TODO | Masayoshi（記録のみ・実施は別途） |
-| LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | BLOCKED（Keita 経営判断待ち） | Keita |
+| LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | TODO | Keita |
 | LW-8 | i18n 両対応（採点UI・結果テキスト・エラー文言 ja/en） | P1 | TODO | dev-logic（LW-2/3/5 と並行） |
 | LW-9 | レート制限・コスト分散（writing-score API のスロットル・旧箱ルーティング検討） | P2 | TODO | dev-logic（LW-3 完了後） |
 
@@ -3212,7 +3212,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 
 ### LW-3 — writing-score API 実装（Claude tool_use で構造化スコア出力）
 
-- 優先度: P1 / ステータス: TODO / 担当: dev-logic
+- 優先度: P1 / ステータス: DONE（2026-06-06 commit 395dc00） / 担当: dev-logic
 - 詳細: `POST /api/writing-score` エンドポイントを新規作成。受け取ったユーザー文章を Claude API（tool_use 方式）に送り、PREP 各軸（Point/Reason/Example/Point展開）の構造化スコア＋コメントを JSON で返す。採点ルーブリックは LW-4 で定義したプロンプトを使用。
 - 受け入れ条件(DoD): `POST /api/writing-score` が `{ text: string }` を受け取り `{ scores: { point: number, reason: number, example: number, overall: number }, comments: { ja: string, en: string }, ... }` 相当の構造化 JSON を返す。tool_use で型安全なスキーマ定義。採点失敗時は 200 + エラーフィールドで graceful degradation。tsc / eslint . / vitest green（unit: モック Claude 応答でスコア構造テスト）。
 - 関連ファイル: `server/routes/writing-score.ts`（新規）、`server/index.ts`（route 登録）、`@anthropic-ai/sdk`（tool_use）
@@ -3273,7 +3273,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 
 ### LW-7 — 【戦略リスク】論理思考カテゴリの市場教育コスト評価
 
-- 優先度: P2 / ステータス: BLOCKED（Keita 経営判断待ち） / 担当: Keita
+- 優先度: P2 / ステータス: TODO / 担当: Keita
 - 詳細: 三方議論で浮上した戦略リスク。「論理思考」は市場として認知コスト（ユーザーが「自分に必要」と気づくまでのハードル）が高い可能性がある。「面接対策」「昇進対策」など入口ユーザーに刺さる別フレーミングを入口にして、論理思考を手段として提示する方が市場教育コストを下げられる可能性。MVP は進めつつ、マーケ戦略を「論理思考」直打ちのままでよいか Keita が判断する。
 - 受け入れ条件(DoD): Keita がリスクを認識した上で「論理思考直打ちのまま MVP 進める」or「入口フレーミングを変える」のどちらかを決定。
 - 依存: LW-1（MVP設計）の方向感が見えてから判断でよい。MVP 着手はブロックしない。
