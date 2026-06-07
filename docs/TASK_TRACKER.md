@@ -776,7 +776,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用。Android 実機で表示確認。
   - 永続化: 表示文言のみで persist 影響なし。
 
-### AM-N — 法務記載の見直し（利用規約／プライバシー／特商法）　[P1 / TODO（2026-05-30 unblock・確定値全揃い）]
+### AM-N — 法務記載の見直し（利用規約／プライバシー／特商法）　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 状態（2026-05-30 unblock）: **Keita から法的確定値がすべて揃い BLOCKED → TODO**。残作業＝`docs/LEGAL_REVIEW_20260529.md` §5 ドラフト＋下記確定値を HTML に反映（5文書 × ja/en。削除系を一本化したぶん文書数は減）。HTML 内の `【要Keita確認: ...】` マーカーを確定値で置換する。担当=dev-logic（HTML 反映）。反映物ができたら本番 push 承認を別途 Keita から取る（push 承認は別レイヤー＝この台帳更新の範囲外）。
 >
@@ -817,7 +817,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用。HTML は WebView 表示なので Android 実機でレイアウト崩れ・リンク導線確認。
   - 永続化: 静的ファイルで persist 概念なし。
 
-### AM-O — 料金プランの Google Play 課金実装（購入導線の結線）　[P1 / BLOCKED（コード DONE／Keita SKU 待ち）]
+### AM-O — 料金プランの Google Play 課金実装（購入導線の結線）　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 状態（2026-05-30 ブロッカー明確化＋SKU 登録セット確定＋年額トライアル決定）: コード結線は DONE（PricingScreen が startCheckout(targetPlanId) に結線済）。**ブロッカーの中身は「SKU 登録セット確定済・Keita の Play Console 登録だけ待ち」**。残＝Keita が Play Console で下記「SKU 登録セット（確定値）」を一字一句一致で登録。**2026-05-30 Keita 決定: 年額プランに 7日間無料トライアル（Introductory Offer）を付ける。月額には付けない**。SKU Active 後に dev-logic/test-functional が実機購入ハッピーパス検証（キャンセル/失敗/restore 分岐含む）。SKU が非 Active だと実機購入が起動できず検証不可＝Keita ゲート。夕方バッチ T-AC と同一＝本タスクに集約。
 >
@@ -1137,7 +1137,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 永続化: D4 のタグ統合操作は localStorage＋Supabase 同期（既存ジャーナルの保存経路 daily_journals）に乗せる。物理バックフィルは Supabase 側 DB 操作＝マイグレーション or バッチ（承認案件）。
   - 統制語彙の運用: D1 の語彙は今後メンテが要る（カテゴリ追加時に語彙も更新）→ 将来 task-manager の recurring or content-creator の継続管理に乗せる検討余地（今回は初版定義まで）。
 
-### T-E — Obsidian vault 最新化＋日次更新の仕組み化　[P1 / IN_PROGRESS]
+### T-E — Obsidian vault 最新化＋日次更新の仕組み化　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - 進捗（2026-06-07 更新）:
   - (a) ✅ DONE: 5/26〜5/28 の Daily Note 本体キャッチアップ作成済（林）。
@@ -1183,7 +1183,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - スコープ確認: 「Obsidian 全部最新に」の「全部」が 50-Daily と 20-Projects/logic 以外（00-Inbox / 10-Tasks / 20-Knowledge / 40-Resources 等）も含むか。今回は明示された Daily Note と logic 状況に絞り、他フォルダの棚卸しが要るなら別タスク化を Keita 確認。
   - 自動パイプラインの健全性前提が崩れていた（T-F 発覚）: T-E 当初の現状認識「briefings/feedback の自動パイプラインは 5/28 まで稼働中」は**ファイル存在ベースの誤認**だった。実際は 5/27・5/28 とも中身がエラー文字列で、タイムスタンプだけ更新されてゴミ。T-F で別タスク化。T-E のキャッチアップ素材として briefings/feedback を使う際は、5/26 までの正常分のみ信頼し、5/27 以降は git log / inspections / 本セッションの事実を正本にする。
 
-### T-F — cron 自動化の root 権限エラー修復　[P1 上位 / TODO]
+### T-F — cron 自動化の root 権限エラー修復　[P1 上位 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - 症状（2026-05-28 Obsidian キャッチアップで発覚）: `50-Daily/briefings/`（07:00 ceo 朝ブリ）と `50-Daily/feedback/`（06:00 feedback-watcher）の cron 出力が、5/27・5/28 とも中身が**エラー文字列**「`--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons`」（実ファイル確認済み、各 93 bytes）。タイムスタンプだけ毎日更新され中身がゴミ。5/26 までは正常（briefings/2026-05-26.md は 8802 bytes の実ブリーフィング）。
 - 根因（実スクリプト＋crontab 照合済み）:
@@ -1246,7 +1246,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 本番は健全: フロント 200 / API 200 を確認済み。これは障害対応でなく**監視復旧**タスク。優先度判断時に「本番は無事」を明示しておく（過剰反応しない）。
   - test-results / screenshots: night-patrol.sh:53-54 は test-results を screenshots へコピーする。スモークが 0 件だと成果物も空。修正後はスクショ/結果も復活するか確認。
 
-### T-H — Logic Android Production 公開　[P1 / 公開戦略確定（2026-05-30）]
+### T-H — Logic Android Production 公開　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 状態（2026-05-30 Keita 公開戦略決定）: **「今の最新ビルドで先に公開」**。DF-F 系 P0 改善は公開後アップデートで対応する（公開を待たない）。公開前提だった T-G スモーク・T-B テーマは **5/29 達成済み**。残るは公開順序（下記）の実行。
 >
@@ -1282,7 +1282,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | T-K | ジャーナルのグラフ tap で詳細展開 | P2 | DONE（2026-05-29 main マージ＋push 本番反映。気分推移グラフ tap→当日要約をインライン展開。MoodSparkline/journal.css/i18n。tsc0/eslint0。Android 自動配信で反映） | dev-logic | 対象=気分推移グラフのみ（タグ頻度/ストリークは対象外、T-D 競合回避） |
 | T-L | Daily Fermi の答えを解説の最後に移す | P2 | DONE（2026-05-29 main マージ＋push＋Render deploy 実行で本番反映。答えは AI フィードバック本文内→プロンプトで末尾 ## 答え に。server/routes/fermi.ts。tsc0/eslint0/vitest324/PW9。サーバ側のため deploy-production.yml 実行） | dev-logic | 答えは static でなく AI 生成本文内だった |
 
-### T-I — コース単位の進捗を見れるようにする　[P1 / TODO（スコープ要確認）]
+### T-I — コース単位の進捗を見れるようにする　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - 依頼原文（Keita 2026-05-28）: 「コースの進捗が見れるようにしたい」。
 - 想定スコープ: ロードマップ/コース一覧で「このコースを何 % 進めたか（完了レッスン数 / 全レッスン数）」をコース単位で可視化する。レッスン単体の done/not-done は既にあるが、コースを束ねた進捗集計の表示が無い（要実装確認）。
@@ -1308,7 +1308,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 両OS: モバイル専用（project_logic_mobile_only）。Android 実機で表示崩れ確認。
   - 重複論点の解除（2026-05-29）: 旧 T-J が「完了回数（count）」で同じ progress レイヤーを触る懸念があったが、**T-J は「完了バッジの色変更のみ」に縮小確定したので重複は消滅**。T-I は単独で進められる（migration 不要・既存 progress の集計表示）。
 
-### T-J — 完了バッジのチェックマークの色を変更する　[P2 / TODO（スコープ確定済・T-M 完了後着手）]
+### T-J — 完了バッジのチェックマークの色を変更する　[P2 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - 📌 スコープ確定（Keita 2026-05-29）: **「完了バッジのチェックマークの色変更のみ」に確定・縮小**。当初登録（2026-05-28）の「レッスンごとの完了回数を可視化する」案は破棄。完了回数のカウント・データモデル拡張・migration は**やらない**。レッスン完了を示すバッジ（チェックマーク）の**色だけ**を変える、軽量な見た目変更タスク。
 - 依頼原文（Keita 2026-05-28 → 2026-05-29 確定）: 当初「レッスンを何回完了したか分かるようにしたい」だったが、Keita 確定で「完了バッジのチェックマークの色を変える」だけに縮小。
@@ -1333,7 +1333,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - 永続化: 不要（見た目のみ）。
   - 関連: T-S/T-T（テーマ追従修正）と色の扱いが近い。Keita が「テーマ追従させる」を選ぶなら T-S/T-T と同じ手法（テーマトークン参照）になるので、**同一 dev-logic がテーマ系（T-R/T-S/T-T/T-J）をまとめて見る**と一貫性が出る。
 
-### T-K — ジャーナルのグラフ tap で詳細展開　[P2 / TODO（スコープ要確認）]
+### T-K — ジャーナルのグラフ tap で詳細展開　[P2 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - 依頼原文（Keita 2026-05-28）: 「ジャーナルのグラフをタップすると詳細が分かるようになってほしい」。
 - 想定スコープ: ジャーナルの統計グラフ（気分推移/週次集計などのチャート）の要素をタップすると、その日/その項目の詳細（該当エントリ・内訳）が展開表示される。現状グラフは表示のみでインタラクションが無い（要確認）。
@@ -1361,7 +1361,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
   - テスト: tap→詳細展開は E2E ハッピーパス向き（ただしグラフ tap 座標依存なので要素 testid 推奨）。
   - 永続化: 表示だけなら新規 persist 不要（既存エントリを読むだけ）。
 
-### T-L — Daily Fermi の答えを解説の最後に移す　[P2 / TODO]
+### T-L — Daily Fermi の答えを解説の最後に移す　[P2 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - 依頼原文（Keita 2026-05-28）: 「フェルミの答えは解説の最後でいい」。
 - 想定スコープ: Daily Fermi（今日の1問）で、答え（推定値/正解レンジ）の表示位置を**解説の最後**に移す。現状は解説より前 or 冒頭に答えが出ている想定（要確認）。＝表示順の入れ替えのみの軽い要望。
@@ -1400,7 +1400,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 | T-P | ジャーナルの×ボタンを拡大＋左上「編集」ボタンと距離を離す（誤タップ防止） | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。モバイル実機での押しやすさ確認のみ任意で残） | dev-logic | T-N/T-O と同ファイル・セット1バッチ |
 | T-Q | 画像アップロードで画像が一瞬消える＋進捗可視化 | P1 | DONE（既に本番。同内容が 2026-05-24 commit 7705b12 として main に入っており昨日以前から本番稼働中と判明。新規マージ不要・重複ブランチ feat/journal-image-upload-progress〔acdc59e〕は破棄可） | dev-logic（既実装）| 既に本番（commit 7705b12, 2026-05-24） |
 
-### T-M — 「体力をつける」コースを作る　[P1 / IN_PROGRESS（サンプル承認＋本展開ゴーサイン取得・全5レッスン制作中）]
+### T-M — 「体力をつける」コースを作る　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - ✅ 進捗（2026-05-29 朝）: **サンプル承認＋本展開ゴーサイン取得**。content-creator が全5レッスン（440-444）の **ja/en フル本文制作に着手**（出力先 `docs/COURSE_STAMINA_FULL_20260529.md`）。logic-coach 監査の **C-1 / C-3 / C-4 / S-1 / S-2 / D-1 を反映指示済み**。次工程は dev-logic によるコード実装、その後 **444（子育て）の logic-coach 再監査ゲート必須**、テスト、デプロイ。
 - ✅ 進捗（2026-05-28 深夜・サンプル段階）: content-creator が コース構成案＋サンプルレッスン441のフル本文ドラフトを作成（成果物 `docs/COURSE_STAMINA_DRAFT_20260528.md`）。logic-coach 監査 4.3/5「サンプル承認に進めてよい品質」→ 翌朝 Keita ゴーサインで本展開へ。
@@ -1685,7 +1685,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 永続化: 表示色のみで persist 影響なし。
   - ⚠T-V との統合: sepia/forest は T-V のテーマ再設計で刷新・差し替えの可能性（mono は T-R で削除済み）。**T-V のパレット選定後に T-T を実装**すれば、刷新後のモードブロックに対して `--brand-grad-h` override を入れられる（先に直すと T-V 実装で二度手間になる）。T-R/T-S/T-T/T-U/T-J ＋ 新タスク T-Y（習熟色バッジ）を T-V 統合で一括実装。
 
-### T-U — コントラスト/可読性 整合性チェック　[P1 / 再オープン（2026-05-30 スコープ拡大）]
+### T-U — コントラスト/可読性 整合性チェック　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 状態（2026-05-30 Keita 決定で再オープン・スコープ拡大）: 旧 DONE（2026-05-29 commit 36d08aa）で「accent ボタンだけ専用トークン #2E45A8 で 8.29:1 確保」した対処は**残置**。これに加え、Keita が **ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向**に決定。従来の「ボタンだけ別トークン」対症療法ではなく、ブランド色の根本見直し。
 > フロー: **designer が新ブランド青パレット案 2〜3 案＋全テーマ AA 検算**を作成 → **Keita 選定** → **dev-logic 実装**。新規採番でも可だが、T-V（テーマ再設計エピック）と**同じトークン（theme.ts / tokens.css）を触るため統合実装が筋**（重複作業・コンフリクト回避）。
@@ -1717,7 +1717,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 永続化: 不要（検証 + 色調整のみ）。
   - 再発防止: 検証結果を基準値として残し、T-V 再設計や新画面追加時に同じマトリクスで回せるようにする（recurring 化の余地）。
 
-### T-V — テーマ再設計エピック（数パターン追加・UI設計刷新・カスタマイズしやすく）　[P1 / 部分 DONE（配色 DONE／UI 刷新は AM-K で継続）]
+### T-V — テーマ再設計エピック（数パターン追加・UI設計刷新・カスタマイズしやすく）　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）（配色は実装済・残りUI刷新を停止）]
 
 > 状態（2026-05-29 commit d0558cb）: 配色実装パート＝新規3テーマ indigo/rose/slate を MODES＋tokens.css＋tokens-m3.css＋i18n(ja/en) に追加 DONE（THEME_PALETTE_CANDIDATES_v2 §2 採用）。**残る「UI 設計刷新・数パターン展開」は AM-K（UI 全体刷新方針）の親エピックへ移管して継続**＝T-V 単独では配色まで完了。
 
@@ -1758,7 +1758,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
   - 両OS: モバイル専用。Android 実機で全パレット確認（theme-color meta 含む）。
   - 統合の効率: T-R/T-S/T-T/T-U/T-J/T-Y を T-V 実装に巻き込むことで、theme.ts / tokens.css / AppearanceSettings / i18n / 色トークンを1回の作業で触れる（個別に何度も触らない）。同一 dev-logic 一気通貫。
 
-### T-W — 「あなた専用コース」セクションの展開/折りたたみ　[P1 / TODO（T-M 完了後着手・T-V 系から独立）]
+### T-W — 「あなた専用コース」セクションの展開/折りたたみ　[P1 / CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 - 依頼原文（Keita 2026-05-29）: 「あなた専用コース（AIカスタムコース）も展開・閉じるできるようにして。常時表示だと煩わしい」。
 - スコープ: `RoadmapScreenV3` のパーソナル/カスタムコース表示部（「あなた専用コース」セクション）に、**T7 で実装済みのカテゴリ開閉トグルと同じ折りたたみ機構を適用**する。デフォルトは**折りたたみ**（常時表示をやめる）。
@@ -1935,7 +1935,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 永続化: 不要（表示のみ）。
   - 着手順: T-AA の全体刷新方針を待たずに先行可（軽い確実枠）。ただしフラット色は T-AA/T-V のトンマナに合わせる。
 
-### T-AA — UI 全体の「AIっぽさ」をなくす刷新方針　[→ AM-K に集約（重複）／現況 IN_PROGRESS]
+### T-AA — UI 全体の「AIっぽさ」をなくす刷新方針　[→ AM-K に集約（重複）／CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 集約注記: 朝の AM-K と同一依頼。正本 = AM-K（designer が `docs/UI_RENEWAL_DIRECTION_20260529.md` 作成中、配色 T-V は DONE）。本セクションは二重トラッキングせず AM-K に従う。以下は元の構造化メモ（参考）。
 
@@ -1959,7 +1959,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 両OS: モバイル専用。実装段階で Android 実機確認。
   - Internal 配信: 方針フェーズは配信なし（ドキュメント）。実装段階のフロント変更は main push で Android 自動配信可。段階的に小さく出す。
 
-### T-AB — 利用規約／プライバシーポリシー／特商法表記の見直し　[→ AM-N に集約（重複）／現況 BLOCKED]
+### T-AB — 利用規約／プライバシーポリシー／特商法表記の見直し　[→ AM-N に集約（重複）／CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 集約注記: 朝の AM-N と同一依頼。正本 = AM-N（点検 DONE＝`docs/LEGAL_REVIEW_20260529.md`、最重要 C-1＝特商法価格が実装と不一致、確定値12点が Keita 待ち）。二重トラッキングせず AM-N に従う。以下は元の構造化メモ（参考）。
 
@@ -1991,7 +1991,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - 永続化: 静的文書なら persist 不要。バージョン/改定日を文書内に持つ運用は検討余地。
   - Internal 配信: 文言確定後のフロント反映は main push で Android 自動配信可。ただし**確定前に配信しない**（暫定文言を本番に出さない）。
 
-### T-AC — 料金プランの Google Play 課金を実装　[→ AM-O に集約（重複）／現況 BLOCKED]
+### T-AC — 料金プランの Google Play 課金を実装　[→ AM-O に集約（重複）／CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 集約注記: 朝の AM-O と同一依頼。正本 = AM-O（PricingScreen が startCheckout に結線済＝コード DONE、残は Keita の Play Console SKU Active 登録＋実機テスト）。二重トラッキングせず AM-O に従う。以下は元の構造化メモ（参考）。
 
@@ -2087,7 +2087,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - Internal 配信: frontend（虫眼鏡/検索 UI）は main push で Android 自動配信可。AI backend route は別途手動デプロイ。
 - 管理メモ: T-AE は T-X の重複なので、以後は **T-X を正本**として進め、T-AE 行は「#7 依頼の受け皿＝T-X 本格化のトリガー」として残す（二重トラッキングしない）。
 
-### T-AF — 既存ユーザ（Keita 想定）のジャーナルタグを見直し　[→ AM-R に集約（重複）／現況 BLOCKED]
+### T-AF — 既存ユーザ（Keita 想定）のジャーナルタグを見直し　[→ AM-R に集約（重複）／CANCELLED（2026-06-07 Keita 指示・Logic ボード全停止）]
 
 > 集約注記: 朝の AM-R と同一依頼。正本 = AM-R（林の census 済＝e5631320… が 60使用/52種類、統合プレビュー提示済、DB 書き換えは Keita 承認待ち）。二重トラッキングせず AM-R に従う。以下は元の構造化メモ（参考）。
 
@@ -2471,10 +2471,10 @@ Keita から Logic ブロッカー6件の判断を取得。各タスクへ反映
 ### 判断反映サマリ
 | タスク | 旧状態 | 新状態 | 反映内容 |
 |--------|--------|--------|----------|
-| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | BLOCKED（2026-06-07 17:55 JST 本番デプロイ承認 req-1fefb5c3 を Keita が REJECTED→走行は実施せず保留。未 push コミットなし／本番への先行反映もなし。Keita の却下理由・再開条件待ち。後続 DF-4/5/6 も DF-3 完了前提のため待機継続。直前状態: email エイリアス確認済・走行準備完了） | 林 | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com` で本番マジックリンク実受信実装・走行準備済（Keita 却下で保留中） |
+| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | CANCELLED 🔒[Keita] | 林 | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com` で本番マジックリンク実受信実装・走行準備済（Keita 却下で保留中） |
 | AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | DONE（2026-06-07 17:47 JST 本番 push 承認 req-b615a393 APPROVED→Masayoshi 確認対応。コミット 068a78e/fc22197 は am-n-tokushoho-confirmed-values→main マージ（991a869）で既に origin/main 同期済（local==origin==a46989a）。Render 本番反映を実機確認：https://logic-u5wn.onrender.com/tokushoho.html HTTP200・「年額のみ7日間無料トライアル・¥2,450/年・月額トライアルなし」記載 live、en も同等。tsc 0/eslint . 0。AM-O 課金実態（トライアルは年額のみ）と整合。） | dev-logic（HTML反映） | 確定値: アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2450・電話非掲載/開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Googleログイン記述削除済。AM-O 課金実態と整合必須（トライアルは年額のみ・Play Console Offer と整合） |
 | AM-R | BLOCKED | DONE | dev-logic が 2026-05-30 本番 DB 書き換え実行完了。固有タグ41→36種・9統合・誤統合ゼロ・他ユーザー波及ゼロ。snapshot `public._backfill_journal_tags_20260530`〔15行〕＋undo SQL 保持中、安定確認後 DROP 可 |
-| T-U | DONE | 再オープン（スコープ拡大） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
+| T-U | DONE | 再オープン（スコープ拡大） | CANCELLED 🔒[Keita] |
 | AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 ) | DONE 🔒（2026-06-07 Keita 承認 req-4296654b で完了確定＋ロック。SKU 登録済・コード結線 DONE。🔒＝以降 reconcile/keeper/guard は変更・差し戻し禁止。実機購入ハッピーパス検証は test-functional に別途依頼） | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
 | T-H | BLOCKED（保留） | 公開戦略確定 | 「今の最新ビルドで先に公開、DF-F 系 P0 改善は公開後アップデート」。T-G スモーク・T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要〕→Production promote（Keita 手動） |
 
