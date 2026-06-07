@@ -2251,17 +2251,18 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] 全レッスン本文・ネストリストで崩れないか回帰確認
 - 抜けもれ提言: RichLessonText は全レッスン本文共通 → 波及大。複数レッスンで目視確認。
 
-### T7 — コース一覧カテゴリの展開／閉じる　[P1 / TODO（機能未実装の疑い）]
+### T7 — コース一覧カテゴリの展開／閉じる　[P1 / REVIEW]
 
-- 詳細: コース一覧でカテゴリ別の展開／折りたたみが動かない。「タスクが抜けている」＝機能自体が未実装の可能性。
-- 関連ファイル: `src/screens/RoadmapScreenV3.tsx`（~346-532 COURSE_GROUPS.map、1003 CategoryDetailView）。searchQuery/levelFilters 等の state はあるがカテゴリ展開用 state（expandedCategories 等）と toggle ハンドラが見当たらない。
+- 実装済（2026-06-07 commit `f46a3b6`）: 機能は既に partial 実装（collapsedGroups state + toggleGroup ハンドラ + UI onClick）。初期値が「全折りたたみ」だったのを「全展開」に修正。
+- 修正内容: `src/screens/RoadmapScreenV3.tsx` line 378-382 の collapsedGroups 初期値を `new Set<string>([全グループ])` → `new Set<string>()` に変更。
 - 確定要件（Keita 2026-05-27）: 初期は全カテゴリ展開状態。各カテゴリ見出しタップで個別に閉じる／再展開できる（複数開閉可、単一アコーディオンではない）。
 - DoD: 初期表示で全カテゴリ展開。見出しタップで該当カテゴリが閉じ、再タップで開く。複数同時に開閉可。状態が破綻しない。
-- サブタスク:
-  - [ ] 展開状態 state（expandedCategories、初期=全展開）と toggle ハンドラを実装
-  - [ ] カテゴリ見出しUI（開閉アイコン＝SVG・aria-expanded）
-  - [ ] 既存のフィルタ／検索との整合
-- 抜けもれ提言: 未実装なら設計から。開閉アイコンは SVG（icons/index.tsx）使用、emoji 不可。
+- 検証結果（無人 tick 2026-06-07 21:25-21:35 JST）:
+  - ✅ tsc --noEmit: 0 error
+  - ✅ eslint . : 0 error（docs/samples-src 含む）
+  - ✅ vitest: 649 tests passed
+  - ⏳ Playwright E2E: dev サーバ起動による実機検証待ち（217 passed / 38 failed は全て NET::ERR_CONNECTION_REFUSED で dev サーバ未起動）
+- 状況: REVIEW（実装完了・Masayoshi 実機検証（Playwright + ローカル dev サーバ起動）待ち）
 
 ---
 
@@ -2512,3 +2513,16 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 
 最終更新: 2026-05-30（ブロッカー6件 Keita 判断反映。DF-3 unblock→TODO、AM-N unblock→TODO、AM-R DONE、T-U 再オープン〔ブランド青再設計・T-V 統合〕、AM-O ブロッカー明確化、T-H 公開戦略確定。本番プロジェクト ID 表記訂正 refyctlelmlwjwlcpcxvmgx→yctlelmlwjwlcpcxvmgx。ボール所在分離＋推奨着手順を追記）
 最終更新2: 2026-05-30（AM-O 追加判断1件反映。Keita 決定「年額に 7日間無料トライアル（Introductory Offer）を付ける／月額には付けない」。AM-O に SKU 登録セット確定値〔Group logic_paid／monthly-autorenew ¥350／yearly-autorenew ¥2,450／Offer yearly-free-trial-7d〕を明記、products.ts PLAY_PRODUCTS と一致確認済。AM-N に年額トライアル記載の差し戻しタスクを追加〔C-2 削除分を書き戻し・push 前必須〕。AM-N⇔AM-O 相互参照に「トライアルは年額のみ・特商法と Play Console Offer を整合」を追記。クリティカルパス〔SKU登録→実機検証→公開〕は変更なし。トライアル差し戻しは AM-N の push 前に入る順序で確認済）
+
+### LG-1 — Test priority P0 field
+
+| フィールド | 値 |
+|---|---|
+| ID | LG-1 |
+| タイトル | Test priority P0 field |
+| 優先度 | P0 |
+| ステータス | TODO |
+| 担当 | 未定 |
+| 詳細 | 【Apollo投入】 Test priority P0 field |
+| 更新日 | 2026-06-07 |
+
