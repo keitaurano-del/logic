@@ -231,7 +231,7 @@ ID 採番: 既存 DF-F1〜F21（前回 Phase3 ラウンド）と衝突しない 
 | FB-34 | 「フェルミに挑戦する」CTA(AF-01)をもっと小さく右寄せ・控えめに | P3 | DONE（2026-06-03 Keita 指示で REVIEW 一括完了。実装・本番反映済。元REVIEWメモ: 2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・調整 |
 | FB-35 | 「学ぶ」画面上部の検索を右上アイコンに格納（デフォルト非表示） | P2 | DONE（2026-06-03 Keita 指示で REVIEW 一括完了。実装・本番反映済。元REVIEWメモ: 2026-06-03 実装・本番反映済。統合ブランチ→main `851ec53` push・Render run26857583496・Android run26857579669・tsc0/eslint0/vitest620pass。実機目視残＝Keita ドッグフィードバック確認） | dev-logic | UX・情報整理 |
 | FB-36 | 全体的な動作の遅さ改善（特にフェルミランキングが毎回読込に数秒。キャッシュ/初回描画/不要再取得の最適化） | P2 | DONE（2026-06-03 実装・本番反映済 `851ec53`・テスト担保。フェルミランキングをSWRキャッシュ化＝前回値即描画で体感即時。根因=サーバ2往復+cold start） | dev-logic | パフォーマンス |
-| FB-38 | Play Store 掲載情報を最新化（説明文・スクショ・アイコン等、古いまま放置）。草案: Apollo 成果物「PlayStore掲載文_草案_2026-06-04.md」 | P1 | TODO（2026-06-04 Keita「デフォルトのストアの掲載情報も古いままだから更新しないといけない」。Keita 確認後にスクショ自動生成→Play Console 登録） | 林（草案作成済）+ Keita（Play Console 登録） | リリース |
+| FB-38 | Play Store 掲載情報を最新化（説明文・スクショ・アイコン等、古いまま放置）。草案: Apollo 成果物「PlayStore掲載文_草案_2026-06-04.md」 | P1 | CANCELLED | 林（草案作成済）+ Keita（Play Console 登録） | リリース |
 | FB-39 | Play Store の掲載情報に載っている Keita の個人情報を非表示にする | P0 | CANCELLED | Keita（Play Console 操作）+ 林（手順案内・REVIEW検証 完了） | セキュリティ・プライバシー |
 | FB-37 | デイリーフェルミのフィルタで各選択肢の件数（それぞれいくつあるか）を非表示にする | P3 | DONE（2026-06-03 実装・push済み・本番反映済 run26861643743。難易度/分野チップの件数span削除・countAvailableWithFilterは0件判定で残置・未使用CSS削除。tsc0/eslint0/vitest620） | dev-logic | UX・情報整理 |
 | MB-1 | 指標ダッシュボードを立ち上げる（Supabaseネイティブで代替・Metabase不要に方針転換） | P1 | DONE（2026-06-03 Supabaseネイティブで立ち上げ完了。daily_activity 稼働でDAU/WAU/MAU・継続率コホート、subscriptions で課金/プラン、profiles で登録推移/属性が SQL Editor で取得可能。SQL は会話展開済＋supabase/sql/dashboards/。Reportsチャート化は任意follow） | 林（SQL整備・誘導）+ Keita（SQL Editor貼付） | 指標基盤 |
@@ -3038,7 +3038,7 @@ Keita から Logic ブロッカー6件の判断を取得。各タスクへ反映
 | AM-N | BLOCKED | DONE（2026-06-01 本番反映完了: main merge `1eebc22`→push→deploy-production.yml run 26743434702 success＋android-deploy.yml run 26743432158 success。tsc green/eslint . 0 error。本番で tokushoho ja/en・削除→account-deletion リダイレクト確認） | 法的確定値が全揃い（アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2,450・電話非掲載＋開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Google ログイン記述削除済）。dev-logic が LEGAL_REVIEW §5 ＋確定値を HTML〔5文書×ja/en・削除系一本化で減〕に反映、`【要Keita確認:...】`マーカー置換。**＋2026-05-30 追加: 年額トライアル記載の差し戻し（C-2 で削除した「7日間無料トライアル」を「年額のみ・初回限定・7日無料・8日目以降¥2,450/年自動課金・期間中解約で課金なし」＋月額トライアル無し明記で書き戻し、AM-O Offer `yearly-free-trial-7d` と整合）を push 前に必ず含める**。2026-06-01 Keita が本番 push を承認＝dev-logic が main merge→デプロイ実行中。完了報告で DONE 化（AM-N は据え置き REVIEW、二重操作回避） |
 | AM-R | BLOCKED | DONE | dev-logic が 2026-05-30 本番 DB 書き換え実行完了。固有タグ41→36種・9統合・誤統合ゼロ・他ユーザー波及ゼロ。snapshot `public._backfill_journal_tags_20260530`〔15行〕＋undo SQL 保持中、安定確認後 DROP 可 |
 | T-U | DONE | BLOCKED（再オープン・スコープ拡大＝Keita パレット選定待ち） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
-| AM-O | DONE 🔒 | DONE 🔒（2026-06-07 Keita承認 req-4296654b 完了確定・ロック） | コード結線 DONE。SKU 登録セット確定（Group `logic_paid`／月額 `logic_paid_monthly`・Base Plan `monthly-autorenew`・¥350・トライアル無し／年額 `logic_paid_yearly`・Base Plan `yearly-autorenew`・¥2,450／**年額に Introductory Offer `yearly-free-trial-7d`＝初回限定・無料7日→¥2,450/年。月額には付けない**。Product ID は `src/billing/products.ts` PLAY_PRODUCTS と一致確認済）。残＝Keita が Play Console で一字一句一致で Active 登録。SKU Active 後に dev-logic/test-functional が実機購入ハッピーパス検証（キャンセル/失敗/restore＋トライアル年額の無料→課金分岐） |
+| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 | DONE 🔒（2026-06-07 Keita 承認 req-4296654b で完了確定＋ロック。SKU 登録済・コード結線 DONE。🔒＝以降 reconcile/keeper/guard は変更・差し戻し禁止。実機購入ハッピーパス検証は test-functional に別途依頼） | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
 | T-H | BLOCKED（保留） | 公開戦略確定 | 「今の最新ビルドで先に公開、DF-F 系 P0 改善は公開後アップデート」。T-G スモーク・T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要〕→Production promote（Keita 手動） |
 
 ### 台帳訂正（2026-05-30）
@@ -3092,10 +3092,10 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ステータス | DONE（2026-05-31 test-functional 内部検証。結線○: 独立画面 `src/screens/FontSizeSettingsScreen.tsx` 実在(DF-F2 機能本体を移植・`setFontScale` で `logic-font-scale` 永続化を非破壊利用)、`AppV3.tsx:34/119/145/670/715-716` で Screen union+lazy import+render case+navigate+URL preview 'fontsize' 結線、`ProfileScreenV3.tsx:255-256` でテーマ行直後に文字サイズ独立行を新設(`getFontSizeLabel()` で現在サイズを sub 表示・`onOpenFontSize` 結線)、AppearanceSettingsScreen は文字サイズセクション削除でテーマのみに。i18n `profile.fontSize`/`fontSizeSettings.title` ja+en 揃い・中立丁寧体。Keita 明示依頼「テーマとは別だしに」の直解釈実装＝配置改善で機能本体非破壊。main反映済 `8066d9a`。tsc0/eslint.0/vitest440pass。残＝両OS実機目視は Keita 確認不要方針で DONE 化。**2026-05-31 自律ティック(林)**: 前ティックで未コミットだった回帰テスト `src/__tests__/UI28.fontSizeSeparation.test.ts`（18ケース・ソース静的検査で全結線を恒久ロック）を検証＝単体18pass・tsc0/eslint.0err(warn19既存)/vitest 28files460pass green、commit `f92dc80`→push origin/main。test-only＝本番バンドル不変のため deploy 不要） |
 | 実装記録 | 対象＝`DailyFermiScreen.tsx` idle 解答エリア。submit ボタン(`dailyFermi-submit-btn`)を `var(--brand)/--accent-fg`→`var(--accent-btn)/--accent-btn-fg`＋`--shadow-cta`＋flex1.4/weight800 で高コントラスト主役化（dark で旧 `--brand`=#6C8EF5 白文字3.08:1→濃紺 `--accent-btn` 白文字8.29:1）。disabled 背景の未定義 `--bg-muted`→`--bg-tertiary` に是正（潜在バグ修正）。電卓ボタンのハードコード `#FFFFFF`→`var(--accent-fg)`。AF-02(HomeScreenV3) とは別画面で重複なし。tsc0/eslint.0err/vitest430pass green。commit `(下記)`→本番 deploy。 |
 | 担当 | dev-logic, designer |
-| 詳細 | フェルミの「1問」モードのボタンが見づらい。添付画像のように見やすくする。添付画像（実装時に Read で確認）: `/home/dev/projects/cxo-agent/data/inbox-attachments/2026-05-31T02-39-24-703Z-6238b74a/3064.png` |
+| 詳細 | Keita 依頼（Apollo inbox af657450）「文字サイズの変更はテーマとは別だしにして。気づかないから」。現状、文字サイズ設定（標準/大/特大、DF-F2 で実装済・DONE）がテーマ設定（外観設定）の中に埋もれており、ユーザーに気づかれない。文字サイズ設定をテーマ設定とは独立した目立つ場所に出す。設定画面の項目独立化、または オンボーディング/ホームからの導線追加。機能本体は実装済みなので、本件は「発見性・配置」の改善であり機能の新規実装ではない。 |
 | 関連 | `src/screens/FermiRankingScreen.tsx`（1問モード該当画面は着手時に特定）, `src/i18n.ts` |
 | 受け入れ条件 | 1問モードのボタンが添付画像の意図どおり視認しやすくなり、両OS（iOS/Android）で確認済み |
-| 依存 | なし（AF-04 のメニューCTAとは別画面の可能性。重複か別物か着手時に要確認） |
+| 依存 | DF-F2（文字サイズ設定機能本体・DONE、`a380c83`+`0e77a79`+`3a588dc`）。機能は既存なので本件は配置・発見性の改善。DF-F2 follow-up として提案されていた「文字サイズ設定の発見性」観点（本台帳 line 54・207）の実体化。p17 も DF-F2 へ寄せ済みで本件と同根だが、p17＝機能不在の訴え、本件＝配置改善の Keita 明示依頼で、機能本体（DF-F2）とはスコープが別のため新規起票（DF-F2 へは寄せない）。 |
 | 提言・抜けもれ | UI-14(DONE: メニューCTAを白背景青字)・AF-04(メニューからの導線CTA)はいずれも「フェルミメニュー画面」のCTA。本件は「1問モードの解答ボタン」で別画面の可能性が高い。着手時に対象画面を特定し、UI-14/AF-04 と重複なら本票を寄せる。ハードコードhex禁止・CSS変数使用・UI chromeにemoji不可(SVGのみ)。ボタン文言は中立的丁寧体を維持。 |
 | 次アクション | dev-logic/designer が添付画像を Read → 対象画面（1問モード）特定 → UI-14/AF-04 との重複判定 → 改善実装 |
 | 更新日 | 2026-05-31 |
@@ -3113,7 +3113,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | 関連ファイル | `src/screens/AppearanceSettingsScreen.tsx`（現状の文字サイズ設定UI・DF-F2 で実装済／別出しの起点）、`src/fontScale.ts`（スケール適用ロジック・既存）、`src/theme.ts`（永続化・適用）、`src/i18n.ts`（独立項目のラベル ja/en）、設定画面の構成（独立メニュー項目を足す場合）、ホーム/オンボーディングの導線（追加する場合） |
 | 受け入れ条件 | 文字サイズ変更がテーマ設定から分離され、ユーザーが見つけやすい独立した場所にある（設定画面の独立項目 or ホーム/オンボーディング導線）。両OS（iOS/Android）で確認済み。 |
 | 依存 | DF-F2（文字サイズ設定機能本体・DONE、`a380c83`+`0e77a79`+`3a588dc`）。機能は既存なので本件は配置・発見性の改善。DF-F2 follow-up として提案されていた「文字サイズ設定の発見性」観点（本台帳 line 54・207）の実体化。p17 も DF-F2 へ寄せ済みで本件と同根だが、p17＝機能不在の訴え、本件＝配置改善の Keita 明示依頼で、機能本体（DF-F2）とはスコープが別のため新規起票（DF-F2 へは寄せない）。 |
-| 提言・抜けもれ | (1) DF-F2/p17 との重複は確認済＝機能本体は DF-F2、本件は配置・発見性で別スコープ。(2) i18n: 独立項目のラベル・説明文を `src/i18n.ts` の ja/en 両方に追加。(3) UI chrome 制約: 中立的丁寧体（〜です/〜ます）、ハードコード hex 禁止・CSS 変数使用、意味を担うアイコンは SVG（`src/icons`）のみで emoji 不可。(4) 回帰: 外観設定から文字サイズを分離する際、DF-F2 の保存/適用フロー（fontScale）が壊れないこと（test-functional で全テーマ×3サイズ横断を確認）。(5) 永続化: 設定値の保存・再表示は DF-F2 既存（`logic-font-scale`）を流用、別出ししても保存先は変えない。(6) 配置方式（設定独立項目 / ホーム導線 / オンボーディング）は UX 判断なので designer が案出し→Keita 確認が望ましい。 |
+| 提言・抜けもれ | UI-14(DONE: メニューCTAを白背景青字)・AF-04(メニューからの導線CTA)はいずれも「フェルミメニュー画面」のCTA。本件は「1問モードの解答ボタン」で別画面の可能性が高い。着手時に対象画面を特定し、UI-14/AF-04 と重複なら本票を寄せる。ハードコードhex禁止・CSS変数使用・UI chromeにemoji不可(SVGのみ)。ボタン文言は中立的丁寧体を維持。 |
 | 次アクション | designer(UX) が別出し配置案（設定独立項目案／ホーム・オンボーディング導線案）を提示 → Keita 確認 → dev-logic が分離実装（DF-F2 の保存/適用は非破壊）→ i18n ja/en・両OS確認・回帰検証 |
 | 更新日 | 2026-05-31 |
 
@@ -3126,11 +3126,11 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | 優先度 | P2 |
 | ステータス | DONE（2026-05-31 test-functional 内部検証。結線○: 独立画面 `src/screens/FontSizeSettingsScreen.tsx` 実在(DF-F2 機能本体を移植・`setFontScale` で `logic-font-scale` 永続化を非破壊利用)、`AppV3.tsx:34/119/145/670/715-716` で Screen union+lazy import+render case+navigate+URL preview 'fontsize' 結線、`ProfileScreenV3.tsx:255-256` でテーマ行直後に文字サイズ独立行を新設(`getFontSizeLabel()` で現在サイズを sub 表示・`onOpenFontSize` 結線)、AppearanceSettingsScreen は文字サイズセクション削除でテーマのみに。i18n `profile.fontSize`/`fontSizeSettings.title` ja+en 揃い・中立丁寧体。Keita 明示依頼「テーマとは別だしに」の直解釈実装＝配置改善で機能本体非破壊。main反映済 `8066d9a`。tsc0/eslint.0/vitest440pass。残＝両OS実機目視は Keita 確認不要方針で DONE 化。**2026-05-31 自律ティック(林)**: 前ティックで未コミットだった回帰テスト `src/__tests__/UI28.fontSizeSeparation.test.ts`（18ケース・ソース静的検査で全結線を恒久ロック）を検証＝単体18pass・tsc0/eslint.0err(warn19既存)/vitest 28files460pass green、commit `f92dc80`→push origin/main。test-only＝本番バンドル不変のため deploy 不要） |
 | 担当 | dev-logic |
-| 詳細 | test-functional が UI-27 検証中に発見した副産物バグ。`src/screens/DailyFermiScreen.tsx:257`（電卓 insert ボタンの disabled 背景）と `:438`（AIチャット send ボタンの disabled 背景）に、未定義の CSS 変数 `var(--bg-muted)` が残存している。UI-27 は submit ボタンのみ `--bg-tertiary` へ是正したため、この2箇所は対象外で残った。`--bg-muted` は `src/styles/` 全体に定義が無く（実 grep で 0 件）、disabled 状態の背景色が無効値になる潜在バグ。`tsc`/`eslint` では検出されない（CSS 変数は型チェック対象外）。定義済みの適切な disabled 背景用変数 `--bg-tertiary`（全テーマで `tokens.css` に定義済み）に置換する。 |
+| 詳細 | Keita 依頼（Apollo inbox af657450）「文字サイズの変更はテーマとは別だしにして。気づかないから」。現状、文字サイズ設定（標準/大/特大、DF-F2 で実装済・DONE）がテーマ設定（外観設定）の中に埋もれており、ユーザーに気づかれない。文字サイズ設定をテーマ設定とは独立した目立つ場所に出す。設定画面の項目独立化、または オンボーディング/ホームからの導線追加。機能本体は実装済みなので、本件は「発見性・配置」の改善であり機能の新規実装ではない。 |
 | 関連ファイル | `src/screens/DailyFermiScreen.tsx`（`:257` 電卓 insert disabled、`:438` AIチャット send disabled の2箇所）。置換先 `--bg-tertiary` は `src/styles/tokens.css` で全テーマ定義済み。UI-27 で submit ボタンを `--bg-tertiary` 化した前例と整合。 |
 | 受け入れ条件（DoD） | (1) `DailyFermiScreen.tsx` 内の `--bg-muted` 残存が 0 になる（`grep -n -- "--bg-muted" src/screens/DailyFermiScreen.tsx` で 0 件）。(2) 電卓 insert ボタン・AIチャット send ボタンの disabled 状態が、定義済み変数で適切な背景色で表示される（無効値でない）。(3) tsc0/eslint0、vitest green。(4) 全テーマ（light/dark/その他）で disabled 背景が破綻しないこと。 |
 | 依存 | なし（UI-27 の follow-up＝UI-27 DONE note に「別タスク化推奨」と既記録。UI-27 は submit のみ修正、本件は残り2箇所） |
-| 提言・抜けもれ | (1) リポ全体で `--bg-muted` 他箇所残存が無いか念のため `grep -rn -- "--bg-muted" src/` で確認（現状 DailyFermiScreen の2箇所のみ想定）。(2) UI chrome 制約: ハードコード hex 禁止・CSS 変数使用（本件はまさにその是正）。(3) 回帰: disabled 背景変更は見た目のみ・ロジック非影響だが、全テーマで電卓/AIチャットの disabled が視認できる背景になるか test-functional で確認。(4) 検出漏れの教訓: 未定義 CSS 変数は tsc/eslint をすり抜けるので、置換は定義済み変数一覧（tokens.css）と突き合わせる。 |
+| 提言・抜けもれ | UI-14(DONE: メニューCTAを白背景青字)・AF-04(メニューからの導線CTA)はいずれも「フェルミメニュー画面」のCTA。本件は「1問モードの解答ボタン」で別画面の可能性が高い。着手時に対象画面を特定し、UI-14/AF-04 と重複なら本票を寄せる。ハードコードhex禁止・CSS変数使用・UI chromeにemoji不可(SVGのみ)。ボタン文言は中立的丁寧体を維持。 |
 | サブタスク | - [ ] `:257` 電卓 insert disabled の `--bg-muted`→`--bg-tertiary`<br>- [ ] `:438` AIチャット send disabled の `--bg-muted`→`--bg-tertiary`<br>- [ ] リポ全体 grep で `--bg-muted` 残存 0 確認<br>- [ ] tsc/eslint/vitest green<br>- [ ] 全テーマで disabled 背景の視認性確認 |
 | 次アクション | dev-logic が DailyFermiScreen.tsx の2箇所を `--bg-tertiary` に置換 → grep で残存0確認 → tsc/eslint/vitest → test-functional で全テーマ disabled 表示確認 |
 | 更新日 | 2026-05-31 |
@@ -3144,7 +3144,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | 優先度 | P2 |
 | ステータス | DONE（2026-05-31 test-functional 内部検証。結線○: 独立画面 `src/screens/FontSizeSettingsScreen.tsx` 実在(DF-F2 機能本体を移植・`setFontScale` で `logic-font-scale` 永続化を非破壊利用)、`AppV3.tsx:34/119/145/670/715-716` で Screen union+lazy import+render case+navigate+URL preview 'fontsize' 結線、`ProfileScreenV3.tsx:255-256` でテーマ行直後に文字サイズ独立行を新設(`getFontSizeLabel()` で現在サイズを sub 表示・`onOpenFontSize` 結線)、AppearanceSettingsScreen は文字サイズセクション削除でテーマのみに。i18n `profile.fontSize`/`fontSizeSettings.title` ja+en 揃い・中立丁寧体。Keita 明示依頼「テーマとは別だしに」の直解釈実装＝配置改善で機能本体非破壊。main反映済 `8066d9a`。tsc0/eslint.0/vitest440pass。残＝両OS実機目視は Keita 確認不要方針で DONE 化。**2026-05-31 自律ティック(林)**: 前ティックで未コミットだった回帰テスト `src/__tests__/UI28.fontSizeSeparation.test.ts`（18ケース・ソース静的検査で全結線を恒久ロック）を検証＝単体18pass・tsc0/eslint.0err(warn19既存)/vitest 28files460pass green、commit `f92dc80`→push origin/main。test-only＝本番バンドル不変のため deploy 不要） |
 | 担当 | dev-logic |
-| 詳細 | 【Apollo投入】 フェルミランキングの参加者不要 |
+| 詳細 | Keita 依頼（Apollo inbox af657450）「文字サイズの変更はテーマとは別だしにして。気づかないから」。現状、文字サイズ設定（標準/大/特大、DF-F2 で実装済・DONE）がテーマ設定（外観設定）の中に埋もれており、ユーザーに気づかれない。文字サイズ設定をテーマ設定とは独立した目立つ場所に出す。設定画面の項目独立化、または オンボーディング/ホームからの導線追加。機能本体は実装済みなので、本件は「発見性・配置」の改善であり機能の新規実装ではない。 |
 | 更新日 | 2026-05-31 |
 
 
@@ -3157,7 +3157,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | 優先度 | P2 |
 | ステータス | DONE（2026-05-31 test-functional 内部検証。結線○: 独立画面 `src/screens/FontSizeSettingsScreen.tsx` 実在(DF-F2 機能本体を移植・`setFontScale` で `logic-font-scale` 永続化を非破壊利用)、`AppV3.tsx:34/119/145/670/715-716` で Screen union+lazy import+render case+navigate+URL preview 'fontsize' 結線、`ProfileScreenV3.tsx:255-256` でテーマ行直後に文字サイズ独立行を新設(`getFontSizeLabel()` で現在サイズを sub 表示・`onOpenFontSize` 結線)、AppearanceSettingsScreen は文字サイズセクション削除でテーマのみに。i18n `profile.fontSize`/`fontSizeSettings.title` ja+en 揃い・中立丁寧体。Keita 明示依頼「テーマとは別だしに」の直解釈実装＝配置改善で機能本体非破壊。main反映済 `8066d9a`。tsc0/eslint.0/vitest440pass。残＝両OS実機目視は Keita 確認不要方針で DONE 化。**2026-05-31 自律ティック(林)**: 前ティックで未コミットだった回帰テスト `src/__tests__/UI28.fontSizeSeparation.test.ts`（18ケース・ソース静的検査で全結線を恒久ロック）を検証＝単体18pass・tsc0/eslint.0err(warn19既存)/vitest 28files460pass green、commit `f92dc80`→push origin/main。test-only＝本番バンドル不変のため deploy 不要） |
 | 担当 | dev-logic |
-| 詳細 | 【Apollo投入】 学ぶメニュー、の今日どのスキルを鍛える、は不要 |
+| 詳細 | Keita 依頼（Apollo inbox af657450）「文字サイズの変更はテーマとは別だしにして。気づかないから」。現状、文字サイズ設定（標準/大/特大、DF-F2 で実装済・DONE）がテーマ設定（外観設定）の中に埋もれており、ユーザーに気づかれない。文字サイズ設定をテーマ設定とは独立した目立つ場所に出す。設定画面の項目独立化、または オンボーディング/ホームからの導線追加。機能本体は実装済みなので、本件は「発見性・配置」の改善であり機能の新規実装ではない。 |
 | 更新日 | 2026-05-31 |
 
 ---
