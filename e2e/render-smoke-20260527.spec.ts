@@ -134,9 +134,9 @@ test.describe('Render Production スモーク (PR #233 / 2026-05-27)', () => {
     await page.waitForTimeout(600)
     const afterCollapse = await first.getAttribute('aria-expanded')
     console.log(`[T7] aria-expanded before=${before} expand=${afterExpand} collapse=${afterCollapse} headerCount=${headerCount}`)
-    expect(before, 'T7 初期は折りたたみ (FB-26)').toBe('false')
-    expect(afterExpand, 'T7 1 回タップで展開').toBe('true')
-    expect(afterCollapse, 'T7 再タップで折りたたみ').toBe('false')
+    expect(before, 'T7 初期は全展開').toBe('true')
+    expect(afterExpand, 'T7 1 回タップで折りたたみ').toBe('false')
+    expect(afterCollapse, 'T7 再タップで展開').toBe('true')
     expect(fatalOnly(errors), `T7 console errors:\n${errors.join('\n')}`).toEqual([])
   })
 
