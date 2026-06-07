@@ -2521,7 +2521,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | ID | LG-1 |
 | タイトル | Test priority P0 field |
 | 優先度 | P0 |
-| ステータス | TODO |
+| ステータス | CANCELLED 🔒[Keita] |
 | 担当 | 未定 |
 | 詳細 | 【Apollo投入】 Test priority P0 field |
 | 更新日 | 2026-06-07 |
