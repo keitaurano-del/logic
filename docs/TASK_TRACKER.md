@@ -135,7 +135,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F6 — オンボ生年入力の「次へ」無言ブロックを可視化　[P0 / 即実装]
-- 優先度: P0 / ステータス: REVIEW（実装済 `cd05dd3`「生年未入力時に『次へ』を無効化/警告表示」・DF-FV 実効性検証待ち。onboarding E2E が green に戻ったかは DF-FV で確認）/ 担当: dev-logic
+- 優先度: P0 / ステータス: DONE（実装済 `cd05dd3`「生年未入力時に『次へ』を無効化/警告表示」・onboarding age step E2E green 確認 2026-06-07 Playwright 236pass）/ 担当: dev-logic
 - 詳細: オンボーディングの生年入力で「次へ」が無言で押せず、フリーズと誤解される（p01）。disabled の理由表示 or インライン警告を出す。`src/screens/OnboardingScreen.tsx`。UI-13 の onboarding E2E が赤だった同画面（既存バグと連動）。
 - 関連ファイル: `src/screens/OnboardingScreen.tsx`（生年 step・次へボタンの disabled 条件）、`src/i18n.ts`（警告文言 ja/en）
 - DoD: 生年が未入力/不正のとき「次へ」が無言で死なず、インライン警告 or ボタン下の説明で理由が伝わる。有効入力で進める。onboarding E2E が green に戻る。
