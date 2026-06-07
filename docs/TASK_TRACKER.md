@@ -1121,7 +1121,7 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 | DF-1 | Phase 1 ペルソナ20設計 | P1 | DONE | 林 | docs/dogfooding/personas.md。代表6体＝p01/p02/p04/p07/p18/p20 |
 | DF-2a | Phase 2a スキーマ確認＋seed/cleanup スクリプト | P1 | DONE | 林 | scripts/dogfood/、commit 8b39356/1dd17bb。本番 yctlelmlwjwlcpcxvmgx（2026-05-30 訂正: ref プレフィックスは誤記） |
 | DF-2b | Phase 2b 本番投入 | P1 | DONE | 林 | MCP 経由（service_role キー不使用）。users20/fermi117/subs9/feedback20 全件検証一致 |
-| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | TODO（着手可・前提クリア済 2026-05-31） | 林 | 着手時チェック完了＝投入20体の email が `.local`（受信不可）だったので本番DB 20users+20identities を `keita.urano+pNN@gmail.com` に修正・検証済、seed/cleanup/README も追従（commit `3fdc6bf`）。残=実機/エミュでの6体走行本体（headless 不可・Keita 手元 or Android emulator が要る） |
+| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | IN_PROGRESS（2026-06-07 林ティック着手・セットアップgreen確認） | 林 | 着手時チェック完了＝投入20体の email が `.local`（受信不可）だったので本番DB 20users+20identities を `keita.urano+pNN@gmail.com` に修正・検証済、seed/cleanup/README も追従（commit `3fdc6bf`）。残=実機/エミュでの6体走行本体（headless 不可・Keita 手元 or Android emulator が要る）。2026-06-07: ビルド/test649pass/lint green・前提再確認完了。次=実機テスト実行待ち（Keita） |
 | DF-4 | Phase 4 負荷計測 | P2 | TODO（未着手・DF-3 走行完了が前提のため待機） | 林 | サーバ負荷の計測 |
 | DF-5 | Phase 5 アプリ内フィードバック | P1 | TODO（未着手・DF-3 走行完了が前提のため待機） | 林 | 代表6体の使用フィードバックを起票 |
 | DF-6 | Phase 6 集約 | P1 | TODO（未着手・DF-5 完了が前提） | 林 | UI/機能改善の起票へ集約 |
