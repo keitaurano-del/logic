@@ -629,9 +629,9 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 | DF-2a | Phase 2a スキーマ確認＋seed/cleanup スクリプト | P1 | DONE | 林 | scripts/dogfood/、commit 8b39356/1dd17bb。本番 yctlelmlwjwlcpcxvmgx（2026-05-30 訂正: ref プレフィックスは誤記） |
 | DF-2b | Phase 2b 本番投入 | P1 | DONE | 林 | MCP 経由（service_role キー不使用）。users20/fermi117/subs9/feedback20 全件検証一致 |
 | DF-3 | Phase 3 代表6体フル UI 走行 | P1 | BLOCKED（2026-06-07 17:55 JST 本番デプロイ承認 req-1fefb5c3 を Keita が REJECTED→走行は実施せず保留。未 push コミットなし／本番への先行反映もなし。Keita の却下理由・再開条件待ち。後続 DF-4/5/6 も DF-3 完了前提のため待機継続。直前状態: email エイリアス確認済・走行準備完了） | 林 | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com` で本番マジックリンク実受信実装・走行準備済（Keita 却下で保留中） |
-| DF-4 | Phase 4 負荷計測 | P2 | 未着手 | 林 | サーバ負荷の計測 |
-| DF-5 | Phase 5 アプリ内フィードバック | P1 | 未着手 | 林 | 代表6体の使用フィードバックを起票 |
-| DF-6 | Phase 6 集約 | P1 | 未着手 | 林 | UI/機能改善の起票へ集約 |
+| DF-4 | Phase 4 負荷計測 | P2 | DONE（2026-06-07 18:00 JST Keita 指示でボードクローズ。実態は未着手・DF-3 走行前提のため未実施。完了ではなくボード整理。DF-3 再開時に再起票） | 林 | サーバ負荷の計測 |
+| DF-5 | Phase 5 アプリ内フィードバック | P1 | DONE（2026-06-07 18:00 JST Keita 指示でボードクローズ。実態は未着手・DF-3 前提。完了ではなくボード整理。再開時に再起票） | 林 | 代表6体の使用フィードバックを起票 |
+| DF-6 | Phase 6 集約 | P1 | DONE（2026-06-07 18:00 JST Keita 指示でボードクローズ。実態は未着手・DF-3 前提。完了ではなくボード整理。再開時に再起票） | 林 | UI/機能改善の起票へ集約 |
 
 ### DF-1 — Phase 1 ペルソナ20設計　[P1 / DONE]
 - 詳細: 20ペルソナを設計し `docs/dogfooding/personas.md` に定義。フル UI 走行する代表6体＝p01/p02/p04/p07/p18/p20 を選定。
@@ -948,7 +948,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | T-E | Obsidian vault 最新化＋日次更新の仕込み化 | P1 | DONE（2026-06-07 完了：(a)✅Daily Note 追従完了(b)一部(c)✅日次自動生成実装完了。morning-briefing.sh 統合・毎日 07:00 自動生成稼働・2026-06-02～本日検証 green。(d) recurring は task-manager/apollo-keeper 委譲） | ceo（実装完了）+ task-manager/apollo-keeper（recurring） |
 | T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | DONE（2026-05-29 Vultr 新箱「Claude Code Server 2」の非root `dev` ユーザへ cron 3本移設で解決。root の `claude -p` が skip-permissions ガードで弾かれていたのが空振りの正体。dev で3本とも実走グリーン→obsidian-vault push 成功。Supabase は service_role 直curl化。現箱 cron は二重push回避でコメントアウト。詳細は memory project-vultr-second-server） | ceo（自分のスクリプト群） |
 | T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | DONE（2026-05-29 main マージで config 本番反映。playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消。night-patrol 実走確認のみ次回夜間に残） | dev-logic / test-smoke |
-| T-H | Logic Android Production 公開 | P1 | 公開戦略確定（2026-05-30 Keita「今の最新ビルドで先に公開、P0 改善は公開後アップデート」）。T-G スモーク/T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要・content-creator or marketing〕→Production promote（Play Console 手動・Keita） | Keita（SKU登録・promote）＋dev-logic/test-functional（実機検証）＋要アサイン（リリースノート） |
+| T-H | BLOCKED（保留） | 公開戦略確定 | 「今の最新ビルドで先に公開、DF-F 系 P0 改善は公開後アップデート」。T-G スモーク・T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要〕→Production promote（Keita 手動） |
 
 ### T-A — フェルミ「今日の1問」とタップ後がズレる　[P0 / DONE]
 
@@ -1567,7 +1567,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 | T-R | 死にテーマ削除（custom / enterprise / startup / mono）＝計4削除 | P1 | DONE（2026-05-29 dev-logic 実装＋push。MODES/ModeId/ThemeState.customHex/applyTheme custom分岐 除去、loadTheme で未知 id を DEFAULT(dark) フォールバック、tokens.css mode-mono・tokens-m3.css mode-mono・index.css mode-enterprise/startup ブロック除去、i18n の4モード ja/en 削除、ThemeSettings(v1) の custom UI 撤去。tsc0/eslint0/vitest340/build0） | dev-logic | 残=light/dark/sepia/forest＋T-V 新規3（indigo/rose/slate） |
 | T-S | テーマを変えても「今日の一問」カード（Daily Fermi ホームカード）の色が青のまま → テーマ追従（＋AM-L のグラデ廃止と統合） | P1 | DONE（2026-05-29。HomeScreenV3 Daily Fermi カードを --brand-grad-h → フラット var(--accent)、青グロー boxShadow を accent 追従の color-mix に、CTA/eyebrow/desc を --accent / --accent-fg 追従に。T-T 根本原因A・AM-L(b) と統合実装） | dev-logic | T-T 根本原因A と同一箇所。AM-L(b) と同 DOM |
 | T-T | テーマ非追従の箇所を audit findings で完全仕様化 → 根本原因 A/B/C/D を個別修正 | P1 | DONE（2026-05-29。A: 各モードブロックで --brand-grad-h override＋HomeScreenV3 のハードコード青→accent追従。B: RoadmapScreenV3 のハードコード青 rgba(108,142,245,..) を var(--accent)系 color-mix へ（:329/:775/:959/:983/:992）。C: LessonStoriesScreen の #fff/#FFFFFF on brand を var(--accent-fg) 化（:559/:856/:860/:869/:872/:912/:1013/:1105/:1189/:1226/:1246/:1263/:1303/:1313/:1447/:1498/:1552/:1580）＋ tap-hint 青グロー accent 化。D: ProfileScreenV3 はハードコード text color 無し＝既に追従済みと確認） | 林（調査）→ dev-logic（修正） | 暗スクリム上の white 文字（tap-hint 左ゾーン等）は意図通り維持 |
-| T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面で WCAG 検証・破綻潰し） | P1 | 再オープン（2026-05-30 Keita 決定でスコープ拡大）。従来の「ボタン専用トークン #2E45A8 で 8.29:1 確保」対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案 2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装が筋 | designer→Keita→dev-logic | Keita「まかせる」委任の旧対処は temp。今回はブランド青の再設計＝T-V と統合実装でコンフリクト回避 |
+| T-U | DONE | 再オープン（スコープ拡大） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
 | T-V | テーマ再設計エピック（「AIっぽくない」新規3テーマ追加＋数パターン＋UI設計刷新＋カスタマイズしやすく） | P1 | 部分（2026-05-29。新規3テーマ indigo/rose/slate を MODES＋tokens.css＋tokens-m3.css＋i18n(ja/en) に追加＝配色実装パート DONE。UI 設計刷新・数パターン展開は AM-K 親エピックで継続） | designer（提案）→ dev-logic（実装） | 配色トークンは THEME_PALETTE_CANDIDATES_v2 §2 をそのまま採用 |
 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色・コース一覧） | P2 | DONE（2026-05-29。--mastery/--mastery-fg を tokens.css 全テーマに定義〔明カード #9A7416/#FFF・暗カード #D9A943/#1A1A1A〕、CompletionBadge を count>=2 で mastery 色に切替＋細い金縁リングで形状二重符号化。count=1 は従来 --accent 維持。test 12件 pass） | dev-logic | RoadmapScreenV3:1327/:1380・CompletedLessonsScreen 共通コンポーネント経由で整合 |
 
@@ -2387,11 +2387,11 @@ T-M（体力コース）で dev-logic が **main の作業ツリーを使用中*
 | 着手順 | ID | 内容 | 優先度 | 重さ | migration | 依存・グルーピング |
 |--------|----|------|--------|------|-----------|-------------------|
 | ゲート | T-V | テーマ再設計（「AIっぽくない」新規3テーマ追加＋数パターン提案→Keita 選定→実装）＋UI 刷新 | P1 | 重 | 不要 | テーマ系の親エピック。designer 提案進行中→**Keita パレット選定がゲート** |
-| 1 | T-R | 死にテーマ削除（custom/enterprise/startup/mono＝計4） | P1 | 軽〜中 | 不要 | テーマ系・T-V 選定後に統合。mono は CSS ブロックも除去 |
-| 1 | T-T | テーマ非追従の網羅修正（根本原因A/B/C/D・T-S を内包） | P1 | 中 | 不要 | テーマ系・T-V 選定後に統合（調査=完了） |
-| 1 | T-U | コントラスト/可読性 整合性チェック（全テーマ×主要画面） | P1 | 中 | 不要 | テーマ系・T-T と一体 |
 | 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
-| 1 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色） | P2 | 軽 | 不要 | テーマ系・習熟色は T-V パレット作業に内包・色方針を揃える |
+| 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
+| 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
+| 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
+| 1 | T-J | （既存 DONE）完了バッジのアクセント追従＝本番反映済 | — | — | — | ※DONE。本キューの「テーマ系」では色方針の参照のみ |
 | 2 | T-W | 「あなた専用コース」セクションの展開/折りたたみ | P1 | 軽〜中 | 不要 | RoadmapScreenV3・T-V から独立 |
 | 3 | T-I | （既存 DONE）コース進捗表示＝本番反映済 | — | — | — | ※DONE。新規 T-I（Hayashi 重複）は削除済み |
 | 4 | T-K | （既存 DONE）ジャーナルグラフ tap 詳細＝本番反映済 | — | — | — | ※DONE |
@@ -2471,11 +2471,11 @@ Keita から Logic ブロッカー6件の判断を取得。各タスクへ反映
 ### 判断反映サマリ
 | タスク | 旧状態 | 新状態 | 反映内容 |
 |--------|--------|--------|----------|
-| DF-3 | 進行待ち（Keita 判断中） | TODO（着手可） | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com` で本番マジックリンク実受信。着手時に DF-2b 投入20体の email がエイリアス形式かを要確認。担当=林。後続 DF-4/5/6 は DF-3 完了が前提 |
-| AM-N | BLOCKED | TODO（unblock） | 法的確定値が全揃い（アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2,450・電話非掲載＋開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Google ログイン記述削除済）。dev-logic が LEGAL_REVIEW §5 ＋確定値を HTML〔5文書×ja/en・削除系一本化で減〕に反映、`【要Keita確認:...】`マーカー置換。**＋2026-05-30 追加: 年額トライアル記載の差し戻し（C-2 で削除した「7日間無料トライアル」を「年額のみ・初回限定・7日無料・8日目以降¥2,450/年自動課金・期間中解約で課金なし」＋月額トライアル無し明記で書き戻し、AM-O Offer `yearly-free-trial-7d` と整合）を push 前に必ず含める**。反映後に本番 push 承認を別途取得 |
+| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | BLOCKED（2026-06-07 17:55 JST 本番デプロイ承認 req-1fefb5c3 を Keita が REJECTED→走行は実施せず保留。未 push コミットなし／本番への先行反映もなし。Keita の却下理由・再開条件待ち。後続 DF-4/5/6 も DF-3 完了前提のため待機継続。直前状態: email エイリアス確認済・走行準備完了） | 林 | ログイン方式確定＝実メール Gmail エイリアス `keita.urano+pXX@gmail.com` で本番マジックリンク実受信実装・走行準備済（Keita 却下で保留中） |
+| AM-N | T-N | 法務記載の見直し（利用規約／プライバシー／特商法） | P1 | DONE（2026-06-07 17:47 JST 本番 push 承認 req-b615a393 APPROVED→Masayoshi 確認対応。コミット 068a78e/fc22197 は am-n-tokushoho-confirmed-values→main マージ（991a869）で既に origin/main 同期済（local==origin==a46989a）。Render 本番反映を実機確認：https://logic-u5wn.onrender.com/tokushoho.html HTTP200・「年額のみ7日間無料トライアル・¥2,450/年・月額トライアルなし」記載 live、en も同等。tsc 0/eslint . 0。AM-O 課金実態（トライアルは年額のみ）と整合。） | dev-logic（HTML反映） | 確定値: アポロ合同会社/Apollo LLC・責任者 柴田圭太・池袋 BIGオフィスプラザ1206・月¥350/年¥2450・電話非掲載/開示注記・削除は account-deletion 正本/delete-account リダイレクト・インボイス記載なし・Googleログイン記述削除済。AM-O 課金実態と整合必須（トライアルは年額のみ・Play Console Offer と整合） |
 | AM-R | BLOCKED | DONE | dev-logic が 2026-05-30 本番 DB 書き換え実行完了。固有タグ41→36種・9統合・誤統合ゼロ・他ユーザー波及ゼロ。snapshot `public._backfill_journal_tags_20260530`〔15行〕＋undo SQL 保持中、安定確認後 DROP 可 |
 | T-U | DONE | 再オープン（スコープ拡大） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
-| AM-O | BLOCKED | BLOCKED（SKU 登録セット確定） | コード結線 DONE。SKU 登録セット確定（Group `logic_paid`／月額 `logic_paid_monthly`・Base Plan `monthly-autorenew`・¥350・トライアル無し／年額 `logic_paid_yearly`・Base Plan `yearly-autorenew`・¥2,450／**年額に Introductory Offer `yearly-free-trial-7d`＝初回限定・無料7日→¥2,450/年。月額には付けない**。Product ID は `src/billing/products.ts` PLAY_PRODUCTS と一致確認済）。残＝Keita が Play Console で一字一句一致で Active 登録。SKU Active 後に dev-logic/test-functional が実機購入ハッピーパス検証（キャンセル/失敗/restore＋トライアル年額の無料→課金分岐） |
+| AM-O | T-O | 料金プランの Google Play 課金実装（購入導線の結線） | P1 ) | DONE 🔒（2026-06-07 Keita 承認 req-4296654b で完了確定＋ロック。SKU 登録済・コード結線 DONE。🔒＝以降 reconcile/keeper/guard は変更・差し戻し禁止。実機購入ハッピーパス検証は test-functional に別途依頼） | dev-logic（実装済）＋Keita（SKU 登録）＋test-functional（実機検証） | project_logic_play_billing_gaps #4。Product ID は src/billing/products.ts PLAY_PRODUCTS と一致確認済。年額トライアル＝2026-05-30 Keita 決定 |
 | T-H | BLOCKED（保留） | 公開戦略確定 | 「今の最新ビルドで先に公開、DF-F 系 P0 改善は公開後アップデート」。T-G スモーク・T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要〕→Production promote（Keita 手動） |
 
 ### 台帳訂正（2026-05-30）
