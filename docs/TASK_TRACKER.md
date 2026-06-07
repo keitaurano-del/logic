@@ -44,7 +44,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 |----|---------|--------|-----------|---------|--------|
 | DF-F1  | ロードマップ検索/絞り込みの発見性が低い（虫眼鏡が気づかれない） | P0 | DONE（DF-FV○・常設検索バー結線） | `0d8b799` | designer＋dev-logic |
 | DF-F2  | 文字サイズのユーザー設定（標準/大/特大）が無い | P0 | DONE（codemod完了・実機検証○） | `a380c83`+`0e77a79`+`3a588dc` | dev-logic |
-| DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | BLOCKED（未着手・設計判断） | なし | dev-logic（設計）＋Keita |
+| DF-F3  | ゲスト/未ログイン/有料の3状態の出し分けが画面ごとにバラバラ | P0 | DONE 🔒[Keita]（2026-06-07 18:00 Keita 指示でボードクローズ・実装未着手/設計判断要＝未完。完了ではなくボード整理。再着手時に再起票） | なし | dev-logic（設計）＋Keita |
 | DF-F4  | ジャーナルがゲスト全面ブロックで体験前に価値が途切れる | P0 | DONE（2026-06-07 17:57 JST Keita 承認＝REVIEW 一括 DONE 化指示。機能検証 DF-FV○済・Keita 見せ方目視 OK で確定） | `ab88528` | dev-logic |
 | DF-F5  | 課金状態とログイン状態が独立＝「有料なのに使えない」 | P0 | DONE（DF-FV○・paid分岐文言結線） | `b756022` | dev-logic |
 | DF-F6  | オンボ生年入力で「次へ」が無言ブロック（フリーズ誤解） | P0 | DONE（DF-FV○・理由提示+aria結線） | `cd05dd3` | dev-logic |
@@ -54,7 +54,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F10 | 下タブのラベルと中身が不一致（機能名ベースに） | P1 | DONE（DF-FV○・nav i18n ja/en整合） | `952fdda` | dev-logic |
 | DF-F11 | トライアル残日数がジャーナル内にしか出ない | P1 | DONE（DF-FV○・常設バッジ+終了間際バナー結線。通知発火はF8依存で範囲外） | `b39a0df` | dev-logic |
 | DF-F12 | フェルミランキングの透明性欠如（算出基準/母数/順位なし） | P1 | DONE（2026-06-07 17:57 JST Keita 承認＝REVIEW 一括 DONE 化指示。機能検証 DF-FV○済・Keita 見せ方目視 OK で確定） | `cf5d7e4` | dev-logic＋Keita |
-| DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | BLOCKED（未着手・設計判断） | なし | dev-logic＋content-creator＋Keita |
+| DF-F13 | デイリーフェルミが残数表示のみで上級者の手応え薄い | P1 | DONE 🔒[Keita]（2026-06-07 18:00 Keita 指示でボードクローズ・実装未着手＝未完。完了ではなくボード整理。再着手時に再起票） | なし | dev-logic＋content-creator＋Keita |
 | DF-F14 | 料金(en)「Yearly Save 5 months」密着＋比較表 Free 列空欄 | P1 | DONE（DF-FV○・em dash明示+flexWrap密着解消） | `d4ae9e0` | designer＋dev-logic |
 | DF-F15 | ジャーナルのログイン誘導が保存都合のみで価値訴求なし | P1 | DONE（DF-FV○・価値訴求文言ja/en結線） | `578d2ea` | content-creator＋dev-logic |
 | DF-F16 | 初回ホームが情報過密で最優先アクション不明 | P1 | DONE（2026-06-07 17:57 JST Keita 承認＝REVIEW 一括 DONE 化指示。機能検証 DF-FV○済・Keita 見せ方目視 OK で確定） | `12f350c`+`f4dcf13` | designer＋dev-logic＋Keita |
