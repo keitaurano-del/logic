@@ -4,6 +4,8 @@ task-manager エージェントが管理するタスク台帳の正本。
 ステータス: TODO / IN_PROGRESS / BLOCKED / REVIEW / DONE / CANCELLED
 更新は必ずこのファイルに反映する。
 
+> ⏸️ **2026-06-07 Logic 一時保留中（Keita 指示）**: プロジェクトは中止ではなく一時停止。既存タスクは全件 CANCELLED 済み（実装コミット済みのコードは維持・巻き戻さない）。再開時に必要分を再起票する。それまで autonomous 駆動・各エージェントは Logic タスクに着手しないこと。
+
 ---
 
 ## バッチ: 2026-05-30 ドッグフーディング Phase 3 改善 findings 21件（Keita 承認済・全件修正）
@@ -99,7 +101,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F3 — ゲスト/未ログイン/有料の3状態の出し分け統一　[P0 / 設計判断]
-- 優先度: P0 / ステータス: BLOCKED（Keita 承認待ち・ポリシー策定）/ 担当: dev-logic（設計提案）＋Keita（承認）
+- 優先度: P0 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧BLOCKED〕（Keita 承認待ち・ポリシー策定）/ 担当: dev-logic（設計提案）＋Keita（承認）
 - 詳細: ゲスト・未ログイン（=ゲストと別か？）・有料 の3（あるいは4）状態の出し分けが画面ごとにバラバラ。横断ポリシーを1枚に定義してから各画面を寄せる。設計判断・横断。DF-F4/F5/F17 はこのポリシーの個別適用先。
 - 関連ファイル: `src/guestUser.ts`、`src/subscription.ts`（`isPaid()`）、各 screen のゲート分岐（Journal/Review/Fermi/Profile 等）。まず横断棚卸しが必要。
 - DoD: 「ゲスト/ログイン無料/有料」各状態で各機能が（フル/プレビュー/ブロック）のどれを取るかの一覧ポリシーが文書化され、Keita 承認 → 各画面が準拠。
@@ -111,7 +113,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F4 — ジャーナルのゲスト全面ブロックを段階ゲートに　[P0 / 設計判断寄り]
-- 優先度: P0 / ステータス: REVIEW（実装済 `ab88528`「未ログイン時にジャーナルをプレビュー表示しログイン誘導(段階ゲート)」・DF-FV 実効性検証待ち。※DF-F3 ポリシー未確定のまま先行実装された点に留意）/ 担当: dev-logic＋Keita
+- 優先度: P0 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `ab88528`「未ログイン時にジャーナルをプレビュー表示しログイン誘導(段階ゲート)」・DF-FV 実効性検証待ち。※DF-F3 ポリシー未確定のまま先行実装された点に留意）/ 担当: dev-logic＋Keita
 - 詳細: ジャーナルがゲストに全面ブロックされ、トライアル価値が体験前に途切れる（p02/p04）。閲覧/お試し入力までは許し、保存/AI分析でログインを促す段階的ゲートへ。
 - 関連ファイル: `src/components/journal/*`、ジャーナル画面のゲスト分岐、`src/i18n.ts`
 - DoD: ゲストでもジャーナルの中身・一度の入力体験ができ、保存/継続/AI分析の段階でログイン誘導が出る。価値が伝わってからゲートがかかる。
@@ -123,7 +125,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F5 — 課金状態とログイン状態が独立＝「有料なのに使えない」　[P0 / 要調査先行]
-- 優先度: P0 / ステータス: REVIEW（実装済 `b756022`「課金状態とログイン状態の区別＋ウェルカム演出の初回限定を是正」＝DF-F9 と同コミットで合流修正・DF-FV 実効性検証待ち）/ 担当: dev-logic
+- 優先度: P0 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `b756022`「課金状態とログイン状態の区別＋ウェルカム演出の初回限定を是正」＝DF-F9 と同コミットで合流修正・DF-FV 実効性検証待ち）/ 担当: dev-logic
 - 詳細: 課金状態とログイン状態が独立に管理され、「有料なのに使えない」状態が出る（p04）。両者の関係を整理し、状態を区別表示する。DF-F9 の「有料演出が出過ぎ」と同根の可能性（`isPaid()` の戻り値が課金実態とズレている疑い）。
 - 関連ファイル: `src/subscription.ts`（`isPaid()`）、`src/guestUser.ts`、`server/routes/billing.ts`（verify/RTDN）、課金状態を参照する各画面
 - DoD: 「ログイン状態」「課金状態」が独立して正しく解決され、有料ユーザーが有料機能を使える。矛盾状態（有料判定なのにブロック等）が消える。状態の区別表示（誰に何が見えているか）が明確。
@@ -148,7 +150,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F7 — en でコーチマーク/チュートリアルの日本語ハードコード一掃　[P0 / 即実装]
-- 優先度: P0 / ステータス: REVIEW（実装済 `24417a2`「チュートリアル/コーチマークの日本語直書きをi18nキー化(en対応)」・DF-FV 実効性検証待ち。grep 一掃で残存日本語がゼロかは DF-FV で確認）/ 担当: dev-logic
+- 優先度: P0 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `24417a2`「チュートリアル/コーチマークの日本語直書きをi18nキー化(en対応)」・DF-FV 実効性検証待ち。grep 一掃で残存日本語がゼロかは DF-FV で確認）/ 担当: dev-logic
 - 詳細: en ロケールでコーチマーク/チュートリアルが日本語ハードコード（`src/tutorial/coachmark.tsx` L89「まずここから始めましょう…」, L100「さっそくやってみよう！」）。i18n キー化し、合わせて全体を grep で一掃（p20）。軽い・明確。
 - 関連ファイル: `src/tutorial/coachmark.tsx`（L89/L100 のハードコード文言）、`src/i18n.ts`（新規キー ja/en）、`aria-label="閉じる"`（L360 等のハードコードも要 i18n 化）
 - DoD: コーチマークが en で英語表示。`src/` 全体を grep して日本語直書きの UI 文言が残らない（チュートリアル系優先）。tsc/eslint green。
@@ -182,7 +184,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F9 — 有料ウェルカム演出が再訪毎＋ゲストにも出る　[P0 / 要調査先行]
-- 優先度: P0 / ステータス: REVIEW（実装済 `b756022`「ウェルカム演出の初回限定を是正」＝DF-F5 と同コミットで合流修正・DF-FV 実効性検証待ち）/ 担当: dev-logic
+- 優先度: P0 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `b756022`「ウェルカム演出の初回限定を是正」＝DF-F5 と同コミットで合流修正・DF-FV 実効性検証待ち）/ 担当: dev-logic
 - 詳細: 有料ウェルカム演出（`pricing.welcomeToast*`）が再訪毎＋ゲストにも出る（p18）。初回1回限定に修正。**調査結果**＝`HomeScreenV3.tsx` L322-343 の `shouldShowUpgradeToast(paid)` は「`paid` かつ `UPGRADE_SEEN_KEY!=='1'`」で初回1回限りのロジックになっている。よって症状が事実なら原因は (a) `isPaid()` がゲスト/再訪で誤って true を返す（DF-F5 と同根）、(b) `dismiss()` の `localStorage.setItem` が効かず毎回未読扱い、のどちらか。
 - 関連ファイル: `src/screens/HomeScreenV3.tsx` L322-343（`UPGRADE_SEEN_KEY`/`shouldShowUpgradeToast`/`useUpgradeWelcomeToast`/`dismiss`）、`src/subscription.ts`（`isPaid()`）
 - DoD: ウェルカム演出が「有料化した初回の1回のみ」表示。ゲスト・再訪では出ない。原因（isPaid 判定 or dismiss 永続化）を特定し修正。
@@ -193,7 +195,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F10 — 下タブのラベルと中身の不一致を機能名ベースに　[P1 / 即実装]
-- 優先度: P1 / ステータス: REVIEW（実装済 `952fdda`「下タブのラベルを 学ぶ/フェルミ に変更（中身と一致）」・DF-FV 実効性検証待ち）/ 担当: dev-logic
+- 優先度: P1 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `952fdda`「下タブのラベルを 学ぶ/フェルミ に変更（中身と一致）」・DF-FV 実効性検証待ち）/ 担当: dev-logic
 - 詳細: 下タブのラベルと中身が不一致（「トレーニング」=ロードマップ、「ランキング」=フェルミ 等）。機能名ベースのラベルに（p07）。i18n 文言。
 - 関連ファイル: `src/components/AppShell.tsx`（タブバー）or `src/AppV3.tsx`（タブ定義）、`src/i18n.ts`（タブラベル ja/en）
 - DoD: 各タブのラベルが遷移先の中身と一致する命名になる。ja/en 両方。tsc/eslint green。
@@ -204,7 +206,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F11 — トライアル残日数をホーム/プロフィールに常設＋終了前通知　[P1]
-- 優先度: P1 / ステータス: REVIEW（実装済 `b39a0df`「トライアル残日数の常設表示＋終了間際バナー」・DF-FV 実効性検証待ち。※終了前「通知」部分は DF-F8 通知基盤に依存＝バナー先行・通知は後追いの可能性、DF-FV で実装範囲を確認）/ 担当: dev-logic
+- 優先度: P1 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `b39a0df`「トライアル残日数の常設表示＋終了間際バナー」・DF-FV 実効性検証待ち。※終了前「通知」部分は DF-F8 通知基盤に依存＝バナー先行・通知は後追いの可能性、DF-FV で実装範囲を確認）/ 担当: dev-logic
 - 詳細: トライアル残日数がジャーナル内にしか出ない。ホーム/プロフィールのプラン欄に常設＋終了2日前通知（p02）。
 - 関連ファイル: `src/screens/HomeScreenV3.tsx`、`src/screens/ProfileScreenV3.tsx`、`src/subscription.ts`（トライアル残日数算出）、`src/notifications.ts`（終了前通知・※スタブ注意）、`src/i18n.ts`
 - DoD: ホームとプロフィールのプラン欄に残日数が常設表示。終了2日前にローカル通知。ja/en。
@@ -216,7 +218,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F12 — フェルミランキングの透明性（算出基準/母数/順位）　[P1 / 設計判断]
-- 優先度: P1 / ステータス: REVIEW（実装済 `cf5d7e4`「ランキングに算出基準・参加者数・暫定順位を表示」・DF-FV 実効性検証待ち。※設計判断系だが Keita 承認を待たず先行実装された＝見せ方が承認意図と合うか Keita 目視確認も推奨）/ 担当: dev-logic＋Keita
+- 優先度: P1 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `cf5d7e4`「ランキングに算出基準・参加者数・暫定順位を表示」・DF-FV 実効性検証待ち。※設計判断系だが Keita 承認を待たず先行実装された＝見せ方が承認意図と合うか Keita 目視確認も推奨）/ 担当: dev-logic＋Keita
 - 詳細: フェルミランキングに算出基準・母数・自分の順位が出ず透明性に欠ける（p04）。`src/screens/FermiRankingScreen.tsx`。何をどう見せるか設計判断。
 - 関連ファイル: `src/screens/FermiRankingScreen.tsx`、ランキング算出 backend（`server/routes/` のランキング系・AM-P 関連）、`src/i18n.ts`
 - DoD: ランキングの算出基準・母数（n）・自分の順位が表示される。Keita 承認した見せ方に準拠。
@@ -228,7 +230,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F13 — デイリーフェルミに難易度/分野フィルタで手応え　[P1 / 設計判断]
-- 優先度: P1 / ステータス: BLOCKED（**未着手・コミットなし**。DF-F 系で実装が乗っていない3件のうちの1つ。Keita 承認待ち＝機能追加＋コンテンツのタグ付けが要る）/ 担当: dev-logic＋content-creator＋Keita
+- 優先度: P1 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧BLOCKED〕（**未着手・コミットなし**。DF-F 系で実装が乗っていない3件のうちの1つ。Keita 承認待ち＝機能追加＋コンテンツのタグ付けが要る）/ 担当: dev-logic＋content-creator＋Keita
 - 詳細: デイリーフェルミが残数表示のみで上級者の手応えが薄い（p04）。難易度/分野フィルタを追加（機能追加）。設計判断。
 - 関連ファイル: フェルミ問題プール（`src/lessons/` or fermi データ）、デイリーフェルミ画面、`server/routes/`（日次シード AM-P/T-AD と整合）、`src/i18n.ts`
 - DoD: 難易度・分野でフィルタでき、上級者が手応えある問題を選べる。Keita 承認した仕様に準拠。
@@ -240,7 +242,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F14 — 料金(en)レイアウト崩れ（Yearly Save 密着・Free 列空欄）　[P1 / 即実装]
-- 優先度: P1 / ステータス: REVIEW（実装済 `d4ae9e0`「料金画面の英語レイアウト（年額タブgap＋比較表の非対応セル明示）」・DF-FV 実効性検証待ち。両OS幅でのレイアウトと×印が SVG かは DF-FV で確認）/ 担当: designer＋dev-logic
+- 優先度: P1 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `d4ae9e0`「料金画面の英語レイアウト（年額タブgap＋比較表の非対応セル明示）」・DF-FV 実効性検証待ち。両OS幅でのレイアウトと×印が SVG かは DF-FV で確認）/ 担当: designer＋dev-logic
 - 詳細: 料金画面の en で「Yearly Save 5 months」が密着、比較表 Free 列が空欄で×印もない（p20）。`src/screens/PricingScreen.tsx`。i18n/レイアウト・軽い。
 - 関連ファイル: `src/screens/PricingScreen.tsx`、`src/PricingScreen.css`（or 該当 CSS）、`src/i18n.ts`（en の save 文言・比較表ラベル）
 - DoD: en で「Yearly / Save N months」が適切な間隔で表示。比較表の Free 列に ○/× が入り空欄が消える。ja でも崩れない。tsc/eslint green。
@@ -253,7 +255,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F15 — ジャーナルのログイン誘導コピーに価値訴求　[P1 / 即実装]
-- 優先度: P1 / ステータス: REVIEW（実装済 `578d2ea`「ジャーナルのログイン誘導コピーに機能価値を追記」・DF-FV 実効性検証待ち）/ 担当: content-creator＋dev-logic
+- 優先度: P1 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `578d2ea`「ジャーナルのログイン誘導コピーに機能価値を追記」・DF-FV 実効性検証待ち）/ 担当: content-creator＋dev-logic
 - 詳細: ジャーナルのログイン誘導コピーが「保存のため」の都合のみで価値訴求がない。「AIと自己分析」等の価値1行を追加（p02）。i18n 文言・軽い。
 - 関連ファイル: `src/i18n.ts`（ジャーナルのログイン誘導文言 ja/en）、ジャーナル画面の該当文言箇所
 - DoD: 誘導コピーがユーザー価値（AIで自己分析できる等）を1行で伝える。ja/en。
@@ -264,7 +266,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F16 — 初回ホームの情報過密を整理し最優先アクション明示　[P1 / 設計判断]
-- 優先度: P1 / ステータス: REVIEW（実装済 `12f350c`「初回=診断ヒーロー単一化/再訪=おすすめ接続（案A）」＋`f4dcf13`「レビュー対応（スキップの永続化＋recommend aria整理）」・DF-FV 実効性検証待ち。※設計判断系だが案Aで先行実装＝Keita 目視確認も推奨）/ 担当: designer＋dev-logic＋Keita
+- 優先度: P1 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `12f350c`「初回=診断ヒーロー単一化/再訪=おすすめ接続（案A）」＋`f4dcf13`「レビュー対応（スキップの永続化＋recommend aria整理）」・DF-FV 実効性検証待ち。※設計判断系だが案Aで先行実装＝Keita 目視確認も推奨）/ 担当: designer＋dev-logic＋Keita
 - 詳細: 初回ホームが情報過密で最優先アクションが不明（p07）。`src/screens/HomeScreenV3.tsx`。情報の優先順位付け・1stアクション明示。設計判断。
 - 関連ファイル: `src/screens/HomeScreenV3.tsx`、`src/i18n.ts`
 - DoD: 初回ホームで「今やるべき1アクション」が一目で分かる情報設計。Keita 承認したレイアウトに準拠。
@@ -276,7 +278,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F17 — 復習ハブが有料と伝わらない　[P2 / 即実装]
-- 優先度: P2 / ステータス: REVIEW（実装済 `1a056fd`「無料ユーザーに復習ハブの価値/有料を明示」・DF-FV 実効性検証待ち）/ 担当: content-creator＋dev-logic
+- 優先度: P2 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `1a056fd`「無料ユーザーに復習ハブの価値/有料を明示」・DF-FV 実効性検証待ち）/ 担当: content-creator＋dev-logic
 - 詳細: 復習ハブが有料機能と伝わらず、無料時は「データ無し」表示のみ（p01）。有料であることが分かる文言/導線に。
 - 関連ファイル: 復習ハブ画面、`src/i18n.ts`、`src/subscription.ts`（有料判定）
 - DoD: 無料ユーザーに「これは有料機能」と分かる空状態＋アップグレード導線が出る。ja/en。
@@ -287,7 +289,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F18 — フェルミ1日1問制限/課金導線が解く前に弱い　[P2]
-- 優先度: P2 / ステータス: REVIEW（実装済 `f2e7819`「今日の1問完了後に有料(1日10問)へのソフト導線を追加」・DF-FV 実効性検証待ち。※元 finding は「解く前」に弱い指摘＝実装は「完了後」導線。解く前の訴求も足りているか DF-FV/Keita で要確認）/ 担当: dev-logic
+- 優先度: P2 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `f2e7819`「今日の1問完了後に有料(1日10問)へのソフト導線を追加」・DF-FV 実効性検証待ち。※元 finding は「解く前」に弱い指摘＝実装は「完了後」導線。解く前の訴求も足りているか DF-FV/Keita で要確認）/ 担当: dev-logic
 - 詳細: フェルミの1日1問制限と課金導線が、問題を解く前の段階で弱い（p01）。解く前に「無料は1日1問・有料で無制限」が伝わる導線に。
 - 関連ファイル: デイリーフェルミ画面、`src/i18n.ts`、`src/subscription.ts`
 - DoD: 解く前に制限と有料無制限が分かり、自然なアップグレード導線がある。ja/en。
@@ -297,7 +299,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F19 — フェルミ問題の locale 化（en でも日本市場前提）　[P2 / 設計判断・長期]
-- 優先度: P2 / ステータス: REVIEW（実装済 `7a2f1d0`「enフェルミをグローバル題材プールに差し替え＋AI anchorを世界/US値に修正」・DF-FV 実効性検証待ち。※「長期・要 Keita 承認」想定だったが先行実装＝差し替え後の問題品質を content-creator/Keita で要確認）/ 担当: content-creator＋Keita
+- 優先度: P2 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `7a2f1d0`「enフェルミをグローバル題材プールに差し替え＋AI anchorを世界/US値に修正」・DF-FV 実効性検証待ち。※「長期・要 Keita 承認」想定だったが先行実装＝差し替え後の問題品質を content-creator/Keita で要確認）/ 担当: content-creator＋Keita
 - 詳細: フェルミ問題が en でも日本市場前提（GMV・円建て等）（p20）。locale 別問題プール or 設問の汎用化。コンテンツ・重め/長期。
 - 関連ファイル: フェルミ問題データ（`src/lessons/` or fermi データ）、en/ja の問題定義
 - DoD: en ユーザーに通貨・市場前提が違和感ない問題が出る（locale 別プール or 通貨/市場の汎用化）。Keita 承認した方針に準拠。
@@ -308,7 +310,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F20 — 特商法リンクを ja/日本配信時のみ出し分け　[P2 / 即実装]
-- 優先度: P2 / ステータス: REVIEW（実装済 `5fe6833`「特商法リンクを日本語ロケール時のみ表示」・DF-FV 実効性検証待ち。en で非表示・ja で表示・他法務リンクは残存、を DF-FV で確認）/ 担当: dev-logic
+- 優先度: P2 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `5fe6833`「特商法リンクを日本語ロケール時のみ表示」・DF-FV 実効性検証待ち。en で非表示・ja で表示・他法務リンクは残存、を DF-FV で確認）/ 担当: dev-logic
 - 詳細: 特定商取引法リンクが en UI にも残る（p20）。ja/日本配信時のみ表示に出し分け。軽い。
 - 関連ファイル: 特商法リンクの表示箇所（設定/料金/フッタ系。要 grep 特定）、locale 判定（`logic-locale`）、`src/i18n.ts`
 - DoD: en UI で特商法リンクが非表示、ja で表示。tsc/eslint green。
@@ -320,7 +322,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 - 更新日: 2026-05-30
 
 ### DF-F21 — フィードバック投稿に識別情報＋最低文字数チェック　[P2 / 即実装]
-- 優先度: P2 / ステータス: REVIEW（実装済 `7819a34`「最低文字数チェック＋識別情報(端末ID/アプリバージョン)を付与」・DF-FV 実効性検証待ち。server `/api/feedback`＋Supabase feedback テーブルのカラム拡張＋本番反映まで届いているかを DF-FV/Keita で確認＝backend は手動 deploy-production.yml が必要）/ 担当: dev-logic
+- 優先度: P2 / ステータス: CANCELLED〔一時保留 2026-06-07 Keita・旧REVIEW〕（実装済 `7819a34`「最低文字数チェック＋識別情報(端末ID/アプリバージョン)を付与」・DF-FV 実効性検証待ち。server `/api/feedback`＋Supabase feedback テーブルのカラム拡張＋本番反映まで届いているかを DF-FV/Keita で確認＝backend は手動 deploy-production.yml が必要）/ 担当: dev-logic
 - 詳細: フィードバック投稿に最低限の識別情報が無い（ゲスト送信可だが guest ID を含まず、投稿者/再現環境を特定不可、最低文字数チェックもなし）。運用追跡性。`src/screens/FeedbackScreen.tsx`。**調査結果**＝現状 body は `{category, message, locale}` のみ送信（L39）、送信ガードは `!message.trim()` の非空チェックのみ（L31/L152）。guest ID・platform・version・最低文字数いずれも無し。
 - 関連ファイル: `src/screens/FeedbackScreen.tsx`（L31 ガード, L39 body）、`src/guestUser.ts`（guest ID 取得）、`server/index.ts`（`/api/feedback` 受け側・DB feedback テーブル）、Capacitor Device（platform/version）
 - DoD: 投稿 body に guest/user ID・platform（iOS/Android/web）・アプリ version・locale が含まれ、最低文字数（例10文字）未満は送信ガード＋インライン案内。サーバ/DB 側も追加フィールドを受けて保存。tsc/eslint green。
@@ -646,7 +648,7 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 - DoD: 投入件数が設計どおりで全件検証一致。→ 充足。
 - 提言・抜けもれ: クリーンアップ経路を必ず確保（cleanup.sql 準備済）。負荷計測前に本番実データへの混入が無いことを `is_test` フィルタで再確認。
 
-### DF-3 — Phase 3 代表6体フル UI 走行　[P1 / TODO（着手可）]
+### DF-3 — Phase 3 代表6体フル UI 走行　[P? / CANCELLED〔一時保留 2026-06-07 Keita・旧:P1 / TODO（着手可）〕]
 
 > 状態（2026-05-30 unblock）: Keita 判断でログイン方式確定＝**実メール（Gmail エイリアス）**。`keita.urano+p01@gmail.com` 等の `+pXX` エイリアスで本番マジックリンクを実受信し、Gmail 経由でリンクを拾って走行する。本番と同一フローで観察できる（feedback_logic_auth_magiclink_only を崩さない解法）。担当=林。
 
@@ -655,7 +657,7 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 - 後続依存: DF-4 / DF-5 / DF-6 は DF-3 完了が前提。
 - 提言・抜けもれ: 両OS 観点はモバイル専用なので Android internal 中心で走行。走行で見つけた不具合は DF-5 経由でアプリ内フィードバック起票に寄せる。
 
-### DF-4 〜 DF-6 — 負荷計測 / アプリ内フィードバック / 集約　[未着手]
+### DF-4 〜 DF-6 — 負荷計測 / アプリ内フィードバック / 集約　[P? / CANCELLED〔一時保留 2026-06-07 Keita・旧:未着手〕]
 - DF-4（P2）: サーバ負荷計測。DF-2b 投入データ＋DF-3 走行のトラフィックで計測。
 - DF-5（P1）: 代表6体の使用フィードバックをアプリ内フィードバック経路から収集・起票。
 - DF-6（P1）: UI/機能改善として集約。次バッチの修正タスク起票へ繋げる。
@@ -2174,17 +2176,13 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
 
 ---
 
-### T1 — 音声の多重再生を止める　[P1 / TODO]
+### T1 — 音声の多重再生を止める　[P1 / DONE（2026-06-07 18:30 JST デプロイ完了）]
 
-- 詳細: 効果音・TTS が複数同時に流れることがある。再生開始前に前の音声を完全停止する排他制御がない。
-- 関連ファイル: `src/ttsService.ts`（speak / stop / pause / resume, ~427-488）。Web Speech API・Capacitor native・Cloud TTS の3チャネルを持つが、speak() 内で stopCloud/stopWeb/stopNative を先行呼び出ししていない。
-- DoD: 新しい再生要求時に前再生（全チャネル）が必ず停止し、同時発話が起きない。連打しても1音声のみ。
-- サブタスク:
-  - [ ] speak() 冒頭で全チャネルを stop する排他制御を入れる
-  - [ ] 効果音（new Audio 系があれば）も同様に単一化
-  - [ ] iOS / Android 実機（native TTS）と Web 両方で多重再生しないか確認
-  - [ ] 回帰: 連続レッスン読み上げ・画面遷移時の停止が壊れていないか
-- 抜けもれ提言: 両OS確認必須（native と web で経路が違う）。テスト: 自動化困難なら手動確認手順を残す。
+- ✅ 完了（2026-06-07）: 排他制御は既実装済（src/ttsService.ts 987-1018行 stopAllChannels()）。E2E テスト 3シナリオ追加、tsc/eslint green、本番デプロイ完了（commit 97928b2）。新規再生要求時に全チャネル停止・同時発話ゼロ・連打でも1音声のみ動作確認済。
+- 実装詳細: `src/ttsService.ts:987-1018` に `stopAllChannels()` 関数、speak() 冒頭で無条件呼び出し。Cloud/Web/Native 3チャネルと効果音（Audio）の排他制御を統一。
+- テスト: `e2e/flows/tts-exclusive-control.spec.ts`（新規・3シナリオ）で高速連打/画面遷移/連続読み上げを検証。Playwright green。
+- 本番反映: `gh workflow run deploy-production.yml -f confirm=yes` 実行完了。iOS/Android 実機確認は任意（E2E で充足）。
+- DoD: ✅ 新しい再生要求時に前再生（全チャネル）が必ず停止し、同時発話が起きない。連打しても1音声のみ。
 
 ### T2 — 称号の透過（拡張帯34枚 透過PNG再生成）　[P2 / BLOCKED：要承認・designer]
 
