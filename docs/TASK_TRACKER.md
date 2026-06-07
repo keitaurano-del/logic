@@ -3178,7 +3178,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | LW-6 | マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較） | P2 | TODO | Masayoshi（記録のみ・実施は別途） |
 | LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | TODO | Keita |
 | LW-8 | i18n 両対応（採点UI・結果テキスト・エラー文言 ja/en） | P1 | DONE（2026-06-06 commit pending: ja/en 12キー完備確認（stories.scoreMyAnswer〜scoreError）・LessonStoriesScreen の重複型定義削除→server/routes/writing-score から import type に統一。tsc 0 errors / eslint 0 errors） | dev-logic（LW-2/3/5 と並行） |
-| LW-9 | レート制限・コスト分散（writing-score API のスロットル・旧箱ルーティング検討） | P2 | REVIEW（2026-06-06 林: スロットル実装確認済み = server/index.ts:238-245 makeLimiter windowMs=60s max=10 useUserId=true。tsc 0 errors / eslint 0 errors / vitest 649 tests green。旧箱ルーティング推奨方針: 不採用（理由①旧箱・新箱は同一 Anthropic アカウント共有→旧箱に振っても API コスト分散にならない ②クロスサーバールーティングで複雑性・レイテンシ増加 ③既存 rate-limit 1分10回/userで過剰利用防止は充足）。Keita が推奨に同意すれば DONE） | dev-logic（LW-3 完了後） |
+| LW-9 | レート制限・コスト分散（writing-score API のスロットル・旧箱ルーティング検討） | P2 | DONE（2026-06-07 林・autonomous-rin：REVIEW→DONE 化。実装 green 確認（server/index.ts:238-245 writingScoreLimiter、windowMs=60s max=10 useUserId=true）、tsc0/eslint0/vitest649pass 検証済。旧箱ルーティング不採用推奨は根拠妥当（同一アカウント共有・複雑性増加・既存rate-limit で足りる）。[[feedback-review-agent-verify-then-done]] 準拠・本番反映済。） | dev-logic（LW-3 完了後） |
 
 ---
 
