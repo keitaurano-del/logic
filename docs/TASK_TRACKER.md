@@ -3,6 +3,7 @@
 task-manager エージェントが管理するタスク台帳の正本。
 ステータス: TODO / IN_PROGRESS / BLOCKED / REVIEW / DONE / CANCELLED
 更新は必ずこのファイルに反映する。
+🔒 ロック: status に 🔒 を付けた行（例 `DONE 🔒`）は Keita 手動確定。番人・全エージェントは status を変更・差し戻し禁止（詳細は task-management-guide.md）。
 
 ---
 
