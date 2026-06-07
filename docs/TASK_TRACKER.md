@@ -945,7 +945,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | T-B | 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化 | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。テーマ見た目の実機確認のみ任意で残） | designer（候補済）→ Keita（選定済）→ dev-logic（実装済） |
 | T-C | カスタムコース生成できない（本番 route 未デプロイ） | P0 | DONE（本番再デプロイ→404解消・正常系検証済） | 林/Keita（運用・コード修正不要） |
 | T-D | ジャーナルのタグ粒度が細かすぎる（→ 動的・自動統合モデルで確定。タグ付け時に既存タグを動的参照し最適化＋自己統合） | P1 | DONE（2026-05-29 main マージ＋Render backend deploy 成功〔run 26603561372〕で本番反映、health 200。D1-D3 完全グリーン、D4 は自動主体に縮小・undo を実装に内包） | content-creator（D1 DONE）→ dev-logic（D2/D3/D4 実装済）+ designer（D4 軽量UXのみ）|
-| T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) 一部、(c)(d) 未＝T-F依存） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
+| T-E | Obsidian vault 最新化＋日次更新の仕込み化 | P1 | REVIEW（(a)✅(b)一部(c)✅2026-06-07実装完了（morning-briefing.sh統合、毎日 07:00 自動生成）/(d)recurring管理は task-manager/apollo-keeper 委譲） | ceo（朝ブリ+Daily統合）+ task-manager/apollo-keeper（recurring） |
 | T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | DONE（2026-05-29 Vultr 新箱「Claude Code Server 2」の非root `dev` ユーザへ cron 3本移設で解決。root の `claude -p` が skip-permissions ガードで弾かれていたのが空振りの正体。dev で3本とも実走グリーン→obsidian-vault push 成功。Supabase は service_role 直curl化。現箱 cron は二重push回避でコメントアウト。詳細は memory project-vultr-second-server） | ceo（自分のスクリプト群） |
 | T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | DONE（2026-05-29 main マージで config 本番反映。playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消。night-patrol 実走確認のみ次回夜間に残） | dev-logic / test-smoke |
 | T-H | Logic Android Production 公開 | P1 | 公開戦略確定（2026-05-30 Keita「今の最新ビルドで先に公開、P0 改善は公開後アップデート」）。T-G スモーク/T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要・content-creator or marketing〕→Production promote（Play Console 手動・Keita） | Keita（SKU登録・promote）＋dev-logic/test-functional（実機検証）＋要アサイン（リリースノート） |
@@ -1139,11 +1139,11 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 
 ### T-E — Obsidian vault 最新化＋日次更新の仕組み化　[P1 / IN_PROGRESS]
 
-- 進捗（2026-05-28）:
+- 進捗（2026-06-07 更新）:
   - (a) ✅ DONE: 5/26〜5/28 の Daily Note 本体キャッチアップ作成済（林）。
   - (b) 一部: 20-Projects/logic 状況の最新化は進行中（部分反映）。TASK_TRACKER ミラー配置は残。
-  - (c) 未: 日次自動生成の仕組み化は未着手。**T-F 依存**（claude を root cron で回せないと案1/案2 とも動かない）。
-  - (d) 未: recurring 管理（R-1）の漏れ検知ルール定義は T-F 解決後に本格運用。
+  - (c) ✅ DONE: 日次自動生成の仕組み化は実装完了。morning-briefing.sh （案1）に Daily Note 本体生成ステップを統合。毎朝 07:00 に CEO agent が briefing を生成後、その要点から Daily Note 本体を自動生成・commit・push。2026-06-02 以降実運用で毎日成功確認（commit log にて 2026-06-07 まで連続 daily-note commit あり）。堅牢性向上として SSH リトライ・タイムアウト延長を追加（agent-config commit 9834daa）。
+  - (d) 未: recurring 管理（R-1）の漏れ検知ルール定義は task-manager / apollo-keeper に委譲予定。
 - 依頼原文（Keita 2026-05-28）: 「Obsidian 全部最新に更新して。全然更新されてないから毎日更新して、task-manager にちゃんと管理させて」。
 - 現状調査（実 vault 照合済み）:
   - 自動パイプライン（`50-Daily/` 配下の `briefings/` `feedback/` `inspections/` サブフォルダ）は毎日更新されている。cron 3 本稼働: `03:00 night-patrol`（inspections）→ `06:00 feedback-watcher`（feedback）→ `07:00 morning-briefing`（briefings、ceo agent）。各サブフォルダに 2026-05-28 分まで存在。
