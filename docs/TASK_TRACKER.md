@@ -2213,7 +2213,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] 過去データへの遡及適用（マイグレーション的処理）
 - 抜けもれ提言: UI不要のため i18n 影響なし。過去データ書き換えは非可逆なので、名寄せルールが意図せぬ統合をしないか慎重に。
 
-### T4 — AIアシスタント応答の `**` 混入を直す　[P1 / TODO]
+### T4 — AIアシスタント応答の `**` 混入を直す　[P1 / DONE（2026-05-27 dev-logic 実装・JournalRichText.tsx parseInline で処理・commit `793e519`）]
 
 - 詳細: ジャーナルのAIアシスタント応答に markdown の `**`（太字記号）が生で混じって表示される。
 - 関連ファイル: `src/components/journal/JournalAssistantSheet.tsx`（~154, 238, 248-256）、`journal.css` の `.journal-summary-card__body`（white-space: pre-wrap でプレーン表示）。`RichLessonText.tsx` のリッチテキストパーサーが未適用。
