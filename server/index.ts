@@ -17,6 +17,7 @@ import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
 import { createTtsRouter } from './routes/tts.js'
 import { createSearchRouter } from './routes/search.js'
 import { createWritingScoreRouter } from './routes/writing-score.js'
+import { createStudySessionsRouter } from './routes/study-sessions.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -280,6 +281,9 @@ app.use('/api/search', createSearchRouter(client, searchLimiter))
 
 // ロジカルライティング採点（POST /api/writing-score）
 app.use('/api/writing-score', createWritingScoreRouter(client, writingScoreLimiter))
+
+// 学習時間ログ（POST /api/study-sessions, GET /api/study-sessions/stats）
+app.use('/api', createStudySessionsRouter(supabase))
 
 
 // 静的ファイル（public/ → dist/）は配信する
