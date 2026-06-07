@@ -2240,7 +2240,7 @@ Keita が 2026-05-29 夕方に新バッチ8件を依頼（Keita は離席、林�
   - [ ] テスト（遷移の E2E ハッピーパス）
 - 抜けもれ提言: 履歴は新規機能。保存先（local か Supabase notebooks 系か）の設計判断が要る。表示だけでなく persist が必須。
 
-### T6 — レッスン本文 bullet（・）のずれ・青色を直す　[P1 / TODO]
+### T6 — レッスン本文 bullet（・）のずれ・青色を直す　[P1 / DONE（2026-05-27 dev-logic 実装・RichLessonText.tsx bullets 修正・commit `793e519`・Keita 実効性検証済）]
 
 - 詳細: レッスン本文の箇条書き bullet（・）が青色でずれて表示される。青ではなく普通の「・」でよい。
 - 関連ファイル: `src/components/RichLessonText.tsx`（~218-258, bullets ケース）。`<ul listStyle:none + flex>`、各 li の bullet span が 6px 円・`background: var(--brand)`（青）・`translateY(0.5em)` で位置調整。
