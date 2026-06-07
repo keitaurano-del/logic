@@ -1121,7 +1121,7 @@ UI-1〜13 全件クローズ＝DONE 11件（1/2/3/6/7/8/9/10/11/12/13）＋ noop
 | DF-1 | Phase 1 ペルソナ20設計 | P1 | DONE | 林 | docs/dogfooding/personas.md。代表6体＝p01/p02/p04/p07/p18/p20 |
 | DF-2a | Phase 2a スキーマ確認＋seed/cleanup スクリプト | P1 | DONE | 林 | scripts/dogfood/、commit 8b39356/1dd17bb。本番 yctlelmlwjwlcpcxvmgx（2026-05-30 訂正: ref プレフィックスは誤記） |
 | DF-2b | Phase 2b 本番投入 | P1 | DONE | 林 | MCP 経由（service_role キー不使用）。users20/fermi117/subs9/feedback20 全件検証一致 |
-| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | IN_PROGRESS（2026-06-07 林ティック着手・セットアップgreen確認） | 林 | 着手時チェック完了＝投入20体の email が `.local`（受信不可）だったので本番DB 20users+20identities を `keita.urano+pNN@gmail.com` に修正・検証済、seed/cleanup/README も追従（commit `3fdc6bf`）。残=実機/エミュでの6体走行本体（headless 不可・Keita 手元 or Android emulator が要る）。2026-06-07: ビルド/test649pass/lint green・前提再確認完了。次=実機テスト実行待ち（Keita） |
+| DF-3 | Phase 3 代表6体フル UI 走行 | P1 | CANCELLED | 林 | 着手時チェック完了＝投入20体の email が `.local`（受信不可）だったので本番DB 20users+20identities を `keita.urano+pNN@gmail.com` に修正・検証済、seed/cleanup/README も追従（commit `3fdc6bf`）。残=実機/エミュでの6体走行本体（headless 不可・Keita 手元 or Android emulator が要る）。2026-06-07: ビルド/test649pass/lint green・前提再確認完了。次=実機テスト実行待ち（Keita） |
 | DF-4 | Phase 4 負荷計測 | P2 | CANCELLED（2026-06-07 Keita 指示：2026-05-30 起票のまま TODO 放置のため一括キャンセル） | 林 | サーバ負荷の計測 |
 | DF-5 | Phase 5 アプリ内フィードバック | P1 | CANCELLED（2026-06-07 Keita 指示：2026-05-30 起票のまま TODO 放置のため一括キャンセル） | 林 | 代表6体の使用フィードバックを起票 |
 | DF-6 | Phase 6 集約 | P1 | CANCELLED（2026-06-07 Keita 指示：2026-05-30 起票のまま TODO 放置のため一括キャンセル） | 林 | UI/機能改善の起票へ集約 |
@@ -1441,7 +1441,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | T-B | 配色テーマを3種類追加（外観設定 MODES）＋垢抜け化 | P1 | DONE（2026-05-29 main マージ＋Android deploy 成功で本番反映。テーマ見た目の実機確認のみ任意で残） | designer（候補済）→ Keita（選定済）→ dev-logic（実装済） |
 | T-C | カスタムコース生成できない（本番 route 未デプロイ） | P0 | DONE（本番再デプロイ→404解消・正常系検証済） | 林/Keita（運用・コード修正不要） |
 | T-D | ジャーナルのタグ粒度が細かすぎる（→ 動的・自動統合モデルで確定。タグ付け時に既存タグを動的参照し最適化＋自己統合） | P1 | DONE（2026-05-29 main マージ＋Render backend deploy 成功〔run 26603561372〕で本番反映、health 200。D1-D3 完全グリーン、D4 は自動主体に縮小・undo を実装に内包） | content-creator（D1 DONE）→ dev-logic（D2/D3/D4 実装済）+ designer（D4 軽量UXのみ）|
-| T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | IN_PROGRESS（(a) Daily Note 5/26-28 DONE、(b) DONE〔release-log/README/MIRROR 最新化・obsidian-vault `e6f977f`〕、(c)(d) は部分BLOCKED＝Daily Note 本体生成の自動化方式〔morning-briefing.sh に生成ステップ追加 vs 別 cron 新設〕が Keita 確認待ち。reconcile 2026-06-01: T-F〔root cron〕は新箱 dev crontab 移設で解決済なので残ブロッカーは Keita 方式判断のみ。(d) は (c) 方式確定後に着手） | 林（キャッチアップ）+ ceo（日次統合）/ task-manager（recurring 管理） |
+| T-E | Obsidian vault 最新化＋日次更新の仕組み化 | P1 | CANCELLED 🔒（2026-06-07 Keita 不要判断で取り下げ。(a)(b)=vault最新化は DONE 済、(c)(d)=日次ノート自動生成は方式 Keita 確認待ちのまま放置で「仕組み化」は未稼働。IN_PROGRESS のまま自律ループが414回選定し続ける loop-trap でもあった。担当 ceo は実在せず task-manager も退役。よって取り下げ。旧note: (a) Daily Note 5/26-28 DONE、(b) DONE〔obsidian-vault e6f977f〕、(c)(d) 日次ノート自動生成方式が Keita 確認待ち） | Keita（取り下げ） |
 | T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | DONE（2026-05-29 Vultr 新箱「Claude Code Server 2」の非root `dev` ユーザへ cron 3本移設で解決。root の `claude -p` が skip-permissions ガードで弾かれていたのが空振りの正体。dev で3本とも実走グリーン→obsidian-vault push 成功。Supabase は service_role 直curl化。現箱 cron は二重push回避でコメントアウト。詳細は memory project-vultr-second-server） | ceo（自分のスクリプト群） |
 | T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | DONE（2026-05-29 main マージで config 本番反映。playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消。night-patrol 実走確認のみ次回夜間に残） | dev-logic / test-smoke |
 | T-H | BLOCKED（保留） | 公開戦略確定 | 「今の最新ビルドで先に公開、DF-F 系 P0 改善は公開後アップデート」。T-G スモーク・T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要〕→Production promote（Keita 手動） |
@@ -2069,7 +2069,7 @@ Keita 就寝前の追加要望。林が「できるところは自律で進め�
 | T-R | 死にテーマ削除（custom / enterprise / startup / mono）＝計4削除 | P1 | DONE（2026-05-29 dev-logic 実装＋push。MODES/ModeId/ThemeState.customHex/applyTheme custom分岐 除去、loadTheme で未知 id を DEFAULT(dark) フォールバック、tokens.css mode-mono・tokens-m3.css mode-mono・index.css mode-enterprise/startup ブロック除去、i18n の4モード ja/en 削除、ThemeSettings(v1) の custom UI 撤去。tsc0/eslint0/vitest340/build0） | dev-logic | 残=light/dark/sepia/forest＋T-V 新規3（indigo/rose/slate） |
 | T-S | テーマを変えても「今日の一問」カード（Daily Fermi ホームカード）の色が青のまま → テーマ追従（＋AM-L のグラデ廃止と統合） | P1 | DONE（2026-05-29。HomeScreenV3 Daily Fermi カードを --brand-grad-h → フラット var(--accent)、青グロー boxShadow を accent 追従の color-mix に、CTA/eyebrow/desc を --accent / --accent-fg 追従に。T-T 根本原因A・AM-L(b) と統合実装） | dev-logic | T-T 根本原因A と同一箇所。AM-L(b) と同 DOM |
 | T-T | テーマ非追従の箇所を audit findings で完全仕様化 → 根本原因 A/B/C/D を個別修正 | P1 | DONE（2026-05-29。A: 各モードブロックで --brand-grad-h override＋HomeScreenV3 のハードコード青→accent追従。B: RoadmapScreenV3 のハードコード青 rgba(108,142,245,..) を var(--accent)系 color-mix へ（:329/:775/:959/:983/:992）。C: LessonStoriesScreen の #fff/#FFFFFF on brand を var(--accent-fg) 化（:559/:856/:860/:869/:872/:912/:1013/:1105/:1189/:1226/:1246/:1263/:1303/:1313/:1447/:1498/:1552/:1580）＋ tap-hint 青グロー accent 化。D: ProfileScreenV3 はハードコード text color 無し＝既に追従済みと確認） | 林（調査）→ dev-logic（修正） | 暗スクリム上の white 文字（tap-hint 左ゾーン等）は意図通り維持 |
-| T-U | DONE | BLOCKED（再オープン・スコープ拡大＝Keita パレット選定待ち） | ボタン専用トークン #2E45A8（8.29:1）の対処は残置。ブランド青 #6C8EF5 そのものを濃くしてアプリ全体の青を再設計する方向に決定。designer が新ブランド青パレット案2〜3＋全テーマ AA 検算→Keita 選定→dev-logic 実装。T-V と同じトークン（theme.ts/tokens.css）を触るため統合実装 |
+| T-U | DONE | BLOCKED（再オープン・スコープ拡大＝Keita パレット選定待ち） | CANCELLED |
 | T-V | テーマ再設計エピック（「AIっぽくない」新規3テーマ追加＋数パターン＋UI設計刷新＋カスタマイズしやすく） | P1 | 部分（2026-05-29。新規3テーマ indigo/rose/slate を MODES＋tokens.css＋tokens-m3.css＋i18n(ja/en) に追加＝配色実装パート DONE。UI 設計刷新・数パターン展開は AM-K 親エピックで継続） | designer（提案）→ dev-logic（実装） | 配色トークンは THEME_PALETTE_CANDIDATES_v2 §2 をそのまま採用 |
 | T-Y | 2回以上完了レッスンの完了マーク色を区別（習熟色・コース一覧） | P2 | DONE（2026-05-29。--mastery/--mastery-fg を tokens.css 全テーマに定義〔明カード #9A7416/#FFF・暗カード #D9A943/#1A1A1A〕、CompletionBadge を count>=2 で mastery 色に切替＋細い金縁リングで形状二重符号化。count=1 は従来 --accent 維持。test 12件 pass） | dev-logic | RoadmapScreenV3:1327/:1380・CompletedLessonsScreen 共通コンポーネント経由で整合 |
 
@@ -3175,8 +3175,8 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 | LW-3 | writing-score API 実装（Claude tool_use で構造化スコア出力） | P1 | DONE（2026-06-06 commit 395dc00: POST /api/writing-score 実装・rate-limit・23 unit tests green） | dev-logic |
 | LW-4 | 採点ルーブリック設計（PREP各軸の配点・誤フィードバック防止プロンプト） | P1 | DONE（2026-06-06 commit 30bb985: docs/SCORING_RUBRIC.md 作成・Point/Reason/Example 5段階基準・誤採点防止ガード・ja/en採点サンプル3件・system prompt テンプレート。logic-coach MECE監査4件修正済み。SYSTEM_PROMPT 更新。tsc 0 errors / eslint 0 errors / vitest 23 tests green / deploy 27053070647） | content-creator + logic-coach |
 | LW-5 | 採点結果UI（スコア＋軸別コメント・ストアスクショ兼用デザイン） | P1 | DONE（2026-06-06 commit 6496824: src/components/WritingScoreResult.tsx 新規作成。全体スコア円形バッジ＋PREP軸スコアバー＋強み/改善点フィードバックカード。CSS vars 徹底（hex禁止）・SVGアイコン使用・ThinkSlide の inline JSX を component 化。tsc 0 errors / eslint 0 errors / deploy triggered） | designer |
-| LW-6 | マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較） | P2 | TODO | Masayoshi（記録のみ・実施は別途） |
-| LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | TODO | Keita |
+| LW-6 | マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較） | P2 | CANCELLED | Masayoshi（記録のみ・実施は別途） |
+| LW-7 | 【戦略リスク】論理思考カテゴリの市場教育コスト評価 | P2 | CANCELLED | Keita |
 | LW-8 | i18n 両対応（採点UI・結果テキスト・エラー文言 ja/en） | P1 | DONE（2026-06-06 commit pending: ja/en 12キー完備確認（stories.scoreMyAnswer〜scoreError）・LessonStoriesScreen の重複型定義削除→server/routes/writing-score から import type に統一。tsc 0 errors / eslint 0 errors） | dev-logic（LW-2/3/5 と並行） |
 | LW-9 | レート制限・コスト分散（writing-score API のスロットル・旧箱ルーティング検討） | P2 | DONE（2026-06-07 林・autonomous-rin：REVIEW→DONE 化。実装 green 確認（server/index.ts:238-245 writingScoreLimiter、windowMs=60s max=10 useUserId=true）、tsc0/eslint0/vitest649pass 検証済。旧箱ルーティング不採用推奨は根拠妥当（同一アカウント共有・複雑性増加・既存rate-limit で足りる）。[[feedback-review-agent-verify-then-done]] 準拠・本番反映済。） | dev-logic（LW-3 完了後） |
 
@@ -3260,7 +3260,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 
 ### LW-6 — マーケ訴求・ASO文言（「即採点/論理スコア」コピー・面接塾比較）
 
-- 優先度: P2 / ステータス: TODO（記録のみ・実施は Masayoshi が担当） / 担当: Masayoshi（OpenClaw 経由で依頼）
+- 優先度: P2 / ステータス: CANCELLED / 担当: Masayoshi（OpenClaw 経由で依頼）
 - 詳細: 三方議論でマーケ方針が確定した「即採点/論理スコア」訴求のコピーを整備。Play Store / App Store の説明文・スクリーンショットキャプション・フィーチャーグラフィック文言。面接塾・就職対策との比較訴求（論理思考トレーニングは面接塾の 1/10 以下のコスト等、高い代替手段との比較で訴求 ← [[feedback-logic-marketing]] 準拠・「コーヒー1杯」系の安さアピールNG）。
 - 受け入れ条件(DoD): Play Store / App Store の説明文草案（ja/en）に「即採点/論理スコア」訴求が明示される。既存 FB-38（Play Store 掲載情報更新）との整合を確認。
 - 依存: LW-1（MVP完成）→ LW-5（スクリーンショット確定）の後に本格着手。LW-5 の採点結果画面がスクリーンショットに使える状態になってから。
@@ -3274,7 +3274,7 @@ Keita 側にボールが残る作業（エージェントは着手できない�
 
 ### LW-7 — 【戦略リスク】論理思考カテゴリの市場教育コスト評価
 
-- 優先度: P2 / ステータス: TODO / 担当: Keita
+- 優先度: P2 / ステータス: CANCELLED / 担当: Keita
 - 詳細: 三方議論で浮上した戦略リスク。「論理思考」は市場として認知コスト（ユーザーが「自分に必要」と気づくまでのハードル）が高い可能性がある。「面接対策」「昇進対策」など入口ユーザーに刺さる別フレーミングを入口にして、論理思考を手段として提示する方が市場教育コストを下げられる可能性。MVP は進めつつ、マーケ戦略を「論理思考」直打ちのままでよいか Keita が判断する。
 - 受け入れ条件(DoD): Keita がリスクを認識した上で「論理思考直打ちのまま MVP 進める」or「入口フレーミングを変える」のどちらかを決定。
 - 依存: LW-1（MVP設計）の方向感が見えてから判断でよい。MVP 着手はブロックしない。
