@@ -69,7 +69,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 ---
 
 ### DF-F1 — ロードマップ検索/絞り込みの発見性が低い　[P0 / 即実装〜軽デザイン]
-- 優先度: P0 / ステータス: REVIEW（実装済 `0d8b799`「ロードマップ上部に分かりやすい検索エントリを追加」・DF-FV 実効性検証待ち）/ 担当: designer（発見性）＋dev-logic
+- 優先度: P0 / ステータス: DONE（実装済 `0d8b799`「ロードマップ上部に分かりやすい検索エントリを追加」・DF-FV 実効性検証○・2026-06-07 台帳更新）/ 担当: designer（発見性）＋dev-logic
 - 詳細: 42コース縦スクロールで p01/p07/p18 横断「検索/絞り込みが見つからない」。**調査結果＝検索機能は実装済み**（`RoadmapScreenV3.tsx` 右上虫眼鏡 line 456-470＋`SearchOverlay`＋AI検索＋レベル/進捗/形式フィルタ＋検索履歴）。問題は機能不在ではなく**虫眼鏡アイコンの発見性**。→ 発見性を上げる施策（アイコン拡大／ラベル併記「検索」／初回コーチマークで検索を案内／上部に検索バー風プレースホルダを出す等）を designer 主導で1案出して Keita 承認 → dev-logic 実装。
 - 関連ファイル: `src/screens/RoadmapScreenV3.tsx`（虫眼鏡 line 456-470, SearchOverlay）、`src/tutorial/coachmark.tsx`（検索を案内する coachmark 追加候補）、`src/i18n.ts`（`roadmap.searchAria` 既存／新規ラベル）
 - DoD: 代表ペルソナが初見で検索導線に気づける（虫眼鏡の視認性向上 or 検索バー化）。機能自体は既存のまま回帰なし。tsc/eslint green。
