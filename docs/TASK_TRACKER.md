@@ -4,7 +4,27 @@ task-manager エージェントが管理するタスク台帳の正本。
 ステータス: TODO / IN_PROGRESS / BLOCKED / REVIEW / DONE / CANCELLED
 更新は必ずこのファイルに反映する。
 
-> ⏸️ **2026-06-07 Logic 一時保留中（Keita 指示）**: プロジェクトは中止ではなく一時停止。既存タスクは全件 CANCELLED 済み（実装コミット済みのコードは維持・巻き戻さない）。再開時に必要分を再起票する。それまで autonomous 駆動・各エージェントは Logic タスクに着手しないこと。
+> ▶️ **2026-06-09 Logic 再開（Keita 指示「再開して」）**: 一時保留（2026-06-07〜）を解除。改善点レビュー（全62項）のうち実コードで裏取り済みの重大項目を「再開バッチ 2026-06-09」として再起票（下記 LR-* 表）。旧 DF-F 等の CANCELLED 行はそのまま履歴として残す（必要時に個別再オープン）。UX/アクセシビリティ/Web/収益化の観点は Sonnet 上限のため未検証＝6/10 10:00 JST 以降に検証してから追加起票する。
+
+---
+
+## 再開バッチ 2026-06-09（改善点レビュー・実コード検証済み）
+
+改善点レビュー（obsidian-vault/20-Knowledge/logic-improvements-20260609.md・全62項）の高リスク4観点（課金/セキュリティ・法務審査・DB/RLS・AI）を実コードに突き合わせて再検証（TRUE 19 / PARTIAL 5 / FALSE 0 / FIXED 0）。裏取り済みの blocker/high をここに起票。括弧内 #N はレビュー項番。担当 dev-logic（法務系は Keita 承認同伴）。Logic は再開済みなので着手可。
+
+| ID | タイトル | 優先度 | ステータス | 担当案 |
+|----|---------|--------|-----------|--------|
+| LR-1 | 課金エンタイトルメントのサーバ権威化（localStorage信頼ゲート廃止→getPremiumStatus結線／startCheckout で Supabase JWT 付与し subscriptions へ記録／verify の JWT 検証・body userId 信頼を撤廃／profiles.plan 参照撤廃）#1/#2/#3/#4 | P0 | TODO | dev-logic |
+| LR-2 | ADMIN_SECRET 既定値（logic-admin-2026）撤廃＋未設定/既定値で起動失敗ガード #5 | P0 | TODO | dev-logic |
+| LR-3 | プライバシーポリシー全面改訂（Health Connect 歩数・睡眠／ジャーナル本文の Anthropic 送信／Sentry・Google TTS 委託先／属性PII を収集・委託先表に明記）#31/#33/#34 | P0 | TODO | dev-logic＋Keita |
+| LR-4 | アカウント削除のサーバ実装＋アプリ内導線＋保持期限の自動削除バッチ（Play 必須要件）#32 | P0 | TODO | dev-logic |
+| LR-5 | Supabase RLS 締め（placement_results の using(true) 公開撤廃／reports・feedback・fermi_scores の匿名 insert 制限／user_stats RLS 有効化・record-score の userId/userName 検証／metabase_readonly の BYPASSRLS 見直し／手動 SQL 2本を連番 migration へ取込）#36-#41 | P1 | TODO | dev-logic |
+| LR-6 | AI 生成の認証付き rate limit ＋有料の月次原価ハードキャップ（body userId 無検証採用を撤廃）#42 | P1 | TODO | dev-logic |
+| LR-7 | Android ハードニング（allowBackup=false／deep link を Verified App Links 化＋autoVerify／未使用権限 READ_MEDIA_IMAGES・FOREGROUND_SERVICE の削除）#53/#54 | P1 | TODO | dev-logic |
+| LR-8 | AI の誤情報・注入対策（fermi「実際の値(参考)」の捏造リスク是正 #43／confirm チャットの messages 配列 role/長さ検証 #44／fermi 入力長キャップ #45）| P2 | TODO | dev-logic |
+| LR-9 | 課金運用の堅牢化（インメモリ rate limit の共有ストア化／RTDN_ENDPOINT_URL 未設定時の検証バイパス封じ）#26 | P2 | TODO | dev-logic |
+
+> 補足: UX/コンテンツ・a11y/i18n/Web・収益化の観点（項 6-25,27-30,48-52,55-62）は未再検証。6/10 10:00 JST の Sonnet 復帰後に同方式で裏取りし、確度の高いものを LR-10 以降で追加起票する。
 
 ---
 
