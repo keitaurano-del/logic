@@ -26,24 +26,24 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ### 追加分（UX/コンテンツ/a11y/Web/収益化・レビュー由来／未再検証）
 
-Keita 指示「残件もタスク起票して」(2026-06-09)。改善点レビューの残り観点（項 6-25,27-30,48-52,55-62）をテーマ単位でまとめて起票。高リスク4観点と異なり、まだ行単位の実コード再検証は未実施＝**着手時に dev-logic が file:line を確認してから実装**する（6/10 10:00 JST の Sonnet 復帰後に同方式で裏取りし、過大/既修正が判明したものは個別に CANCELLED/補正する）。
+Keita 指示「残件もタスク起票して」(2026-06-09)。改善点レビューの残り観点（項 6-25,27-30,48-52,55-62）をテーマ単位でまとめて起票。**2026-06-09 に Opus で実コード再検証済み**（37判定：TRUE 30 / PARTIAL 4 / FIXED 1 / UNVERIFIABLE 1 / FALSE 0）。検証で判明した補正を各行に反映済み：#12(FB-05戻りナビ)は実装+回帰テスト済み判明で LR-13 から除外、#52/#60/#61 は過大評価をスコープ縮小、#17 は難易度フィールド不在で裏取り不能のため LR-14 内で保留、#6 は価格値を訂正。詳細は obsidian-vault/20-Knowledge/logic-improvements-20260609.md の「再検証ログ 第2弾」。
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
-| LR-10 | 課金導線の是正（価格が4+箇所で不一致→Play実SKUを正本に一本化#6／レッスン本体の課金ロック実装 or 訴求を実装と一致#7／正式な無料トライアルSKU化#9／失効キャンペーン CAMPAIGN_ACTIVE の日付ベース自動制御#27）| P1 | TODO | dev-logic＋Keita |
+| LR-10 | 課金導線の是正（価格不一致を正本一本化#6＝subscription.ts:20-24 の350/2450 を正本候補に landing 3500/6980・docs各所のズレを統一。旧主張の800/7800・390/2730は誤帰属で撤回／レッスン本体の課金ロック実装 or 訴求を実装と一致#7（RoadmapScreenV3に課金ロック無し）／正式な無料トライアルSKU化#9／失効キャンペーン CAMPAIGN_ACTIVE の日付ベース自動制御#27）| P1 | TODO | dev-logic＋Keita |
 | LR-11 | 課金ファネルのアナリティクス計測導入（paywall到達/離脱が現状ゼロ計測#8。PostHog or Firebase で paywall_view→checkout を最小導入）| P1 | TODO | dev-logic |
 | LR-12 | オンボーディング改善（マジックリンク送信後画面に「メールを開く」CTA＋迷惑メール案内＋再送クールダウン#10／価値体験を先行し属性入力・課金を後ろへ#11）| P1 | TODO | dev-logic |
-| LR-13 | ナビ/IA 欠陥の実装（復習・ジャーナル起点のレッスン完了後の復帰導線、タブ独立スタック、一覧戻る導線＝FB-05#12／起動最低2秒 MIN_BOOT_MS を2回目以降短縮#15）| P1 | TODO | dev-logic |
-| LR-14 | コンテンツ修正（client-01/02 の title↔中身ズレ解消#13／AI自動生成問題の品質ゲートを別モデルのクロスチェック化#14／ja-en レッスン非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一#25／難易度カーブの初級補強#17）| P1 | TODO | content-creator＋dev-logic |
-| LR-15 | 復習/学習の無料境界と定着設計（復習SRS天井7日固定の段階ラダー化#16／無料ユーザー全面ペイウォールの直近N件解放#21）| P2 | TODO | dev-logic＋Keita |
+| LR-13 | 起動最低2秒 MIN_BOOT_MS を2回目以降短縮#15（AppV3.tsx:347）＋任意でタブ独立履歴スタック。※FB-05戻りナビ#12は再検証で実装＋回帰テスト済み判明＝対象外（残はタブ独立スタックのみ）| P2 | TODO | dev-logic |
+| LR-14 | コンテンツ修正（数字コース(client-01)に論点系lessonが混入#13＝方向修正のうえ解消／AI自動生成の自己採点auto承認(閾値0.8 autogen_problems.py:147)を別モデルのクロスチェック化#14／ja-en レッスン非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一#25）※難易度カーブ#17は構造化difficultyフィールド不在で裏取り不能＝保留（やるなら難易度フィールド新設が前提）| P1 | TODO | content-creator＋dev-logic |
+| LR-15 | 復習/学習の無料境界と定着設計（復習SRS天井7日固定の段階ラダー化#16＝ease は保存されるが間隔計算に未使用の半デッド／無料ユーザー全面ペイウォールの直近N件解放#21）| P2 | TODO | dev-logic＋Keita |
 | LR-16 | ストア最適化＆レビュー獲得（In-App Review 依頼を成功体験後に#22／ストアSS拡充＋価値訴求コピー#23／成果のSNSシェアカード導線#29／離脱予兆 win-back 通知#28）| P2 | TODO | designer＋content-creator |
-| LR-17 | テーマ・表示の不具合（ライト/ダークの OS 追従＋アクセント選択UIを到達可能に#18／ストリーク日付の UTC/ローカル混在を localDate 統一#19／ErrorBoundary の i18n 化＋Sentry 送信＋復帰導線#20）| P2 | TODO | designer＋dev-logic |
+| LR-17 | テーマ・表示の不具合（ライト/ダークの OS 追従＋アクセント選択UIの導線復活#18＝UIは ThemeSettings.tsx 現存だが死蔵で到達不可／ストリーク日付の UTC/ローカル混在を localDate 統一#19／ErrorBoundary の i18n 化＋Sentry 送信＋復帰導線#20）| P2 | TODO | designer＋dev-logic |
 | LR-18 | アクセシビリティ/多言語（図解SVGの日本語ハードコードを i18n 化＋aria-label#55／html lang をロケール切替で更新#56／アクセント色の WCAG AA 確保#57／モーダルの focus-trap 共通化#58／日付・数値ロケール統一#59）| P1 | TODO | designer＋dev-logic |
 | LR-19 | 起動/描画の性能（全レッスン ja+en 集約ロード約5MB を locale/カテゴリ単位の遅延ロードに#50／長いリストの仮想化#51）| P1 | TODO | dev-logic |
-| LR-20 | オフライン対応（PWA/Service Worker 不在・fetch タイムアウト無し・同期スタブによる複数端末での状態リセット#52）| P2 | TODO | dev-logic |
+| LR-20 | オフライン対応＋同期の有効化（PWA/Service Worker/manifest 不在・fetch タイムアウト無し・オフラインバナー無し＋device-sync feature flag が既定OFF#52。※同期自体は merge 付きで実装済(syncService.ts:699-708)＝「未実装」は撤回。flag 既定値の方針決定が論点）| P2 | TODO | dev-logic |
 | LR-21 | ネイティブ堅牢化（購入検証失敗時に課金が回復しない＝起動/ログイン時の restorePurchases 復旧ループ#48／R8/ProGuard 有効化＋keepルール整備#49）| P1 | TODO | dev-logic |
 | LR-22 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテストを追加し CI 必須化#24）| P1 | TODO | dev-logic |
-| LR-23 | Web/SEO（LP に og:image/JSON-LD/canonical/robots/sitemap/hreflang 追加#60／ブログ・SEO 導線＋LCP 改善#61／競合差別化マップ＋LP の価値訴求再構成#62／死にリンク・ウェルカムメールSIT URL・render.yaml 廃止Stripe env の掃除#30）| P2 | TODO | designer＋content-creator＋dev-logic |
+| LR-23 | Web/SEO（og基本タグは有・不足分の og:image/twitter/JSON-LD/canonical/robots/sitemap/hreflang/EN版LP/計測タグ を追加#60／render-blocking CSS の preload 化・img loading=lazy 付与・ブログ/コンテンツマーケ導線新設#61＝旧「同期ロードでLCP悪化」は display=swap 済で撤回／競合差別化マップ＋LP の価値訴求再構成#62／死にリンク・ウェルカムメールSIT URL・render.yaml 廃止Stripe env の掃除#30）| P2 | TODO | designer＋content-creator＋dev-logic |
 
 ---
 
