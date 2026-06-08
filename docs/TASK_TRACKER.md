@@ -10,40 +10,84 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ## 再開バッチ 2026-06-09（改善点レビュー・実コード検証済み）
 
-改善点レビュー（obsidian-vault/20-Knowledge/logic-improvements-20260609.md・全62項）の高リスク4観点（課金/セキュリティ・法務審査・DB/RLS・AI）を実コードに突き合わせて再検証（TRUE 19 / PARTIAL 5 / FALSE 0 / FIXED 0）。裏取り済みの blocker/high をここに起票。括弧内 #N はレビュー項番。担当 dev-logic（法務系は Keita 承認同伴）。Logic は再開済みなので着手可。
+改善点レビュー（obsidian-vault/20-Knowledge/logic-improvements-20260609.md・全62項）を Opus で全件実コード再検証（合計61判定：FALSE 0／FIXED 1／UNVERIFIABLE 1／PARTIAL 9／残り TRUE。詳細は同 doc の「再検証ログ 第1弾/第2弾」）。
+
+**まとめ基準（2026-06-09 Keita「直しやすい基準で・必要なら分割・実装漏れがないように」）**: 1タスク＝1PR で直せる実装単位（同じ根本原因／同じファイル／同じサブシステム）で切る。緩いテーマ束は分解済み。括弧内 #N はレビュー項番で、全62項の対応は末尾の「項番→LR 対応表」で監査可能（漏れなし）。担当 dev-logic 主体、法務・価格・無料境界は Keita 承認同伴。Logic は再開済みなので着手可。
+
+### P0 — セキュリティ／課金／法務ブロッカー（再開・課金ON前に必須）
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
-| LR-1 | 課金エンタイトルメントのサーバ権威化（localStorage信頼ゲート廃止→getPremiumStatus結線／startCheckout で Supabase JWT 付与し subscriptions へ記録／verify の JWT 検証・body userId 信頼を撤廃／profiles.plan 参照撤廃）#1/#2/#3/#4 | P0 | TODO | dev-logic |
-| LR-2 | ADMIN_SECRET 既定値（logic-admin-2026）撤廃＋未設定/既定値で起動失敗ガード #5 | P0 | TODO | dev-logic |
-| LR-3 | プライバシーポリシー全面改訂（Health Connect 歩数・睡眠／ジャーナル本文の Anthropic 送信／Sentry・Google TTS 委託先／属性PII を収集・委託先表に明記）#31/#33/#34 | P0 | TODO | dev-logic＋Keita |
-| LR-4 | アカウント削除のサーバ実装＋アプリ内導線＋保持期限の自動削除バッチ（Play 必須要件）#32 | P0 | TODO | dev-logic |
-| LR-5 | Supabase RLS 締め（placement_results の using(true) 公開撤廃／reports・feedback・fermi_scores の匿名 insert 制限／user_stats RLS 有効化・record-score の userId/userName 検証／metabase_readonly の BYPASSRLS 見直し／手動 SQL 2本を連番 migration へ取込）#36-#41 | P1 | TODO | dev-logic |
-| LR-6 | AI 生成の認証付き rate limit ＋有料の月次原価ハードキャップ（body userId 無検証採用を撤廃）#42 | P1 | TODO | dev-logic |
-| LR-7 | Android ハードニング（allowBackup=false／deep link を Verified App Links 化＋autoVerify／未使用権限 READ_MEDIA_IMAGES・FOREGROUND_SERVICE の削除）#53/#54 | P1 | TODO | dev-logic |
-| LR-8 | AI の誤情報・注入対策（fermi「実際の値(参考)」の捏造リスク是正 #43／confirm チャットの messages 配列 role/長さ検証 #44／fermi 入力長キャップ #45）| P2 | TODO | dev-logic |
-| LR-9 | 課金運用の堅牢化（インメモリ rate limit の共有ストア化／RTDN_ENDPOINT_URL 未設定時の検証バイパス封じ）#26 | P2 | TODO | dev-logic |
+| LR-1 | 購入の認証ユーザー束縛＋subscriptions記録（startCheckout で Supabase JWT 付与／verify の JWT 検証・body userId 信頼を撤廃）#2,#3 | P0 | TODO | dev-logic |
+| LR-2 | エンタイトルメント判定のサーバ権威化（localStorage 信頼ゲート廃止→getPremiumStatus 結線／profiles.plan 参照撤廃）#1,#4 | P0 | TODO | dev-logic |
+| LR-3 | ADMIN_SECRET 既定値（logic-admin-2026）撤廃＋未設定/既定値で起動失敗ガード #5 | P0 | TODO | dev-logic |
+| LR-4 | プライバシーポリシー全面改訂（健康データ／ジャーナルの Anthropic 送信／Sentry・Google TTS 委託先／属性PII／既存 LEGAL_REVIEW 差分を収集・委託先表に反映）#31,#33,#34,#35 | P0 | TODO | dev-logic＋Keita |
+| LR-5 | アカウント削除のサーバ実装＋アプリ内導線＋保持期限の自動削除バッチ（Play 必須要件）#32 | P0 | TODO | dev-logic |
+| LR-6 | Android セキュリティハードニング（allowBackup=false／deep link を Verified App Links＋autoVerify／未使用権限 READ_MEDIA_IMAGES・FOREGROUND_SERVICE 削除）#53,#54 | P0 | TODO | dev-logic |
 
-### 追加分（UX/コンテンツ/a11y/Web/収益化・レビュー由来／未再検証）
-
-Keita 指示「残件もタスク起票して」(2026-06-09)。改善点レビューの残り観点（項 6-25,27-30,48-52,55-62）をテーマ単位でまとめて起票。**2026-06-09 に Opus で実コード再検証済み**（37判定：TRUE 30 / PARTIAL 4 / FIXED 1 / UNVERIFIABLE 1 / FALSE 0）。検証で判明した補正を各行に反映済み：#12(FB-05戻りナビ)は実装+回帰テスト済み判明で LR-13 から除外、#52/#60/#61 は過大評価をスコープ縮小、#17 は難易度フィールド不在で裏取り不能のため LR-14 内で保留、#6 は価格値を訂正。詳細は obsidian-vault/20-Knowledge/logic-improvements-20260609.md の「再検証ログ 第2弾」。
+### P1 — データ保護／AIコスト／収益化の根幹／重大UX
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
-| LR-10 | 課金導線の是正（価格不一致を正本一本化#6＝subscription.ts:20-24 の350/2450 を正本候補に landing 3500/6980・docs各所のズレを統一。旧主張の800/7800・390/2730は誤帰属で撤回／レッスン本体の課金ロック実装 or 訴求を実装と一致#7（RoadmapScreenV3に課金ロック無し）／正式な無料トライアルSKU化#9／失効キャンペーン CAMPAIGN_ACTIVE の日付ベース自動制御#27）| P1 | TODO | dev-logic＋Keita |
-| LR-11 | 課金ファネルのアナリティクス計測導入（paywall到達/離脱が現状ゼロ計測#8。PostHog or Firebase で paywall_view→checkout を最小導入）| P1 | TODO | dev-logic |
-| LR-12 | オンボーディング改善（マジックリンク送信後画面に「メールを開く」CTA＋迷惑メール案内＋再送クールダウン#10／価値体験を先行し属性入力・課金を後ろへ#11）| P1 | TODO | dev-logic |
-| LR-13 | 起動最低2秒 MIN_BOOT_MS を2回目以降短縮#15（AppV3.tsx:347）＋任意でタブ独立履歴スタック。※FB-05戻りナビ#12は再検証で実装＋回帰テスト済み判明＝対象外（残はタブ独立スタックのみ）| P2 | TODO | dev-logic |
-| LR-14 | コンテンツ修正（数字コース(client-01)に論点系lessonが混入#13＝方向修正のうえ解消／AI自動生成の自己採点auto承認(閾値0.8 autogen_problems.py:147)を別モデルのクロスチェック化#14／ja-en レッスン非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一#25）※難易度カーブ#17は構造化difficultyフィールド不在で裏取り不能＝保留（やるなら難易度フィールド新設が前提）| P1 | TODO | content-creator＋dev-logic |
-| LR-15 | 復習/学習の無料境界と定着設計（復習SRS天井7日固定の段階ラダー化#16＝ease は保存されるが間隔計算に未使用の半デッド／無料ユーザー全面ペイウォールの直近N件解放#21）| P2 | TODO | dev-logic＋Keita |
-| LR-16 | ストア最適化＆レビュー獲得（In-App Review 依頼を成功体験後に#22／ストアSS拡充＋価値訴求コピー#23／成果のSNSシェアカード導線#29／離脱予兆 win-back 通知#28）| P2 | TODO | designer＋content-creator |
-| LR-17 | テーマ・表示の不具合（ライト/ダークの OS 追従＋アクセント選択UIの導線復活#18＝UIは ThemeSettings.tsx 現存だが死蔵で到達不可／ストリーク日付の UTC/ローカル混在を localDate 統一#19／ErrorBoundary の i18n 化＋Sentry 送信＋復帰導線#20）| P2 | TODO | designer＋dev-logic |
-| LR-18 | アクセシビリティ/多言語（図解SVGの日本語ハードコードを i18n 化＋aria-label#55／html lang をロケール切替で更新#56／アクセント色の WCAG AA 確保#57／モーダルの focus-trap 共通化#58／日付・数値ロケール統一#59）| P1 | TODO | designer＋dev-logic |
-| LR-19 | 起動/描画の性能（全レッスン ja+en 集約ロード約5MB を locale/カテゴリ単位の遅延ロードに#50／長いリストの仮想化#51）| P1 | TODO | dev-logic |
-| LR-20 | オフライン対応＋同期の有効化（PWA/Service Worker/manifest 不在・fetch タイムアウト無し・オフラインバナー無し＋device-sync feature flag が既定OFF#52。※同期自体は merge 付きで実装済(syncService.ts:699-708)＝「未実装」は撤回。flag 既定値の方針決定が論点）| P2 | TODO | dev-logic |
-| LR-21 | ネイティブ堅牢化（購入検証失敗時に課金が回復しない＝起動/ログイン時の restorePurchases 復旧ループ#48／R8/ProGuard 有効化＋keepルール整備#49）| P1 | TODO | dev-logic |
-| LR-22 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテストを追加し CI 必須化#24）| P1 | TODO | dev-logic |
-| LR-23 | Web/SEO（og基本タグは有・不足分の og:image/twitter/JSON-LD/canonical/robots/sitemap/hreflang/EN版LP/計測タグ を追加#60／render-blocking CSS の preload 化・img loading=lazy 付与・ブログ/コンテンツマーケ導線新設#61＝旧「同期ロードでLCP悪化」は display=swap 済で撤回／競合差別化マップ＋LP の価値訴求再構成#62／死にリンク・ウェルカムメールSIT URL・render.yaml 廃止Stripe env の掃除#30）| P2 | TODO | designer＋content-creator＋dev-logic |
+| LR-7 | RLS/権限の締め直し（placement_results の using(true) 公開撤廃／reports・feedback・fermi_scores の匿名 insert 制限／user_stats RLS 有効化＋record-score の userId/userName 検証／metabase_readonly の BYPASSRLS 見直し）#36,#37,#38,#39 | P1 | TODO | dev-logic |
+| LR-8 | マイグレーション整合化（migrations 外の手動 SQL 2本を連番 migration へ取込・冪等化）#40 | P1 | TODO | dev-logic |
+| LR-9 | 機微データの平文/保持対策（daily_journals 等の暗号化・保持TTL／set_updated_at の search_path 固定）#41 | P1 | TODO | dev-logic |
+| LR-10 | AI 生成の認証付き rate limit ＋有料の月次原価ハードキャップ（body userId 無検証採用を撤廃）#42 | P1 | TODO | dev-logic |
+| LR-11 | 価格の正本一本化（subscription.ts:20-24 の 350/2450 を正本候補に landing 3500/6980・docs 各所のズレを統一。旧主張 800/7800・390/2730 は誤帰属で撤回）#6 | P1 | TODO | dev-logic＋Keita |
+| LR-12 | レッスン本体の課金ロック実装 or 訴求を実装と一致（RoadmapScreenV3 に課金ロック無し）#7 | P1 | TODO | dev-logic＋Keita |
+| LR-13 | 正式な無料トライアルSKU化（Play Billing のトライアル付きベースプラン）#9 | P1 | TODO | dev-logic |
+| LR-14 | 課金ファネルのアナリティクス計測導入（paywall_view→checkout を PostHog or Firebase で最小導入。現状計測ゼロ）#8 | P1 | TODO | dev-logic |
+| LR-15 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテスト追加＋CI 必須化）#24 | P1 | TODO | dev-logic |
+| LR-16 | 購入検証失敗の回復（起動/ログイン時の restorePurchases 復旧ループ＋指数バックオフ。現状 restorePurchases は呼出元ゼロ）#48 | P1 | TODO | dev-logic |
+| LR-17 | R8/ProGuard 有効化＋keep ルール整備（課金ロジック難読化/シュリンク）#49 | P1 | TODO | dev-logic |
+| LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | TODO | dev-logic |
+| LR-19 | オンボーディング順序の是正（価値体験を先行し属性入力・課金を後ろへ。birthYear 必須スキップ不可を緩和）#11 | P1 | TODO | dev-logic |
+| LR-20 | レッスンの遅延ロード（全レッスン ja+en 集約 約5MB を locale/カテゴリ単位に分割）#50 | P1 | TODO | dev-logic |
+| LR-21 | 図解SVGの i18n 化＋aria-label（18コンポーネントが日本語ハードコード＋代替テキスト無し）#55 | P1 | TODO | dev-logic |
+| LR-22 | html lang をロケール切替で更新（現状 index.html 固定 "ja"・1行修正級）#56 | P1 | TODO | dev-logic |
+| LR-23 | アクセント色の WCAG AA 確保（ライト面で実測 2.15-3.75・図解 stroke 含む）#57 | P1 | TODO | designer＋dev-logic |
+
+### P2 — 磨き込み／コンテンツ／SEO
+
+| ID | タイトル | 優先度 | ステータス | 担当案 |
+|----|---------|--------|-----------|--------|
+| LR-24 | fermi の誤情報・注入対策（「実際の値(参考)」の捏造リスク是正#43／confirm チャットの messages 配列 role/長さ検証#44／fermi 入力長キャップ#45）| P2 | TODO | dev-logic |
+| LR-25 | AI 体験の底上げ（応答の SSE ストリーミング化#46／採点・添削だけ上位モデル化#47）| P2 | TODO | dev-logic |
+| LR-26 | 課金運用の堅牢化（インメモリ rate limit の共有ストア化／RTDN_ENDPOINT_URL 未設定時の検証バイパス封じ）#26 | P2 | TODO | dev-logic |
+| LR-27 | キャンペーンの日付ベース自動制御（CAMPAIGN_ACTIVE のハードコード true を是正）#27 | P2 | TODO | dev-logic |
+| LR-28 | 死にリンク/SIT URL/廃止Stripe env の掃除（Play リンク appId 不一致・ウェルカムメール SIT URL・render.yaml の Stripe env 残存）#30 | P2 | TODO | dev-logic |
+| LR-29 | client-01/02 の title↔中身整合（論点系 lesson が数字コースに混入）#13 | P2 | TODO | content-creator＋dev-logic |
+| LR-30 | AI 自動生成問題の品質ゲート強化（自己採点 auto 承認 閾値0.8 を別モデルのクロスチェックへ）#14 | P2 | TODO | dev-logic |
+| LR-31 | ja-en 非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一の解消（CONTENT/THUMBNAIL 監査既出分）#25 | P2 | TODO | content-creator＋designer |
+| LR-32 | 起動 MIN_BOOT_MS の2回目以降短縮＋タブ独立履歴スタック（#12 戻りナビ本体は実装/回帰テスト済＝残はタブスタックのみ）#15 | P2 | TODO | dev-logic |
+| LR-33 | 復習ハブ等の無料境界見直し（直近 N 件は無料解放）#21 | P2 | TODO | dev-logic＋Keita |
+| LR-34 | 復習SRS天井7日固定の段階ラダー化（ease は保存されるが間隔計算に未使用の半デッド）#16 | P2 | TODO | dev-logic＋Keita |
+| LR-35 | テーマの OS 追従＋アクセント選択UIの導線復活（UI は ThemeSettings.tsx 現存だが死蔵で到達不可）#18 | P2 | TODO | designer＋dev-logic |
+| LR-36 | ストリーク日付の UTC/ローカル混在を localDate 統一（JST 深夜の1日ズレ）#19 | P2 | TODO | dev-logic |
+| LR-37 | ErrorBoundary の i18n 化＋Sentry 送信＋「ホームへ戻る」導線#20 | P2 | TODO | dev-logic |
+| LR-38 | モーダル/シートの focus-trap・初期/復帰フォーカスを共通化#58 | P2 | TODO | dev-logic |
+| LR-39 | 日付/数値ロケールの統一＋インライン生hex/フォント追従の是正#59 | P2 | TODO | dev-logic |
+| LR-40 | In-App Review 依頼（成功の瞬間に1回・低評価はフィードバックへ二段）#22 | P2 | TODO | dev-logic |
+| LR-41 | ストアSS拡充＋価値訴求コピー（現状5枚・コピー焼き込み無し）#23 | P2 | TODO | designer＋content-creator |
+| LR-42 | 成果（偏差値/ストリーク/XP）の SNS シェア導線結線（share.ts は実装済だが未配線）#29 | P2 | TODO | dev-logic |
+| LR-43 | win-back / 離脱予兆ユーザーの呼び戻し通知（既存通知基盤を拡張）#28 | P2 | TODO | dev-logic |
+| LR-44 | オフライン対応＋同期フラグ方針（PWA/SW/manifest・fetch タイムアウト・オフラインバナーの欠如＋device-sync flag 既定OFF。同期自体は実装済）#52 | P2 | TODO | dev-logic |
+| LR-45 | 長いリストの仮想化（RoadmapScreenV3 等を react-window or content-visibility）#51 | P2 | TODO | dev-logic |
+| LR-46 | SEO メタタグ拡充（og基本タグは有・不足の og:image/twitter/JSON-LD/canonical/robots/sitemap/hreflang/EN版LP/計測タグを追加）#60 | P2 | TODO | dev-logic |
+| LR-47 | LP 配信最適化＋コンテンツ導線（render-blocking CSS の preload 化・img loading=lazy・ブログ/SEO 導線新設。旧「同期ロードでLCP悪化」は display=swap 済で撤回）#61 | P2 | TODO | designer＋dev-logic |
+| LR-48 | 競合差別化マップ＋LP の価値訴求再構成（用途別セクション・比較表・独自価値のヒーロー化）#62 | P2 | TODO | content-creator＋designer |
+
+### P3 — 前提タスク（保留）
+
+| ID | タイトル | 優先度 | ステータス | 担当案 |
+|----|---------|--------|-----------|--------|
+| LR-49 | 難易度フィールドの新設＋難易度カーブ補強（#17 は構造化 difficulty フィールド不在で裏取り不能＝この前提タスクが先行条件）#17 | P3 | BLOCKED | dev-logic＋content-creator |
+
+### 項番→LR 対応表（実装漏れ監査・全62項）
+
+1→LR-2 / 2→LR-1 / 3→LR-1 / 4→LR-2 / 5→LR-3 / 6→LR-11 / 7→LR-12 / 8→LR-14 / 9→LR-13 / 10→LR-18 / 11→LR-19 / 12→対象外（FIXED：FB-05戻りナビ実装+回帰テスト済。残タブスタックは LR-32）/ 13→LR-29 / 14→LR-30 / 15→LR-32 / 16→LR-34 / 17→LR-49（保留）/ 18→LR-35 / 19→LR-36 / 20→LR-37 / 21→LR-33 / 22→LR-40 / 23→LR-41 / 24→LR-15 / 25→LR-31 / 26→LR-26 / 27→LR-27 / 28→LR-43 / 29→LR-42 / 30→LR-28 / 31→LR-4 / 32→LR-5 / 33→LR-4 / 34→LR-4 / 35→LR-4 / 36→LR-7 / 37→LR-7 / 38→LR-7 / 39→LR-7 / 40→LR-8 / 41→LR-9 / 42→LR-10 / 43→LR-24 / 44→LR-24 / 45→LR-24 / 46→LR-25 / 47→LR-25 / 48→LR-16 / 49→LR-17 / 50→LR-20 / 51→LR-45 / 52→LR-44 / 53→LR-6 / 54→LR-6 / 55→LR-21 / 56→LR-22 / 57→LR-23 / 58→LR-38 / 59→LR-39 / 60→LR-46 / 61→LR-47 / 62→LR-48
+
+監査結果: 62項すべて LR タスクに割当済み（#12 のみ FIXED で対象外＝残件はタスク化、漏れなし）。
 
 ---
 
