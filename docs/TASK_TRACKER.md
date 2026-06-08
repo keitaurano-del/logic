@@ -24,7 +24,26 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-8 | AI の誤情報・注入対策（fermi「実際の値(参考)」の捏造リスク是正 #43／confirm チャットの messages 配列 role/長さ検証 #44／fermi 入力長キャップ #45）| P2 | TODO | dev-logic |
 | LR-9 | 課金運用の堅牢化（インメモリ rate limit の共有ストア化／RTDN_ENDPOINT_URL 未設定時の検証バイパス封じ）#26 | P2 | TODO | dev-logic |
 
-> 補足: UX/コンテンツ・a11y/i18n/Web・収益化の観点（項 6-25,27-30,48-52,55-62）は未再検証。6/10 10:00 JST の Sonnet 復帰後に同方式で裏取りし、確度の高いものを LR-10 以降で追加起票する。
+### 追加分（UX/コンテンツ/a11y/Web/収益化・レビュー由来／未再検証）
+
+Keita 指示「残件もタスク起票して」(2026-06-09)。改善点レビューの残り観点（項 6-25,27-30,48-52,55-62）をテーマ単位でまとめて起票。高リスク4観点と異なり、まだ行単位の実コード再検証は未実施＝**着手時に dev-logic が file:line を確認してから実装**する（6/10 10:00 JST の Sonnet 復帰後に同方式で裏取りし、過大/既修正が判明したものは個別に CANCELLED/補正する）。
+
+| ID | タイトル | 優先度 | ステータス | 担当案 |
+|----|---------|--------|-----------|--------|
+| LR-10 | 課金導線の是正（価格が4+箇所で不一致→Play実SKUを正本に一本化#6／レッスン本体の課金ロック実装 or 訴求を実装と一致#7／正式な無料トライアルSKU化#9／失効キャンペーン CAMPAIGN_ACTIVE の日付ベース自動制御#27）| P1 | TODO | dev-logic＋Keita |
+| LR-11 | 課金ファネルのアナリティクス計測導入（paywall到達/離脱が現状ゼロ計測#8。PostHog or Firebase で paywall_view→checkout を最小導入）| P1 | TODO | dev-logic |
+| LR-12 | オンボーディング改善（マジックリンク送信後画面に「メールを開く」CTA＋迷惑メール案内＋再送クールダウン#10／価値体験を先行し属性入力・課金を後ろへ#11）| P1 | TODO | dev-logic |
+| LR-13 | ナビ/IA 欠陥の実装（復習・ジャーナル起点のレッスン完了後の復帰導線、タブ独立スタック、一覧戻る導線＝FB-05#12／起動最低2秒 MIN_BOOT_MS を2回目以降短縮#15）| P1 | TODO | dev-logic |
+| LR-14 | コンテンツ修正（client-01/02 の title↔中身ズレ解消#13／AI自動生成問題の品質ゲートを別モデルのクロスチェック化#14／ja-en レッスン非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一#25／難易度カーブの初級補強#17）| P1 | TODO | content-creator＋dev-logic |
+| LR-15 | 復習/学習の無料境界と定着設計（復習SRS天井7日固定の段階ラダー化#16／無料ユーザー全面ペイウォールの直近N件解放#21）| P2 | TODO | dev-logic＋Keita |
+| LR-16 | ストア最適化＆レビュー獲得（In-App Review 依頼を成功体験後に#22／ストアSS拡充＋価値訴求コピー#23／成果のSNSシェアカード導線#29／離脱予兆 win-back 通知#28）| P2 | TODO | designer＋content-creator |
+| LR-17 | テーマ・表示の不具合（ライト/ダークの OS 追従＋アクセント選択UIを到達可能に#18／ストリーク日付の UTC/ローカル混在を localDate 統一#19／ErrorBoundary の i18n 化＋Sentry 送信＋復帰導線#20）| P2 | TODO | designer＋dev-logic |
+| LR-18 | アクセシビリティ/多言語（図解SVGの日本語ハードコードを i18n 化＋aria-label#55／html lang をロケール切替で更新#56／アクセント色の WCAG AA 確保#57／モーダルの focus-trap 共通化#58／日付・数値ロケール統一#59）| P1 | TODO | designer＋dev-logic |
+| LR-19 | 起動/描画の性能（全レッスン ja+en 集約ロード約5MB を locale/カテゴリ単位の遅延ロードに#50／長いリストの仮想化#51）| P1 | TODO | dev-logic |
+| LR-20 | オフライン対応（PWA/Service Worker 不在・fetch タイムアウト無し・同期スタブによる複数端末での状態リセット#52）| P2 | TODO | dev-logic |
+| LR-21 | ネイティブ堅牢化（購入検証失敗時に課金が回復しない＝起動/ログイン時の restorePurchases 復旧ループ#48／R8/ProGuard 有効化＋keepルール整備#49）| P1 | TODO | dev-logic |
+| LR-22 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテストを追加し CI 必須化#24）| P1 | TODO | dev-logic |
+| LR-23 | Web/SEO（LP に og:image/JSON-LD/canonical/robots/sitemap/hreflang 追加#60／ブログ・SEO 導線＋LCP 改善#61／競合差別化マップ＋LP の価値訴求再構成#62／死にリンク・ウェルカムメールSIT URL・render.yaml 廃止Stripe env の掃除#30）| P2 | TODO | designer＋content-creator＋dev-logic |
 
 ---
 
