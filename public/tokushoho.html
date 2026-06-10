@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<!--
+  TODO(LR-4 Keita確認): 本ページは公開法務文面のため、確定値が要る項目は本タスクでは変更していない。
+  現状値の事実確認メモ（Sonによる実コード照合）:
+    - 価格: ¥350（月額）/ ¥2,450（年額）は src/subscription.ts PLAN_PRICES と一致（実装値と整合・OK）。
+      ただし docs/LP 上の ¥3,500/¥6,980 等の旧記載との整合は Keita 最終確認。
+    - 7日間無料トライアル（年額のみ）: コード（subscription.ts / Pricing.tsx）にトライアル実体は無く、
+      Play Console の base plan/offer 設定依存。Play Console に実際に「年額のみ7日無料」offer が
+      設定されているか Keita 要確認（未設定なら優良誤認になるため当該段落を削除）。
+    - 運営責任者「柴田 圭太」・所在地・電話番号・事業者名: 登記/実在値か Keita 最終確認。
+    - インボイス（適格請求書）登録番号: 課税事業者で登録済みなら T+13桁を記載するか Keita 確認。
+    - 対応OS表記（Android バージョン）: minSdk 実値と一致しているか dev-logic/Keita 確認。
+-->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
