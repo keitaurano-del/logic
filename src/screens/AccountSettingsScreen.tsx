@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { logout, updateUserEmail } from '../supabase'
+import { logout, updateUserEmail, getSupabaseClient } from '../supabase'
 import { getDisplayName, setDisplayName } from '../stats'
 import { updateDisplayName } from '../supabase'
 import { CheckIcon } from '../icons'
 import { Header } from '../components/platform/Header'
-import { confirm as confirmDialog } from '../platform/dialog'
+import { confirm as confirmDialog, alert as alertDialog } from '../platform/dialog'
+import { API_BASE } from '../apiBase'
 import { t } from '../i18n'
 
 interface Props {
@@ -40,6 +41,50 @@ export function AccountSettingsScreen({ onBack, currentUser, onLogout }: Props) 
   const [emailSaving, setEmailSaving] = useState(false)
   const [emailError, setEmailError] = useState('')
   const [emailSentTo, setEmailSentTo] = useState<string | null>(null)
+
+  // アカウント削除（LR-5）
+  const [deleting, setDeleting] = useState(false)
+
+  const handleDeleteAccount = async () => {
+    const ok = await confirmDialog({
+      title: t('accountSettings.deleteConfirmTitle'),
+      message: t('accountSettings.deleteConfirmMessage'),
+      okText: t('accountSettings.deleteConfirmOk'),
+      cancelText: t('accountSettings.cancel'),
+    })
+    if (!ok) return
+
+    setDeleting(true)
+    try {
+      const supabase = getSupabaseClient()
+      const { data } = supabase
+        ? await supabase.auth.getSession()
+        : { data: { session: null } }
+      const token = data.session?.access_token
+      if (!token) {
+        await alertDialog(t('accountSettings.deleteError'))
+        return
+      }
+
+      const res = await fetch(`${API_BASE}/api/account/delete`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) {
+        await alertDialog(t('accountSettings.deleteError'))
+        return
+      }
+
+      // 削除成功: ローカル状態をクリアしてログアウト → 完了表示。
+      await logout()
+      await alertDialog(t('accountSettings.deleteDone'))
+      onLogout()
+    } catch {
+      await alertDialog(t('accountSettings.deleteError'))
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   const handleLogout = async () => {
     const ok = await confirmDialog({
@@ -225,6 +270,20 @@ export function AccountSettingsScreen({ onBack, currentUser, onLogout }: Props) 
         <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.8 }}>
           {t('accountSettings.changeOncePerDay')}
         </div>
+
+        {/* アカウント削除（LR-5 / Play データ削除要件） */}
+        {currentUser && (
+          <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', padding: '14px 18px' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>{t('accountSettings.deleteSectionTitle')}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: 12 }}>{t('accountSettings.deleteSectionDesc')}</div>
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              disabled={deleting}
+              style={{ padding: '14px 18px', cursor: deleting ? 'default' : 'pointer', color: 'var(--md-sys-color-error)', fontSize: '1rem', fontWeight: 700, textAlign: 'center', background: 'transparent', border: '1px solid var(--md-sys-color-error)', borderRadius: 10, width: '100%', font: 'inherit', minHeight: 44, opacity: deleting ? 0.6 : 1 }}
+            >{deleting ? t('accountSettings.deleting') : t('accountSettings.deleteAccount')}</button>
+          </div>
+        )}
       </div>
     </div>
   )

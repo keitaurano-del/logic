@@ -1380,6 +1380,16 @@ const STRINGS: Record<Locale, Strings> = {
     'accountSettings.emailVerifySent': '{email} に確認リンクを送りました。メール内のリンクをタップしてください。',
     'accountSettings.emailSameError': '現在のメールアドレスと同じです。',
     'accountSettings.emailInUseError': 'このメールアドレスはすでに別のアカウントで使われています。',
+    // アカウント削除（LR-5）
+    'accountSettings.deleteAccount': 'アカウントを削除',
+    'accountSettings.deleteSectionTitle': 'アカウントの削除',
+    'accountSettings.deleteSectionDesc': 'アカウントと、学習履歴・ノート・目標・課金情報などのすべてのデータが完全に削除されます。この操作は取り消せません。',
+    'accountSettings.deleteConfirmTitle': 'アカウントを削除しますか？',
+    'accountSettings.deleteConfirmMessage': 'アカウントとすべてのデータが完全に削除され、元に戻すことはできません。本当に削除しますか？',
+    'accountSettings.deleteConfirmOk': '削除する',
+    'accountSettings.deleting': '削除中…',
+    'accountSettings.deleteError': 'アカウントの削除に失敗しました。時間をおいて、もう一度お試しください。',
+    'accountSettings.deleteDone': 'アカウントを削除しました。',
 
     // ProfileEditScreen (オンボーディングで聞いた属性の編集)
     'profileEdit.title': 'プロフィール編集',
@@ -3434,6 +3444,16 @@ const STRINGS: Record<Locale, Strings> = {
     'accountSettings.emailVerifySent': 'Confirmation link sent to {email}. Tap the link in your inbox to finish.',
     'accountSettings.emailSameError': 'Same as your current email.',
     'accountSettings.emailInUseError': 'This email is already used by another account.',
+    // Account deletion (LR-5)
+    'accountSettings.deleteAccount': 'Delete account',
+    'accountSettings.deleteSectionTitle': 'Delete account',
+    'accountSettings.deleteSectionDesc': 'Your account and all data — learning history, notes, goals, and billing info — will be permanently deleted. This cannot be undone.',
+    'accountSettings.deleteConfirmTitle': 'Delete your account?',
+    'accountSettings.deleteConfirmMessage': 'Your account and all data will be permanently deleted and cannot be recovered. Are you sure?',
+    'accountSettings.deleteConfirmOk': 'Delete',
+    'accountSettings.deleting': 'Deleting…',
+    'accountSettings.deleteError': 'Could not delete your account. Please wait a moment and try again.',
+    'accountSettings.deleteDone': 'Your account has been deleted.',
 
     // ProfileEditScreen (edit onboarding attributes)
     'profileEdit.title': 'Edit profile',

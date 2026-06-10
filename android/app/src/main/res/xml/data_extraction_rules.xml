@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  LR-6 セキュリティハードニング: バックアップ / 端末間転送でアプリデータを持ち出させない。
+  android:allowBackup="false" と併用。Android 12 (API 31)+ は dataExtractionRules を、
+  それ未満は fullBackupContent / allowBackup を参照する。
+  cloud-backup / device-transfer ともに <exclude domain="..."/> を指定せず、
+  ルートを exclude することで「何も含めない」= 実質バックアップ無効とする。
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

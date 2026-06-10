@@ -17,6 +17,7 @@ import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
 import { createTtsRouter } from './routes/tts.js'
 import { createSearchRouter } from './routes/search.js'
 import { createWritingScoreRouter } from './routes/writing-score.js'
+import { createAccountRouter } from './routes/account.js'
 import { assertSecureAdminSecret, createEntitlementHandler } from './auth.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
@@ -289,6 +290,9 @@ app.use('/api/search', createSearchRouter(client, searchLimiter))
 
 // ロジカルライティング採点（POST /api/writing-score）
 app.use('/api/writing-score', createWritingScoreRouter(client, writingScoreLimiter))
+
+// アカウント削除（POST /api/account/delete） — LR-5 / Play データ削除要件
+app.use('/api/account', createAccountRouter({ supabase }))
 
 
 // 静的ファイル（public/ → dist/）は配信する
