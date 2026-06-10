@@ -20,9 +20,9 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
-| LR-1 | 購入の認証ユーザー束縛＋subscriptions記録（startCheckout で Supabase JWT 付与／verify の JWT 検証・body userId 信頼を撤廃）#2,#3 | P0 | TODO | dev-logic |
-| LR-2 | エンタイトルメント判定のサーバ権威化（localStorage 信頼ゲート廃止→getPremiumStatus 結線／profiles.plan 参照撤廃）#1,#4 | P0 | TODO | dev-logic |
-| LR-3 | ADMIN_SECRET 既定値（logic-admin-2026）撤廃＋未設定/既定値で起動失敗ガード #5 | P0 | TODO | dev-logic |
+| LR-1 | 購入の認証ユーザー束縛＋subscriptions記録（startCheckout で Supabase JWT 付与／verify の JWT 検証・body userId 信頼を撤廃）#2,#3 | P0 | REVIEW（2026-06-10 Son: ブランチ feat/p0-billing-auth-lr123 で実装＋検証済[tsc/vitest673/eslint]。PR準備。デプロイ前提=Render ADMIN_SECRET設定・SERVICE_ROLE_KEY・旧Android互換のロールアウト順序。main自動デプロイのため未マージ） | dev-logic |
+| LR-2 | エンタイトルメント判定のサーバ権威化（localStorage 信頼ゲート廃止→getPremiumStatus 結線／profiles.plan 参照撤廃）#1,#4 | P0 | REVIEW（2026-06-10 Son: ブランチ feat/p0-billing-auth-lr123 で実装＋検証済[tsc/vitest673/eslint]。PR準備。デプロイ前提=Render ADMIN_SECRET設定・SERVICE_ROLE_KEY・旧Android互換のロールアウト順序。main自動デプロイのため未マージ） | dev-logic |
+| LR-3 | ADMIN_SECRET 既定値（logic-admin-2026）撤廃＋未設定/既定値で起動失敗ガード #5 | P0 | REVIEW（2026-06-10 Son: ブランチ feat/p0-billing-auth-lr123 で実装＋検証済[tsc/vitest673/eslint]。PR準備。デプロイ前提=Render ADMIN_SECRET設定・SERVICE_ROLE_KEY・旧Android互換のロールアウト順序。main自動デプロイのため未マージ） | dev-logic |
 | LR-4 | プライバシーポリシー全面改訂（健康データ／ジャーナルの Anthropic 送信／Sentry・Google TTS 委託先／属性PII／既存 LEGAL_REVIEW 差分を収集・委託先表に反映）#31,#33,#34,#35 | P0 | TODO | dev-logic＋Keita |
 | LR-5 | アカウント削除のサーバ実装＋アプリ内導線＋保持期限の自動削除バッチ（Play 必須要件）#32 | P0 | TODO | dev-logic |
 | LR-6 | Android セキュリティハードニング（allowBackup=false／deep link を Verified App Links＋autoVerify／未使用権限 READ_MEDIA_IMAGES・FOREGROUND_SERVICE 削除）#53,#54 | P0 | TODO | dev-logic |
