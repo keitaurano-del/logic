@@ -41,7 +41,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-14 | 課金ファネルのアナリティクス計測導入（paywall_view→checkout を PostHog or Firebase で最小導入。現状計測ゼロ）#8 | P1 | TODO | dev-logic |
 | LR-15 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテスト追加＋CI 必須化）#24 | P1 | TODO | dev-logic |
 | LR-16 | 購入検証失敗の回復（起動/ログイン時の restorePurchases 復旧ループ＋指数バックオフ。現状 restorePurchases は呼出元ゼロ）#48 | P1 | TODO | dev-logic |
-| LR-17 | R8/ProGuard 有効化＋keep ルール整備（課金ロジック難読化/シュリンク）#49 | P1 | TODO | dev-logic |
+| LR-17 | R8/ProGuard 有効化＋keep ルール整備（課金ロジック難読化/シュリンク）#49 | P1 | REVIEW（2026-06-10 Son: LR-6 と同一対応に内包。ブランチ feat/p0-billing-auth-lr123 で build.gradle minifyEnabled/shrinkResources true＋proguard-rules.pro に課金/認証/Capacitor の keep ルール整備済。要: Android再ビルドで難読化確認） | dev-logic |
 | LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | TODO | dev-logic |
 | LR-19 | オンボーディング順序の是正（価値体験を先行し属性入力・課金を後ろへ。birthYear 必須スキップ不可を緩和）#11 | P1 | TODO | dev-logic |
 | LR-20 | レッスンの遅延ロード（全レッスン ja+en 集約 約5MB を locale/カテゴリ単位に分割）#50 | P1 | TODO | dev-logic |
