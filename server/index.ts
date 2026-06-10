@@ -815,7 +815,9 @@ app.post('/api/feedback', makeLimiter({ windowMs: 60*1000, max: 5 }), async (req
 
 // それ以外のルート（/api/* 以外）は Play Store 誘導ページを返す
 // ※ APIルートが全て定義された後に配置すること（catch-all が先に来るとAPIが塞がれる）
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.keitaurano.logic'
+// LR-28: applicationId は android/app/build.gradle の `applicationId "com.logicalthinking.app"` が実値。
+// 旧 'com.keitaurano.logic' は Play Store に存在せず死にリンクだったため修正。
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.logicalthinking.app'
 // ================================================================
 // SCRUM-90: Apollo提案 → Jira自動起票 API
 // ================================================================
@@ -931,6 +933,16 @@ app.get('/{*splat}', (req, res) => {
 // ─────────────────────────────────────────────
 // 登録完了メール送信
 // ─────────────────────────────────────────────
+// LR-28: ウェルカムメールの「アプリを開く」リンク。以前は SIT URL を本番でもハード
+// コードしており、本番ユーザーが SIT 環境に飛ばされていた。APP_ENV で sit / prod を
+// 出し分ける（appSource 判定と同じ基準）。本番 URL は logic-u5wn.onrender.com
+// （store-metadata / playwright 設定で確認済みの現行本番ドメイン）。
+const SIT_APP_URL = 'https://logic-sit.onrender.com'
+const PROD_APP_URL = 'https://logic-u5wn.onrender.com'
+function welcomeAppUrl(): string {
+  return process.env.APP_ENV === 'sit' ? SIT_APP_URL : PROD_APP_URL
+}
+
 app.post('/api/send-welcome-email', welcomeEmailLimiter, async (req, res) => {
   const { email } = req.body as { email: string }
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -972,7 +984,7 @@ app.post('/api/send-welcome-email', welcomeEmailLimiter, async (req, res) => {
             <div style="font-size:13px;color:#6B82A8;margin-bottom:8px;">登録メールアドレス</div>
             <div style="font-size:16px;font-weight:700;color:#6C8EF5;">${email}</div>
           </div>
-          <a href="https://logic-sit.onrender.com" style="display:block;background:#6C8EF5;color:#1A1F2E;text-align:center;padding:16px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:24px;">
+          <a href="${welcomeAppUrl()}" style="display:block;background:#6C8EF5;color:#1A1F2E;text-align:center;padding:16px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:24px;">
             アプリを開く →
           </a>
           <p style="font-size:12px;color:#6B82A8;text-align:center;">
