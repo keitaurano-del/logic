@@ -34,7 +34,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-7 | RLS/権限の締め直し（placement_results の using(true) 公開撤廃／reports・feedback・fermi_scores の匿名 insert 制限／user_stats RLS 有効化＋record-score の userId/userName 検証／metabase_readonly の BYPASSRLS 見直し）#36,#37,#38,#39 | P1 | TODO | dev-logic |
 | LR-8 | マイグレーション整合化（migrations 外の手動 SQL 2本を連番 migration へ取込・冪等化）#40 | P1 | TODO | dev-logic |
 | LR-9 | 機微データの平文/保持対策（daily_journals 等の暗号化・保持TTL／set_updated_at の search_path 固定）#41 | P1 | TODO | dev-logic |
-| LR-10 | AI 生成の認証付き rate limit ＋有料の月次原価ハードキャップ（body userId 無検証採用を撤廃）#42 | P1 | TODO | dev-logic |
+| LR-10 | AI 生成の認証付き rate limit ＋有料の月次原価ハードキャップ（body userId 無検証採用を撤廃）#42 | P1 | REVIEW（2026-06-10 Son: ブランチ feat/p1-ai-cost-cap-lr10[feat/p0-billing-auth-lr123 の上に積層]。AIクォータの本人識別を body.userId→resolveAuthedUser(Bearer)化＝userIdランダム化での月次リセット濫用を封鎖。有料は無制限→env AI_MONTHLY_HARD_CAP_PAID(既定10000)超過で429。ゲストはlimiterのみで非破壊。フロントAI fetchにBearer付与。tsc/vitest692/eslint green。要: Render env・billing-authブランチ先行マージ） | dev-logic |
 | LR-11 | 価格の正本一本化（subscription.ts:20-24 の 350/2450 を正本候補に landing 3500/6980・docs 各所のズレを統一。旧主張 800/7800・390/2730 は誤帰属で撤回）#6 | P1 | TODO | dev-logic＋Keita |
 | LR-12 | レッスン本体の課金ロック実装 or 訴求を実装と一致（RoadmapScreenV3 に課金ロック無し）#7 | P1 | TODO | dev-logic＋Keita |
 | LR-13 | 正式な無料トライアルSKU化（Play Billing のトライアル付きベースプラン）#9 | P1 | TODO | dev-logic |
