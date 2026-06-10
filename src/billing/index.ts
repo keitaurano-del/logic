@@ -7,6 +7,7 @@
 
 import { Capacitor, registerPlugin } from '@capacitor/core'
 import { API_BASE } from '../apiBase'
+import { getSupabaseClient } from '../supabase'
 import type { BillingProduct, PurchaseResult, BillingVerifyRequest } from './types'
 
 // Re-export types for consumers
@@ -169,10 +170,25 @@ export async function restorePurchases(): Promise<PurchaseResult[]> {
  * Returns the server-calculated expiry date string (ISO 8601).
  */
 export async function verifyPurchase(request: BillingVerifyRequest): Promise<{ currentPeriodEnd: string; plan?: string }> {
+  // LR-1: 購入検証はサーバ側で Authorization の Supabase access_token を権威にして
+  // user_id を束縛する。トークンが取得できない（未ログイン）場合はサーバが 401 を返す。
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  let accessToken: string | null = null
+  try {
+    const supabase = getSupabaseClient()
+    if (supabase) {
+      const { data } = await supabase.auth.getSession()
+      accessToken = data.session?.access_token ?? null
+    }
+  } catch { /* トークン取得失敗時はヘッダ無しで送る（サーバが 401 を返す） */ }
+  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`
+
+  // userId は送らない（サーバは body.userId を無視し、認証済みユーザーに束縛する）。
+  const { purchaseToken, productId } = request
   const res = await fetch(`${API_BASE}/api/billing/verify`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
+    headers,
+    body: JSON.stringify({ purchaseToken, productId }),
   })
   if (!res.ok) {
     const err = (await res.json().catch(() => ({}))) as { error?: string }

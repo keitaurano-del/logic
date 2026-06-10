@@ -17,6 +17,7 @@ import { createSyncTelemetryRouter } from './routes/sync-telemetry.js'
 import { createTtsRouter } from './routes/tts.js'
 import { createSearchRouter } from './routes/search.js'
 import { createWritingScoreRouter } from './routes/writing-score.js'
+import { assertSecureAdminSecret, createEntitlementHandler } from './auth.js'
 
 // Supabase サーバーサイドクライアント（service role key 使用）
 const supabaseUrl = process.env.SUPABASE_URL || ''
@@ -253,6 +254,14 @@ app.use((req, res, next) => {
 
 
 app.get('/api/health', (_req, res) => { res.json({ ok: true }) })
+
+// =============================================
+// エンタイトルメント（サーバ権威の課金判定） — LR-2
+// =============================================
+// Authorization: Bearer <Supabase access_token> で認証したユーザーの
+// subscriptions を service-role で参照し、有効な有料状態かどうかを返す。
+// クライアント localStorage は信頼せず、これを authoritative に使う。
+app.get('/api/entitlement', createEntitlementHandler(supabase))
 
 // Problems (flashcards/journal/generate-problems/user-problems/daily-problem)
 app.use(createProblemsRouter(client, supabase, flashcardsLimiter, generateProblemsLimiter, dailyProblemLimiter))
@@ -975,6 +984,9 @@ app.post('/api/send-welcome-email', welcomeEmailLimiter, async (req, res) => {
   }
 })
 
+
+// 本番起動ガード（listen 前）: ADMIN_SECRET が未設定/既定値なら production では exit(1)。
+assertSecureAdminSecret()
 
 const PORT = parseInt(process.env.PORT || '3001', 10)
 app.listen(PORT, '0.0.0.0', () => {

@@ -1,6 +1,12 @@
 const STORAGE_KEY = 'logic-subscription'
+// LR-2: サーバ権威のエンタイトルメント判定をセッション内にキャッシュするキー。
+// サーバ応答（/api/entitlement）が取れたらこれを優先し、localStorage はオフライン時の
+// フォールバックとして残す。'1'=有料 / '0'=無料 / 未設定=サーバ未確認。
+const ENTITLEMENT_CACHE_KEY = 'logic-entitlement-authoritative'
 
 import { createClient } from '@supabase/supabase-js'
+import { API_BASE } from './apiBase'
+import { getSupabaseClient } from './supabase'
 import { purchaseProduct, verifyPurchase } from './billing'
 import { PLAY_PRODUCTS, mapProductIdToPlan } from './billing/products'
 
@@ -149,10 +155,74 @@ export function isTrialActive(): boolean {
 }
 
 // ──────────────────────────────────────────────────────────────────────────
+// サーバ権威のエンタイトルメント（LR-2）
+// ──────────────────────────────────────────────────────────────────────────
+// サーバ /api/entitlement の結果を sessionStorage にキャッシュし、isPaid() の判定で
+// localStorage より優先する。サーバ応答が一度でも取れれば authoritative。取れない間
+// （未ログイン / オフライン / 起動直後）は従来の localStorage 判定にフォールバックする。
+
+// サーバ権威キャッシュの読み取り。'1'→true / '0'→false / 未設定→null（未確認）。
+function readEntitlementCache(): boolean | null {
+  try {
+    const v = sessionStorage.getItem(ENTITLEMENT_CACHE_KEY)
+    if (v === '1') return true
+    if (v === '0') return false
+  } catch { /* sessionStorage 不可環境では未確認扱い */ }
+  return null
+}
+
+function writeEntitlementCache(isPaidValue: boolean) {
+  try {
+    sessionStorage.setItem(ENTITLEMENT_CACHE_KEY, isPaidValue ? '1' : '0')
+  } catch { /* 保存できなくても致命的ではない */ }
+}
+
+/**
+ * サーバ権威のエンタイトルメントをクリアする（ログアウト時など）。
+ */
+export function clearEntitlementCache() {
+  try { sessionStorage.removeItem(ENTITLEMENT_CACHE_KEY) } catch { /* noop */ }
+}
+
+/**
+ * サーバ /api/entitlement を Authorization: Bearer 付きで叩き、課金状態を取得して
+ * sessionStorage にキャッシュする（authoritative）。
+ * - 未ログイン / トークン無し / サーバ未到達 → キャッシュは更新せず null を返す
+ *   （既存の localStorage フォールバックがそのまま効く）。
+ * - 取得できた場合は true/false を返しキャッシュも更新する。
+ * 起動時・ログイン時に呼ぶことを想定。失敗しても例外は投げない。
+ */
+export async function refreshEntitlement(): Promise<boolean | null> {
+  try {
+    const supabase = getSupabaseClient()
+    if (!supabase) return null
+    const { data } = await supabase.auth.getSession()
+    const token = data.session?.access_token
+    if (!token) return null
+
+    const res = await fetch(`${API_BASE}/api/entitlement`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) return null
+    const body = (await res.json()) as { isPaid?: boolean }
+    const isPaidValue = body.isPaid === true
+    writeEntitlementCache(isPaidValue)
+    window.dispatchEvent(new CustomEvent('subscription:updated'))
+    return isPaidValue
+  } catch {
+    return null
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
 // プラン判定（単一有料プランに統合）
 // ──────────────────────────────────────────────────────────────────────────
 export function isPaid(): boolean {
   if (BETA_MODE) return true
+  // サーバ権威キャッシュが存在すればそれを優先（LR-2）。
+  const authoritative = readEntitlementCache()
+  if (authoritative !== null) return authoritative
+  // 未確認（未ログイン / オフライン / 起動直後）は localStorage にフォールバック。
   const s = getSubscriptionState()
   return s.plan === 'paid_monthly' || s.plan === 'paid_yearly'
 }

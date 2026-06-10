@@ -498,6 +498,12 @@ function mergeArrays(local: string[], remote: string[]): string[] {
 export async function syncSubscriptionFromRemote(): Promise<void> {
   if (!supabase || !_currentUserId) return
   try {
+    // LR-2: サーバ権威のエンタイトルメントを最優先で取得し sessionStorage に固定する。
+    // 取得できればこれが authoritative。取れない（オフライン等）場合は下の
+    // admin_overrides / subscriptions の localStorage 反映にフォールバックする。
+    const { refreshEntitlement } = await import('./subscription')
+    await refreshEntitlement().catch(() => null)
+
     // admin_overrides を最優先（自動付与プラン）
     const { data: override } = await supabase
       .from('admin_overrides')
@@ -758,4 +764,11 @@ export async function syncOnLogout(): Promise<void> {
   } catch (e) {
     console.warn('[sync] syncOnLogout clear failed:', e)
   }
+
+  // LR-2: サーバ権威のエンタイトルメントキャッシュ（sessionStorage）もクリアし、
+  // ログアウト後に前ユーザーの有料状態が残らないようにする。
+  try {
+    const { clearEntitlementCache } = await import('./subscription')
+    clearEntitlementCache()
+  } catch { /* noop */ }
 }
