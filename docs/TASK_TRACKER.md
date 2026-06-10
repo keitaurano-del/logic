@@ -40,7 +40,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-13 | 正式な無料トライアルSKU化（Play Billing のトライアル付きベースプラン）#9 | P1 | TODO | dev-logic |
 | LR-14 | 課金ファネルのアナリティクス計測導入（paywall_view→checkout を PostHog or Firebase で最小導入。現状計測ゼロ）#8 | P1 | TODO | dev-logic |
 | LR-15 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテスト追加＋CI 必須化）#24 | P1 | TODO | dev-logic |
-| LR-16 | 購入検証失敗の回復（起動/ログイン時の restorePurchases 復旧ループ＋指数バックオフ。現状 restorePurchases は呼出元ゼロ）#48 | P1 | TODO | dev-logic |
+| LR-16 | 購入検証失敗の回復（起動/ログイン時の restorePurchases 復旧ループ＋指数バックオフ。現状 restorePurchases は呼出元ゼロ）#48 | P1 | REVIEW（2026-06-10 Son: ブランチ feat/p1-billing-recovery-cleanup-lr16-28[積層]。起動/ログイン時にサーバが未課金を返したら restorePurchases→verifyPurchase(Bearer)で再検証・再記録、一時失敗は指数バックオフ最大4・恒久失敗即終了・成功で打切り、非ブロッキング/in-flightガード/native限定。tsc/vitest711/eslint green） | dev-logic |
 | LR-17 | R8/ProGuard 有効化＋keep ルール整備（課金ロジック難読化/シュリンク）#49 | P1 | REVIEW（2026-06-10 Son: LR-6 と同一対応に内包。ブランチ feat/p0-billing-auth-lr123 で build.gradle minifyEnabled/shrinkResources true＋proguard-rules.pro に課金/認証/Capacitor の keep ルール整備済。要: Android再ビルドで難読化確認） | dev-logic |
 | LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | TODO | dev-logic |
 | LR-19 | オンボーディング順序の是正（価値体験を先行し属性入力・課金を後ろへ。birthYear 必須スキップ不可を緩和）#11 | P1 | TODO | dev-logic |
@@ -57,7 +57,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-25 | AI 体験の底上げ（応答の SSE ストリーミング化#46／採点・添削だけ上位モデル化#47）| P2 | TODO | dev-logic |
 | LR-26 | 課金運用の堅牢化（インメモリ rate limit の共有ストア化／RTDN_ENDPOINT_URL 未設定時の検証バイパス封じ）#26 | P2 | TODO | dev-logic |
 | LR-27 | キャンペーンの日付ベース自動制御（CAMPAIGN_ACTIVE のハードコード true を是正）#27 | P2 | TODO | dev-logic |
-| LR-28 | 死にリンク/SIT URL/廃止Stripe env の掃除（Play リンク appId 不一致・ウェルカムメール SIT URL・render.yaml の Stripe env 残存）#30 | P2 | TODO | dev-logic |
+| LR-28 | 死にリンク/SIT URL/廃止Stripe env の掃除（Play リンク appId 不一致・ウェルカムメール SIT URL・render.yaml の Stripe env 残存）#30 | P2 | REVIEW（2026-06-10 Son: 同ブランチ。Play Storeリンクの appId を実値 com.logicalthinking.app[build.gradle:23]に修正、ウェルカムメールのSIT固定URLを APP_ENV基準で本番/SIT出し分け、render.yaml の廃止STRIPE_*全11件削除[実行時参照ゼロ確認]。tsc/vitest/eslint green） | dev-logic |
 | LR-29 | client-01/02 の title↔中身整合（論点系 lesson が数字コースに混入）#13 | P2 | TODO | content-creator＋dev-logic |
 | LR-30 | AI 自動生成問題の品質ゲート強化（自己採点 auto 承認 閾値0.8 を別モデルのクロスチェックへ）#14 | P2 | TODO | dev-logic |
 | LR-31 | ja-en 非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一の解消（CONTENT/THUMBNAIL 監査既出分）#25 | P2 | TODO | content-creator＋designer |
