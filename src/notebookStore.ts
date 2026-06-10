@@ -7,6 +7,7 @@ import {
 
 const STORAGE_KEY = 'logic-notebook'
 import { API_BASE } from './apiBase'
+import { getAuthHeaders } from './supabase'
 
 export type NotebookEntry = {
   id: string
@@ -77,9 +78,11 @@ export async function generateAISummary(date: string, context: {
   if (today && today.aiSummary) return today.aiSummary  // cached
 
   try {
+    // 認証ユーザーは Bearer 付与で per-user クォータ識別。未ログインはゲスト動作。
+    const authHeaders = await getAuthHeaders()
     const res = await fetch(`${API_BASE}/api/journal/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({ date, ...context }),
     })
     if (!res.ok) throw new Error('API error')

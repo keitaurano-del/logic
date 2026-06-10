@@ -3,6 +3,7 @@ import { recordCompletion, addXp, getDisplayName } from '../stats'
 import { recordActivity } from '../activityLog'
 import { getGuestId } from '../guestId'
 import { getRankingUserId } from '../syncService'
+import { getAuthHeaders } from '../supabase'
 import { ArrowRightIcon, CheckIcon, LightbulbIcon, FlagIcon } from '../icons'
 import { Button } from '../components/Button'
 import { Header } from '../components/platform/Header'
@@ -100,9 +101,10 @@ function useFermiState(): FermiState {
     setLoading(true)
     setError(null)
     try {
+      const authHeaders = await getAuthHeaders()
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({ question: question.question, userInput: answer, guestId: getGuestId() }),
       })
       if (!res.ok) throw new Error('Network error')
@@ -150,9 +152,10 @@ function useFermiState(): FermiState {
     setFeedback(null)
     setAnswer('')
     try {
+      const authHeaders = await getAuthHeaders()
       const res = await fetch(`${API_BASE}/api/fermi/question`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({}),
       })
       if (!res.ok) throw new Error('Network error')

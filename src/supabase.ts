@@ -36,6 +36,24 @@ export function getSupabaseClient(): SupabaseClient | null {
   return supabase as unknown as SupabaseClient | null
 }
 
+/**
+ * AI 生成系など「認証ユーザーは per-user クォータ、未ログインはゲスト」の fetch 用に
+ * Authorization: Bearer <access_token> ヘッダを構築する。
+ * - ログイン中: { Authorization: 'Bearer ...' } を返す。
+ * - 未ログイン / supabase 未設定 / 取得失敗: 空オブジェクト（＝ゲスト動作・壊さない）。
+ * LR-1/2（billing・entitlement）で使っているのと同じ token 取得方式。
+ */
+export async function getAuthHeaders(): Promise<Record<string, string>> {
+  try {
+    if (!supabase) return {}
+    const { data } = await supabase.auth.getSession()
+    const token = data.session?.access_token
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  } catch {
+    return {}
+  }
+}
+
 export async function sendMagicLink(email: string): Promise<{ error?: string }> {
   if (!supabase) return { error: 'auth/not-configured' }
   try {

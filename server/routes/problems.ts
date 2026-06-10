@@ -2,70 +2,8 @@ import { Router } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { RateLimitRequestHandler } from 'express-rate-limit'
-
-// =============================================
-// 有料プラン判定（2026-05-15 単一有料プラン化）
-// =============================================
-// クライアント側の SubscriptionPlan に対応する DB 値:
-//   - 'paid_monthly' / 'paid_yearly': 有料
-//   - 'free' / その他: 無料
-// legacy ('monthly', 'standard_*', 'premium_*', 'campaign_yearly' 等) は
-// migrations/011 で 'paid_*' に正規化済み。念のためここでも受ける。
-const PAID_PLANS = new Set([
-  'paid_monthly',
-  'paid_yearly',
-  'monthly',
-  'yearly',
-  'basic_monthly',
-  'basic_yearly',
-  'standard_monthly',
-  'standard_yearly',
-  'premium_monthly',
-  'premium_yearly',
-  'campaign_yearly',
-  'beta_campaign',
-])
-
-async function checkAndIncrementAIQuota(
-  supabase: SupabaseClient,
-  userId: string | undefined,
-  _guestId: string | undefined,
-): Promise<{ allowed: boolean; reason?: string }> {
-  // ゲストユーザー（userId なし）はレートリミッタに任せる
-  if (!userId) return { allowed: true }
-
-  try {
-    const now = new Date()
-    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('ai_gen_count, ai_gen_month, plan')
-      .eq('id', userId)
-      .single()
-
-    const currentPlan = profile?.plan ?? 'free'
-    if (!PAID_PLANS.has(currentPlan)) {
-      return {
-        allowed: false,
-        reason: 'AI 問題生成は有料プランの機能です。プランをアップグレードしてください。',
-      }
-    }
-
-    // 有料プランは無制限（内部キャップは未実装）。
-    // ただし月次カウントは将来のキャップ実装や分析用に記録だけ続ける。
-    const savedMonth = profile?.ai_gen_month ?? ''
-    const count = savedMonth === monthKey ? (profile?.ai_gen_count ?? 0) : 0
-    await supabase.from('profiles').upsert(
-      { id: userId, ai_gen_count: count + 1, ai_gen_month: monthKey },
-      { onConflict: 'id' },
-    )
-    return { allowed: true }
-  } catch {
-    // DBエラー時は通す（クォータはベストエフォート）
-    return { allowed: true }
-  }
-}
+import { resolveAuthedUser } from '../auth.js'
+import { checkAndIncrementAIQuota } from '../aiQuota.js'
 
 // =============================================
 // createProblemsRouter
@@ -85,6 +23,14 @@ export function createProblemsRouter(
   router.post('/api/flashcards/generate', flashcardsLimiter, async (req, res) => {
     const { wrongAnswers, category, lessonTitle, locale } = req.body
     const isEn = locale === 'en'
+
+    // 認証ユーザーは per-user 月次クォータ（有料ハードキャップ）を適用。
+    // ゲスト（authed 無し）は従来どおりレートリミッタ任せで素通り。
+    const authed = await resolveAuthedUser(req, supabase)
+    const quota = await checkAndIncrementAIQuota(supabase, authed?.id)
+    if (!quota.allowed) {
+      return res.status(429).json({ error: quota.reason })
+    }
 
     const systemPromptJa = `あなたは学習支援AIです。ユーザーが間違えた問題や苦手な分野をもとに、復習用のフラッシュカードを生成してください。
 
@@ -157,6 +103,13 @@ export function createProblemsRouter(
       const { date, completedLessons = [], flashcardStats = { correct: 0, total: 0 }, studyMinutes = 0, locale } = req.body || {}
       const isEn = locale === 'en'
 
+      // 認証ユーザーは per-user 月次クォータ。ゲストはレートリミッタ任せ。
+      const authed = await resolveAuthedUser(req, supabase)
+      const quota = await checkAndIncrementAIQuota(supabase, authed?.id)
+      if (!quota.allowed) {
+        return res.status(429).json({ error: quota.reason })
+      }
+
       const lessonsList = completedLessons.length ? completedLessons.join(', ') : (isEn ? '(none)' : '（なし）')
       const cardInfo = flashcardStats.total > 0
         ? (isEn
@@ -202,10 +155,10 @@ export function createProblemsRouter(
   router.post('/api/generate-problems', generateProblemsLimiter, async (req, res) => {
     try {
       const { prompt = '', locale } = req.body || {}
-      const userId = (req.body as { userId?: string }).userId
-      const guestId = (req.body as { guestId?: string }).guestId
-
-      const quota = await checkAndIncrementAIQuota(supabase, userId, guestId)
+      // クォータ用の本人識別は Authorization: Bearer から解決した authed id のみ。
+      // body.userId（クライアント申告）は信頼しない（偽装でカウントをリセットさせない）。
+      const authed = await resolveAuthedUser(req, supabase)
+      const quota = await checkAndIncrementAIQuota(supabase, authed?.id)
       if (!quota.allowed) {
         return res.status(429).json({ error: quota.reason })
       }
@@ -370,6 +323,13 @@ Rules:
   router.post('/api/daily-problem', dailyProblemLimiter, async (req, res) => {
     try {
       const isEn = req.body?.locale === 'en'
+
+      // 認証ユーザーは per-user 月次クォータ。ゲストはレートリミッタ任せ。
+      const authed = await resolveAuthedUser(req, supabase)
+      const quota = await checkAndIncrementAIQuota(supabase, authed?.id)
+      if (!quota.allowed) {
+        return res.status(429).json({ error: quota.reason })
+      }
 
       const themesJa = [
         'MECEを使った問題分解',
