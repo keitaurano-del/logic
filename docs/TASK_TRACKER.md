@@ -14,6 +14,8 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 **まとめ基準（2026-06-09 Keita「直しやすい基準で・必要なら分割・実装漏れがないように」）**: 1タスク＝1PR で直せる実装単位（同じ根本原因／同じファイル／同じサブシステム）で切る。緩いテーマ束は分解済み。括弧内 #N はレビュー項番で、全62項の対応は末尾の「項番→LR 対応表」で監査可能（漏れなし）。担当 dev-logic 主体、法務・価格・無料境界は Keita 承認同伴。Logic は再開済みなので着手可。
 
+**2026-06-10 Son（Keita 承認「いいよ。進めて」）レビュー省略**: 効果薄/時期尚早の 11 件（LR-21, LR-23, LR-34, LR-35, LR-38, LR-39, LR-43, LR-44, LR-45, LR-47, LR-48）を CANCELLED ＝ TODO から除外。判定前提＝課金ON前・実ユーザーほぼゼロの早期段階。内訳: 効果薄（磨き込み/死蔵UI/a11y）=LR-21,23,35,38,39,45 ／時期尚早（前提未達・重い・LP作り込みは製品/課金後）=LR-34,43,44,47,48。※LR-44 の「SRS 複数端末リセット」バグのみ別途軽修正で拾う。残り 37 件（P0全件＋収益/データ/コスト/AI中核/低コスト高効果の成長 等）は TODO 継続。
+
 ### P0 — セキュリティ／課金／法務ブロッカー（再開・課金ON前に必須）
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
@@ -43,9 +45,9 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | TODO | dev-logic |
 | LR-19 | オンボーディング順序の是正（価値体験を先行し属性入力・課金を後ろへ。birthYear 必須スキップ不可を緩和）#11 | P1 | TODO | dev-logic |
 | LR-20 | レッスンの遅延ロード（全レッスン ja+en 集約 約5MB を locale/カテゴリ単位に分割）#50 | P1 | TODO | dev-logic |
-| LR-21 | 図解SVGの i18n 化＋aria-label（18コンポーネントが日本語ハードコード＋代替テキスト無し）#55 | P1 | TODO | dev-logic |
+| LR-21 | 図解SVGの i18n 化＋aria-label（18コンポーネントが日本語ハードコード＋代替テキスト無し）#55 | P1 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
 | LR-22 | html lang をロケール切替で更新（現状 index.html 固定 "ja"・1行修正級）#56 | P1 | TODO | dev-logic |
-| LR-23 | アクセント色の WCAG AA 確保（ライト面で実測 2.15-3.75・図解 stroke 含む）#57 | P1 | TODO | designer＋dev-logic |
+| LR-23 | アクセント色の WCAG AA 確保（ライト面で実測 2.15-3.75・図解 stroke 含む）#57 | P1 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | designer＋dev-logic |
 
 ### P2 — 磨き込み／コンテンツ／SEO
 
@@ -61,21 +63,21 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-31 | ja-en 非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一の解消（CONTENT/THUMBNAIL 監査既出分）#25 | P2 | TODO | content-creator＋designer |
 | LR-32 | 起動 MIN_BOOT_MS の2回目以降短縮＋タブ独立履歴スタック（#12 戻りナビ本体は実装/回帰テスト済＝残はタブスタックのみ）#15 | P2 | TODO | dev-logic |
 | LR-33 | 復習ハブ等の無料境界見直し（直近 N 件は無料解放）#21 | P2 | TODO | dev-logic＋Keita |
-| LR-34 | 復習SRS天井7日固定の段階ラダー化（ease は保存されるが間隔計算に未使用の半デッド）#16 | P2 | TODO | dev-logic＋Keita |
-| LR-35 | テーマの OS 追従＋アクセント選択UIの導線復活（UI は ThemeSettings.tsx 現存だが死蔵で到達不可）#18 | P2 | TODO | designer＋dev-logic |
+| LR-34 | 復習SRS天井7日固定の段階ラダー化（ease は保存されるが間隔計算に未使用の半デッド）#16 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | dev-logic＋Keita |
+| LR-35 | テーマの OS 追従＋アクセント選択UIの導線復活（UI は ThemeSettings.tsx 現存だが死蔵で到達不可）#18 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | designer＋dev-logic |
 | LR-36 | ストリーク日付の UTC/ローカル混在を localDate 統一（JST 深夜の1日ズレ）#19 | P2 | TODO | dev-logic |
 | LR-37 | ErrorBoundary の i18n 化＋Sentry 送信＋「ホームへ戻る」導線#20 | P2 | TODO | dev-logic |
-| LR-38 | モーダル/シートの focus-trap・初期/復帰フォーカスを共通化#58 | P2 | TODO | dev-logic |
-| LR-39 | 日付/数値ロケールの統一＋インライン生hex/フォント追従の是正#59 | P2 | TODO | dev-logic |
+| LR-38 | モーダル/シートの focus-trap・初期/復帰フォーカスを共通化#58 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
+| LR-39 | 日付/数値ロケールの統一＋インライン生hex/フォント追従の是正#59 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
 | LR-40 | In-App Review 依頼（成功の瞬間に1回・低評価はフィードバックへ二段）#22 | P2 | TODO | dev-logic |
 | LR-41 | ストアSS拡充＋価値訴求コピー（現状5枚・コピー焼き込み無し）#23 | P2 | TODO | designer＋content-creator |
 | LR-42 | 成果（偏差値/ストリーク/XP）の SNS シェア導線結線（share.ts は実装済だが未配線）#29 | P2 | TODO | dev-logic |
-| LR-43 | win-back / 離脱予兆ユーザーの呼び戻し通知（既存通知基盤を拡張）#28 | P2 | TODO | dev-logic |
-| LR-44 | オフライン対応＋同期フラグ方針（PWA/SW/manifest・fetch タイムアウト・オフラインバナーの欠如＋device-sync flag 既定OFF。同期自体は実装済）#52 | P2 | TODO | dev-logic |
-| LR-45 | 長いリストの仮想化（RoadmapScreenV3 等を react-window or content-visibility）#51 | P2 | TODO | dev-logic |
+| LR-43 | win-back / 離脱予兆ユーザーの呼び戻し通知（既存通知基盤を拡張）#28 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | dev-logic |
+| LR-44 | オフライン対応＋同期フラグ方針（PWA/SW/manifest・fetch タイムアウト・オフラインバナーの欠如＋device-sync flag 既定OFF。同期自体は実装済）#52 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早・重い。※SRS複数端末リセットのバグのみ別途軽修正で拾うでTODOから省略） | dev-logic |
+| LR-45 | 長いリストの仮想化（RoadmapScreenV3 等を react-window or content-visibility）#51 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
 | LR-46 | SEO メタタグ拡充（og基本タグは有・不足の og:image/twitter/JSON-LD/canonical/robots/sitemap/hreflang/EN版LP/計測タグを追加）#60 | P2 | TODO | dev-logic |
-| LR-47 | LP 配信最適化＋コンテンツ導線（render-blocking CSS の preload 化・img loading=lazy・ブログ/SEO 導線新設。旧「同期ロードでLCP悪化」は display=swap 済で撤回）#61 | P2 | TODO | designer＋dev-logic |
-| LR-48 | 競合差別化マップ＋LP の価値訴求再構成（用途別セクション・比較表・独自価値のヒーロー化）#62 | P2 | TODO | content-creator＋designer |
+| LR-47 | LP 配信最適化＋コンテンツ導線（render-blocking CSS の preload 化・img loading=lazy・ブログ/SEO 導線新設。旧「同期ロードでLCP悪化」は display=swap 済で撤回）#61 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | designer＋dev-logic |
+| LR-48 | 競合差別化マップ＋LP の価値訴求再構成（用途別セクション・比較表・独自価値のヒーロー化）#62 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | content-creator＋designer |
 
 ### P3 — 前提タスク（保留）
 
