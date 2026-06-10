@@ -24,8 +24,8 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-2 | エンタイトルメント判定のサーバ権威化（localStorage 信頼ゲート廃止→getPremiumStatus 結線／profiles.plan 参照撤廃）#1,#4 | P0 | REVIEW（2026-06-10 Son: ブランチ feat/p0-billing-auth-lr123 で実装＋検証済[tsc/vitest673/eslint]。PR準備。デプロイ前提=Render ADMIN_SECRET設定・SERVICE_ROLE_KEY・旧Android互換のロールアウト順序。main自動デプロイのため未マージ） | dev-logic |
 | LR-3 | ADMIN_SECRET 既定値（logic-admin-2026）撤廃＋未設定/既定値で起動失敗ガード #5 | P0 | REVIEW（2026-06-10 Son: ブランチ feat/p0-billing-auth-lr123 で実装＋検証済[tsc/vitest673/eslint]。PR準備。デプロイ前提=Render ADMIN_SECRET設定・SERVICE_ROLE_KEY・旧Android互換のロールアウト順序。main自動デプロイのため未マージ） | dev-logic |
 | LR-4 | プライバシーポリシー全面改訂（健康データ／ジャーナルの Anthropic 送信／Sentry・Google TTS 委託先／属性PII／既存 LEGAL_REVIEW 差分を収集・委託先表に反映）#31,#33,#34,#35 | P0 | TODO | dev-logic＋Keita |
-| LR-5 | アカウント削除のサーバ実装＋アプリ内導線＋保持期限の自動削除バッチ（Play 必須要件）#32 | P0 | TODO | dev-logic |
-| LR-6 | Android セキュリティハードニング（allowBackup=false／deep link を Verified App Links＋autoVerify／未使用権限 READ_MEDIA_IMAGES・FOREGROUND_SERVICE 削除）#53,#54 | P0 | TODO | dev-logic |
+| LR-5 | アカウント削除のサーバ実装＋アプリ内導線＋保持期限の自動削除バッチ（Play 必須要件）#32 | P0 | REVIEW（2026-06-10 Son: ブランチ feat/p0-billing-auth-lr123。POST /api/account/delete[認証必須・fermi_scores明示削除→admin.deleteUserでCASCADE]＋設定画面に削除導線/確認＋保持削除script。tsc/vitest678/eslint green。要: Render cron化） | dev-logic |
+| LR-6 | Android セキュリティハードニング（allowBackup=false／deep link を Verified App Links＋autoVerify／未使用権限 READ_MEDIA_IMAGES・FOREGROUND_SERVICE 削除）#53,#54 | P0 | REVIEW（2026-06-10 Son: 同ブランチ。allowBackup=false＋dataExtractionRules、R8/ProGuard有効化＋keep整備。未使用権限はプラグイン依存で安全側温存。残=autoVerify+assetlinks は Play署名SHA256/本番ドメイン待ち。要: Android再ビルド配信） | dev-logic |
 
 ### P1 — データ保護／AIコスト／収益化の根幹／重大UX
 
