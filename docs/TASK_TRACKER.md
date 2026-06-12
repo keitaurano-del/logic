@@ -42,11 +42,11 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-15 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテスト追加＋CI 必須化）#24 | P1 | TODO | dev-logic |
 | LR-16 | 購入検証失敗の回復（起動/ログイン時の restorePurchases 復旧ループ＋指数バックオフ。現状 restorePurchases は呼出元ゼロ）#48 | P1 | REVIEW（2026-06-10 Son: ブランチ feat/p1-billing-recovery-cleanup-lr16-28[積層]。起動/ログイン時にサーバが未課金を返したら restorePurchases→verifyPurchase(Bearer)で再検証・再記録、一時失敗は指数バックオフ最大4・恒久失敗即終了・成功で打切り、非ブロッキング/in-flightガード/native限定。tsc/vitest711/eslint green） | dev-logic |
 | LR-17 | R8/ProGuard 有効化＋keep ルール整備（課金ロジック難読化/シュリンク）#49 | P1 | REVIEW（2026-06-10 Son: LR-6 と同一対応に内包。ブランチ feat/p0-billing-auth-lr123 で build.gradle minifyEnabled/shrinkResources true＋proguard-rules.pro に課金/認証/Capacitor の keep ルール整備済。要: Android再ビルドで難読化確認） | dev-logic |
-| LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | TODO | dev-logic |
+| LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | REVIEW（2026-06-12 Son: ブランチ feat/p1-web-quickwins-lr18-22-46[最新main]。送信後画面に「メールを開く」CTA・迷惑メール案内・再送45秒クールダウンをLogin/Onboarding両方に。native mail plugin不在でbest-effort+fallback。tsc/vitest657/eslint green） | dev-logic |
 | LR-19 | オンボーディング順序の是正（価値体験を先行し属性入力・課金を後ろへ。birthYear 必須スキップ不可を緩和）#11 | P1 | TODO | dev-logic |
 | LR-20 | レッスンの遅延ロード（全レッスン ja+en 集約 約5MB を locale/カテゴリ単位に分割）#50 | P1 | TODO | dev-logic |
 | LR-21 | 図解SVGの i18n 化＋aria-label（18コンポーネントが日本語ハードコード＋代替テキスト無し）#55 | P1 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
-| LR-22 | html lang をロケール切替で更新（現状 index.html 固定 "ja"・1行修正級）#56 | P1 | TODO | dev-logic |
+| LR-22 | html lang をロケール切替で更新（現状 index.html 固定 "ja"・1行修正級）#56 | P1 | REVIEW（2026-06-12 Son: 同ブランチ。setLocale で documentElement.lang をロケール追従＋初期化時適用。tsc/vitest/eslint green） | dev-logic |
 | LR-23 | アクセント色の WCAG AA 確保（ライト面で実測 2.15-3.75・図解 stroke 含む）#57 | P1 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | designer＋dev-logic |
 
 ### P2 — 磨き込み／コンテンツ／SEO
@@ -75,7 +75,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-43 | win-back / 離脱予兆ユーザーの呼び戻し通知（既存通知基盤を拡張）#28 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | dev-logic |
 | LR-44 | オフライン対応＋同期フラグ方針（PWA/SW/manifest・fetch タイムアウト・オフラインバナーの欠如＋device-sync flag 既定OFF。同期自体は実装済）#52 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早・重い。※SRS複数端末リセットのバグのみ別途軽修正で拾うでTODOから省略） | dev-logic |
 | LR-45 | 長いリストの仮想化（RoadmapScreenV3 等を react-window or content-visibility）#51 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
-| LR-46 | SEO メタタグ拡充（og基本タグは有・不足の og:image/twitter/JSON-LD/canonical/robots/sitemap/hreflang/EN版LP/計測タグを追加）#60 | P2 | TODO | dev-logic |
+| LR-46 | SEO メタタグ拡充（og基本タグは有・不足の og:image/twitter/JSON-LD/canonical/robots/sitemap/hreflang/EN版LP/計測タグを追加）#60 | P2 | REVIEW（2026-06-12 Son: 同ブランチ。index.html に description/canonical/OGP/Twitter/JSON-LD/robots、robots.txt・sitemap.xml追加。og:imageはロゴ暫定(専用画像後追い)・本番URL差し替えコメント・EN LP無しでhreflang非付与。tsc/vitest/eslint green） | dev-logic |
 | LR-47 | LP 配信最適化＋コンテンツ導線（render-blocking CSS の preload 化・img loading=lazy・ブログ/SEO 導線新設。旧「同期ロードでLCP悪化」は display=swap 済で撤回）#61 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | designer＋dev-logic |
 | LR-48 | 競合差別化マップ＋LP の価値訴求再構成（用途別セクション・比較表・独自価値のヒーロー化）#62 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | content-creator＋designer |
 
