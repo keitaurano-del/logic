@@ -69,9 +69,9 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-37 | ErrorBoundary の i18n 化＋Sentry 送信＋「ホームへ戻る」導線#20 | P2 | REVIEW（2026-06-12 Son: 同ブランチ。ErrorBoundary を componentDidCatch で Sentry captureException 送信、和文ハードコードを静的t()でi18n化(ja/en)、「もう一度試す」＋「ホームに戻る」導線追加。tsc/vitest655/eslint green） | dev-logic |
 | LR-38 | モーダル/シートの focus-trap・初期/復帰フォーカスを共通化#58 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
 | LR-39 | 日付/数値ロケールの統一＋インライン生hex/フォント追従の是正#59 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
-| LR-40 | In-App Review 依頼（成功の瞬間に1回・低評価はフィードバックへ二段）#22 | P2 | TODO | dev-logic |
+| LR-40 | In-App Review 依頼（成功の瞬間に1回・低評価はフィードバックへ二段）#22 | P2 | REVIEW（2026-06-12 Son: 同ブランチ。@capacitor-community/in-app-review 追加。成功の瞬間(3レッスン+ストリーク3日)に1回、事前プロンプトYes→native Review/No→フィードバックの二段、localStorageで1回制限・native限定・動的import。要 npx cap sync android＋Android再ビルド） | dev-logic |
 | LR-41 | ストアSS拡充＋価値訴求コピー（現状5枚・コピー焼き込み無し）#23 | P2 | TODO | designer＋content-creator |
-| LR-42 | 成果（偏差値/ストリーク/XP）の SNS シェア導線結線（share.ts は実装済だが未配線）#29 | P2 | TODO | dev-logic |
+| LR-42 | 成果（偏差値/ストリーク/XP）の SNS シェア導線結線（share.ts は実装済だが未配線）#29 | P2 | REVIEW（2026-06-12 Son: ブランチ feat/p2-growth-share-review-lr42-40[最新main]。share.ts(openShareSheet)に偏差値/ストリーク/レベルXPのシェアボタン結線、価値訴求型文言(ja/en)＋Play Storeリンク。tsc/vitest662/eslint green） | dev-logic |
 | LR-43 | win-back / 離脱予兆ユーザーの呼び戻し通知（既存通知基盤を拡張）#28 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | dev-logic |
 | LR-44 | オフライン対応＋同期フラグ方針（PWA/SW/manifest・fetch タイムアウト・オフラインバナーの欠如＋device-sync flag 既定OFF。同期自体は実装済）#52 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早・重い。※SRS複数端末リセットのバグのみ別途軽修正で拾うでTODOから省略） | dev-logic |
 | LR-45 | 長いリストの仮想化（RoadmapScreenV3 等を react-window or content-visibility）#51 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
