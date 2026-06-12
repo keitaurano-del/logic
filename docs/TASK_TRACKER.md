@@ -99,12 +99,12 @@ Keita 報告「ジャーナル機能がうまく動いていない」。3領域6
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
-| JF-1 | 画像アップロードの高速化＋複数枚エラー解消（compressToJpeg がメインスレッドを占有し重い／JournalImageGrid の逐次ループで状態クロージャ起因に複数枚で必ず失敗。圧縮の最適化・同時数制御・upsert衝突回避・state更新を関数更新形に。journalImages.ts:24-67, JournalImageGrid.tsx:108-140） | P0 | TODO | dev-logic |
-| JF-2 | アップロード再試行ボタンの修正（error スロットの retry が正しく再アップロードされない。JournalImageGrid のリトライ経路を修正） | P0 | TODO | dev-logic |
-| JF-3 | アップロード進捗バー表示（現状 status は uploading/error の2値のみで進捗不可視。枚数進捗＋各画像のインジケータ or %バーを追加。JournalImageGrid.tsx:23-36） | P1 | TODO | dev-logic |
-| JF-4 | ポイント獲得演出のリッチ化（現状は簡易 xpToast。コイン/紙吹雪/レベルアップ的な作り込んだ祝福アニメに。JournalDetailSheet.tsx:131,336-339 の xpToast を演出コンポーネント化） | P1 | TODO | dev-logic＋designer |
-| JF-5 | 編集時の二重ポイント付与を防止（設計上は「初回完成のみ」付与だが、編集再保存でポイントが出る不具合。wasMorning/wasEvening 判定 or awardJournalXp の永続ガードを検証し、既完成日の再保存では演出・付与とも出ないよう修正。JournalDetailSheet.tsx:308-339） | P0 | TODO | dev-logic |
-| JF-6 | 保存後にホームへ自動遷移（現状 handleSave は setEditing(false) のみで onClose を呼ばず編集シートに留まる→×が必要。保存成功後にシートを閉じてホームタブへ戻す導線に。AppV3 のタブ遷移へ onSaved 経由でコールバックを結線。JournalDetailSheet.tsx:326-330, JournalScreen.tsx, JournalCalendar.tsx） | P0 | TODO | dev-logic |
+| JF-1 | 画像アップロードの高速化＋複数枚エラー解消（compressToJpeg がメインスレッドを占有し重い／JournalImageGrid の逐次ループで状態クロージャ起因に複数枚で必ず失敗。圧縮の最適化・同時数制御・upsert衝突回避・state更新を関数更新形に。journalImages.ts:24-67, JournalImageGrid.tsx:108-140） | P0 | REVIEW | dev-logic |
+| JF-2 | アップロード再試行ボタンの修正（error スロットの retry が正しく再アップロードされない。JournalImageGrid のリトライ経路を修正） | P0 | REVIEW | dev-logic |
+| JF-3 | アップロード進捗バー表示（現状 status は uploading/error の2値のみで進捗不可視。枚数進捗＋各画像のインジケータ or %バーを追加。JournalImageGrid.tsx:23-36） | P1 | REVIEW | dev-logic |
+| JF-4 | ポイント獲得演出のリッチ化（現状は簡易 xpToast。コイン/紙吹雪/レベルアップ的な作り込んだ祝福アニメに。JournalDetailSheet.tsx:131,336-339 の xpToast を演出コンポーネント化） | P1 | REVIEW | dev-logic＋designer |
+| JF-5 | 編集時の二重ポイント付与を防止（設計上は「初回完成のみ」付与だが、編集再保存でポイントが出る不具合。wasMorning/wasEvening 判定 or awardJournalXp の永続ガードを検証し、既完成日の再保存では演出・付与とも出ないよう修正。JournalDetailSheet.tsx:308-339） | P0 | REVIEW | dev-logic |
+| JF-6 | 保存後にホームへ自動遷移（現状 handleSave は setEditing(false) のみで onClose を呼ばず編集シートに留まる→×が必要。保存成功後にシートを閉じてホームタブへ戻す導線に。AppV3 のタブ遷移へ onSaved 経由でコールバックを結線。JournalDetailSheet.tsx:326-330, JournalScreen.tsx, JournalCalendar.tsx） | P0 | REVIEW | dev-logic |
 
 ---
 
