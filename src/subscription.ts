@@ -23,8 +23,58 @@ export const PLAN_PRICES = {
   campaignYearly: 1980,
 } as const
 
-// キャンペーン年額プランの表示制御。true にするとプラン画面にキャンペーンカードが表示される。
-export const CAMPAIGN_ACTIVE = true
+// ──────────────────────────────────────────────────────────────────────────
+// キャンペーン年額プランの表示制御（LR-27: 日付ベース自動制御）
+// ──────────────────────────────────────────────────────────────────────────
+// 以前は `export const CAMPAIGN_ACTIVE = true` のハードコードだったため、キャンペーン
+// 失効後も常時表示され希少性が毀損していた。これを「現在日時がキャンペーン期間内か」で
+// 自動判定する方式へ変更する（モジュールロード時に一度だけ評価）。
+//
+// 期間の持たせ方:
+// - 終了日: env `VITE_CAMPAIGN_END`（YYYY-MM-DD もしくは ISO8601）。未設定時は安全側＝
+//   過去日（CAMPAIGN_END_FALLBACK）を使い CAMPAIGN_ACTIVE=false にする。
+//   〔Keita確認: キャンペーン終了日〕— 確定後 VITE_CAMPAIGN_END に設定すること。
+// - 開始日: env `VITE_CAMPAIGN_START`（任意）。未設定なら「開始制限なし」とみなす。
+// 終了日は「その日いっぱい有効」とするため、日付のみ指定時はその日の終わり(23:59:59.999)まで。
+const CAMPAIGN_END_FALLBACK = '2000-01-01' // 未設定時は過去日＝常に false（安全側）
+
+function parseCampaignBoundary(raw: string | undefined, endOfDay: boolean): number | null {
+  if (!raw) return null
+  const trimmed = raw.trim()
+  if (!trimmed) return null
+  // 日付のみ（YYYY-MM-DD）の場合、終了日は当日末まで含める。
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(trimmed)
+  const iso = dateOnly && endOfDay ? `${trimmed}T23:59:59.999` : trimmed
+  const t = new Date(iso).getTime()
+  return Number.isFinite(t) ? t : null
+}
+
+// テスト可能なように、env 値・現在時刻を引数で受け取れる純粋関数に切り出す。
+// 実運用では import.meta.env と Date.now() を渡す（下の computeCampaignActive）。
+export function isCampaignActiveAt(
+  endRawInput: string | undefined,
+  startRawInput: string | undefined,
+  now: number,
+): boolean {
+  const endRaw = endRawInput ?? CAMPAIGN_END_FALLBACK
+  const end = parseCampaignBoundary(endRaw, true)
+  // 終了日が不正/未設定相当なら安全側で false。
+  if (end === null) return false
+  if (now > end) return false
+  // 開始日（任意）。設定されていて現在がそれより前なら未開始＝false。
+  const start = parseCampaignBoundary(startRawInput, false)
+  if (start !== null && now < start) return false
+  return true
+}
+
+function computeCampaignActive(): boolean {
+  const env = (import.meta.env ?? {}) as Record<string, string | undefined>
+  return isCampaignActiveAt(env.VITE_CAMPAIGN_END, env.VITE_CAMPAIGN_START, Date.now())
+}
+
+// 既存の参照箇所（Pricing.tsx / PricingScreen.tsx）は boolean を import している前提なので、
+// 同名 export を boolean（計算結果）として維持する。
+export const CAMPAIGN_ACTIVE: boolean = computeCampaignActive()
 
 export type SubscriptionState = {
   plan: SubscriptionPlan
