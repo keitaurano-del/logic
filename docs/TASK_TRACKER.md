@@ -93,6 +93,17 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 ---
 
+## アプリサイズ削減 2026-06-12（Keita 依頼）
+
+Keita 報告「アプリサイズが大きい」。調査の結論: ジャーナル変更は無関係（依存・アセット追加ゼロ）。要因は ①レッスン/i18n/flashcard をJS一括同梱(~2MB → LR-20 遅延ロード) ②public画像21MB ③Android R8無効(→ LR-17)。
+
+進捗:
+- 済（main 反映済・内部テスト配信中, commit fc92565）: 未使用の大PNG12枚（ranks/rank-*.png・review-pyramid/mece.png＝SVG化で孤立していた死蔵アセット）を WebP 化し元PNG削除。public 21→18MB / dist 26→23MB（-2.7MB）。参照ゼロを裏取り済み。
+- R8/ProGuard（LR-17）: 既に Son が feat/p0-billing-auth-lr123 で実装・REVIEW 済。別途 perf/app-size-reduction(1a6eeaf) にも独立実装あり＝より網羅的な proguard-rules.pro（Capacitor全Plugin/課金/Supabase/Gson/JSbridge 等）をクロスチェック素材として利用可。いずれも Android 再ビルド＋実機スモーク（課金・各プラグイン）必須・未検証。
+- 次の候補: LR-20 レッスン遅延ロード（JS分割・中リスク・要別対応）、図解PNGの追加WebP化。
+
+---
+
 ## ジャーナル改善バッチ 2026-06-12（Keita 直依頼・最優先）
 
 Keita 報告「ジャーナル機能がうまく動いていない」。3領域6件。担当 dev-logic（実装）＋ Keita（実機検証）。関連: components/journal/JournalDetailSheet.tsx・JournalImageGrid.tsx・journalImages.ts・screens/JournalScreen.tsx。
