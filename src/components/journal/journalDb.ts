@@ -6,6 +6,7 @@ import type {
   DailyJournal,
   Goal,
   GoalCategory,
+  JournalImage,
   PeriodType,
 } from './types'
 
@@ -147,6 +148,40 @@ export async function upsertJournal(j: DailyJournal): Promise<{ error?: string }
       hint: (error as { hint?: string }).hint,
     })
     // ユーザー向けには message と code（あれば）を返す
+    const code = (error as { code?: string }).code
+    return { error: code ? `${error.message} [${code}]` : error.message }
+  }
+  return {}
+}
+
+/**
+ * 画像列だけを部分更新する。
+ * 並列アップロードのワーカーがそれぞれ完了時に呼んでも、本文・タグ・気分・振り返り等の
+ * 他カラムを古いクロージャ値で巻き戻さないよう、images（と onConflict キー）のみを書く。
+ * 行が無ければ作成される（upsert）。
+ */
+export async function upsertJournalImages(
+  userId: string,
+  date: string,
+  images: JournalImage[],
+): Promise<{ error?: string }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return { error: 'supabase not configured' }
+  const payload = {
+    user_id: userId,
+    date,
+    images: Array.isArray(images) ? images : [],
+  }
+  const { error } = await supabase
+    .from('daily_journals')
+    .upsert(payload, { onConflict: 'user_id,date' })
+  if (error) {
+    console.error('upsertJournalImages failed:', {
+      message: error.message,
+      code: (error as { code?: string }).code,
+      details: (error as { details?: string }).details,
+      hint: (error as { hint?: string }).hint,
+    })
     const code = (error as { code?: string }).code
     return { error: code ? `${error.message} [${code}]` : error.message }
   }

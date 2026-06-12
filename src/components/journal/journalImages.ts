@@ -43,14 +43,18 @@ async function decodeAndResize(file: File): Promise<DrawSource | null> {
     const probe = await createImageBitmap(file, { imageOrientation: 'from-image' })
     const longest = Math.max(probe.width, probe.height)
     if (longest <= MAX_DIMENSION) return probe
-    const scale = MAX_DIMENSION / longest
-    const targetW = Math.max(1, Math.round(probe.width * scale))
-    const resized = await createImageBitmap(probe, {
-      resizeWidth: targetW,
-      resizeQuality: 'medium',
-    })
-    probe.close()
-    return resized
+    // ここから先で probe は不要。リサイズが throw しても確実に close してリークを防ぐ。
+    try {
+      const scale = MAX_DIMENSION / longest
+      const targetW = Math.max(1, Math.round(probe.width * scale))
+      const resized = await createImageBitmap(probe, {
+        resizeWidth: targetW,
+        resizeQuality: 'medium',
+      })
+      return resized
+    } finally {
+      probe.close()
+    }
   } catch {
     return null
   }

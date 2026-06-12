@@ -45,6 +45,9 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   // クロージャに閉じ込めた古い images を onChange に渡して既存画像を取りこぼす事故を防ぐ。
   const imagesRef = useRef<JournalImage[]>(images)
   useEffect(() => { imagesRef.current = images }, [images])
+  // pending の最新枚数を frame 計算で参照するための ref（古いクロージャでの枠超過を防ぐ）。
+  const pendingRef = useRef<PendingUpload[]>(pending)
+  useEffect(() => { pendingRef.current = pending }, [pending])
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   // pending preview の objectURL は unmount 時にクリーンアップする
@@ -147,9 +150,10 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   const handleFilesPicked = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return
     setError(null)
-    // 最新の images/pending から残り枠を算出（古いクロージャを避けるため ref と関数更新形を使用）
+    // 最新の images/pending から残り枠を算出（古いクロージャを避けるため ref を参照）。
+    // 連続で素早く選択しても pendingRef を同期更新するため枠超過しない。
     const currentImages = imagesRef.current.length
-    const remaining = JOURNAL_IMAGE_MAX_COUNT - currentImages - pending.length
+    const remaining = JOURNAL_IMAGE_MAX_COUNT - currentImages - pendingRef.current.length
     if (remaining <= 0) {
       setError(t('journal.imagesLimitReached', { max: String(JOURNAL_IMAGE_MAX_COUNT) }))
       return
@@ -169,9 +173,11 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
         status: 'compressing' as const,
       }
     })
+    // ref を即時更新してから setState（次の素早い選択が最新の枠を読めるように）。
+    pendingRef.current = [...pendingRef.current, ...startedPending]
     setPending((prev) => [...prev, ...startedPending])
     await runBatch(startedPending)
-  }, [pending.length, runBatch])
+  }, [runBatch])
 
   // 失敗した pending を再アップロード（JF-2）。runUpload が成功/失敗の state 遷移を一手に担う。
   const handleRetry = useCallback(async (slot: PendingUpload) => {
@@ -202,6 +208,9 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
     const target = images[idx]
     if (!target) return
     const next = images.filter((_, i) => i !== idx)
+    // in-flight アップロードの完了が imagesRef.current を読んで [...current, image] を作るため、
+    // 削除も即時に ref へ反映しておかないと、並行中の追加が削除済み画像を復活させうる。
+    imagesRef.current = next
     onChange(next)
     // ローカル preview があれば破棄
     const localUrl = localPreviewRef.current.get(target.path)

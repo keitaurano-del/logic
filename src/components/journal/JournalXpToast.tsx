@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { haptic } from '../../platform/haptics'
+import { prefersReducedMotion } from '../../platform'
 
 interface JournalXpToastProps {
   xp: number
@@ -8,21 +9,30 @@ interface JournalXpToastProps {
 }
 
 function useCountUp(target: number, duration = 800, delay = 250) {
+  // a11y: 動きを減らす設定ならカウントアップせず即値表示。
+  const reduced = prefersReducedMotion()
   const [val, setVal] = useState(0)
   useEffect(() => {
+    // reduced 時はアニメーションを走らせない。表示は下の return で target を即返す。
+    if (reduced) return
+    let raf = 0
     const timer = setTimeout(() => {
       const start = Date.now()
       const tick = () => {
         const tt = Math.min((Date.now() - start) / duration, 1)
         const ease = tt < 0.5 ? 2 * tt * tt : -1 + (4 - 2 * tt) * tt
         setVal(Math.round(ease * target))
-        if (tt < 1) requestAnimationFrame(tick)
+        if (tt < 1) raf = requestAnimationFrame(tick)
       }
-      requestAnimationFrame(tick)
+      raf = requestAnimationFrame(tick)
     }, delay)
-    return () => clearTimeout(timer)
-  }, [target, duration, delay])
-  return val
+    // unmount 時に遅延 tick と再帰 rAF の両方を確実に止める（unmount 後 setState を防ぐ）。
+    return () => {
+      clearTimeout(timer)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [reduced, target, duration, delay])
+  return reduced ? target : val
 }
 
 function RingProgress({ progress, size = 132, stroke = 9 }: { progress: number; size?: number; stroke?: number }) {

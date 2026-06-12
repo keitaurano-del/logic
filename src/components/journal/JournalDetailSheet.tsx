@@ -10,7 +10,7 @@ import { JournalImageGrid } from './JournalImageGrid'
 import type { HealthSnapshot } from '../../platform/health'
 import { SparkleIcon } from './MoodWeatherIcons'
 import { PencilIcon, XIcon } from '../../icons'
-import { fetchJournalByDate, upsertJournal, normalizeTags, tagMatchKey, fetchAllUserTags } from './journalDb'
+import { fetchJournalByDate, upsertJournal, upsertJournalImages, normalizeTags, tagMatchKey, fetchAllUserTags } from './journalDb'
 import { suggestJournalTags } from './journalApi'
 import { applyConsolidations, canonicalizeTags } from './tagConsolidation'
 import { JournalXpToast } from './JournalXpToast'
@@ -138,6 +138,27 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
   const modalRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
+  // unmount 後の setState / 遅延 upsert を抑止するためのマウント状態と、
+  // unmount/close で確実に止めるための setTimeout id 集合。
+  const mountedRef = useRef(true)
+  const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
+  const scheduleTimeout = (fn: () => void, ms: number) => {
+    const id = setTimeout(() => {
+      timersRef.current.delete(id)
+      if (mountedRef.current) fn()
+    }, ms)
+    timersRef.current.add(id)
+    return id
+  }
+  useEffect(() => {
+    mountedRef.current = true
+    const timers = timersRef.current
+    return () => {
+      mountedRef.current = false
+      for (const id of timers) clearTimeout(id)
+      timers.clear()
+    }
+  }, [])
 
   // T-N: ヘッダ/ハンドル領域からの下スワイプでシートを閉じる。
   // 入力欄やスクロール領域では誤爆させたくないので、ドラッグの起点はハンドル領域に限定する。
@@ -338,7 +359,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
     setSavedToast(true)
     onSaved?.(updated)
     setEditing(false)
-    setTimeout(() => setSavedToast(false), 1500)
+    scheduleTimeout(() => setSavedToast(false), 1500)
 
     // 初めて朝/夜が完成した瞬間のみ XP 付与 + アニメーション。
     // awardJournalXp は同日同フェーズで既に付与済みなら 0 を返すので二重付与は起きない（JF-5）。
@@ -356,9 +377,9 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
     // フォールバックとして時間でも遷移を保証する）。演出が無ければ短い保存トースト後にそのまま戻る。
     if (onNavigateHome) {
       if (celebrated) {
-        setTimeout(() => onNavigateHome(), 2400)
+        scheduleTimeout(() => onNavigateHome(), 2400)
       } else {
-        setTimeout(() => onNavigateHome(), 700)
+        scheduleTimeout(() => onNavigateHome(), 700)
       }
     }
 
@@ -374,6 +395,8 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
           eveningReflection: trimmedReflection,
           existingTags: userTags.length > 0 ? userTags : tags,
         })
+        // unmount 後はトースト/state を触らない（背景処理のリーク防止）。
+        if (!mountedRef.current) return
 
         // D3 層2: AI の統合提案を「今回保存するタグ + その保存に関係する既存タグ」へ適用。
         // 完全自動。同一 axis ガード・スナップショット・ログを内蔵（applyConsolidations）。
@@ -421,7 +444,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
 
         const reupdated: DailyJournal = { ...updated, tags: merged }
         const { error: e2 } = await upsertJournal(reupdated)
-        if (e2) return
+        if (e2 || !mountedRef.current) return
         setTags(merged)
         setJournal(reupdated)
         onSaved?.(reupdated)
@@ -430,7 +453,7 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
         } else {
           setAiTagToast(t('journal.aiTagsAdded', { n: String(additions.length) }))
         }
-        setTimeout(() => setAiTagToast(null), didConsolidate ? 6000 : 2400)
+        scheduleTimeout(() => setAiTagToast(null), didConsolidate ? 6000 : 2400)
       })()
     }
   }
@@ -469,20 +492,26 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
   }
 
   // 画像の追加・削除は Storage への upload/delete が即時走るため、DB の images カラムも
-  // ここで即時 upsert して整合を取る（編集モードのキャンセルでは画像変更は巻き戻さない）。
+  // ここで即時保存して整合を取る（編集モードのキャンセルでは画像変更は巻き戻さない）。
+  //
+  // 重要: 全カラム upsert ではなく「画像列のみ」の部分更新にする。
+  // 2 並列のアップロードワーカーがそれぞれ完了時にこれを呼ぶが、このクロージャは
+  // 描画時点の古い journal / scheduleNotes / tags 等を閉じ込めている。全カラム upsert だと
+  // 本文入力中の複数枚同時追加で mood/tags/schedule_notes/evening_reflection が古い値で
+  // 巻き戻されうる（データ欠損）。images だけを書けば本文側は一切上書きされない。
   const handleImagesChange = async (next: JournalImage[]) => {
+    if (!mountedRef.current) return
     setImages(next)
-    const base = journal ?? emptyJournal(userId, date)
-    const updated: DailyJournal = {
-      ...base,
-      user_id: userId,
-      date,
-      images: next,
-    }
-    const { error } = await upsertJournal(updated)
-    if (error) return
-    setJournal(updated)
-    onSaved?.(updated)
+    const { error } = await upsertJournalImages(userId, date, next)
+    if (error || !mountedRef.current) return
+    // ローカル journal キャッシュにも images だけ反映（他カラムは現状値を維持）。
+    let saved: DailyJournal | null = null
+    setJournal((prev) => {
+      const base = prev ?? emptyJournal(userId, date)
+      saved = { ...base, user_id: userId, date, images: next }
+      return saved
+    })
+    if (saved) onSaved?.(saved)
   }
 
   const morningWritten = hasMorningContent(scheduleNotes, tags, morningMood, morningWeather)
