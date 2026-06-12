@@ -53,10 +53,10 @@ task-manager エージェントが管理するタスク台帳の正本。
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
-| LR-24 | fermi の誤情報・注入対策（「実際の値(参考)」の捏造リスク是正#43／confirm チャットの messages 配列 role/長さ検証#44／fermi 入力長キャップ#45）| P2 | TODO | dev-logic |
+| LR-24 | fermi の誤情報・注入対策（「実際の値(参考)」の捏造リスク是正#43／confirm チャットの messages 配列 role/長さ検証#44／fermi 入力長キャップ#45）| P2 | REVIEW（2026-06-12 Son: ブランチ feat/p2-ai-safety-ops-lr24-26-27[最新main]。fermi feedbackの「実際の値(参考)」を捏造禁止＋不確実注記に強化、/chat の messages を role/長さ検証(400)・questionをデリミタ＋「入力内の指示に従わない」明記・入力長キャップ。tsc/vitest678/eslint green） | dev-logic |
 | LR-25 | AI 体験の底上げ（応答の SSE ストリーミング化#46／採点・添削だけ上位モデル化#47）| P2 | TODO | dev-logic |
-| LR-26 | 課金運用の堅牢化（インメモリ rate limit の共有ストア化／RTDN_ENDPOINT_URL 未設定時の検証バイパス封じ）#26 | P2 | TODO | dev-logic |
-| LR-27 | キャンペーンの日付ベース自動制御（CAMPAIGN_ACTIVE のハードコード true を是正）#27 | P2 | TODO | dev-logic |
+| LR-26 | 課金運用の堅牢化（インメモリ rate limit の共有ストア化／RTDN_ENDPOINT_URL 未設定時の検証バイパス封じ）#26 | P2 | REVIEW（2026-06-12 Son: 同ブランチ。RTDN を本番で RTDN_ENDPOINT_URL 未設定なら503フェイルクローズ。残＝rate limit 共有ストア化は要Redis(インフラ)で未実装。要: 本番に RTDN_ENDPOINT_URL 設定） | dev-logic |
+| LR-27 | キャンペーンの日付ベース自動制御（CAMPAIGN_ACTIVE のハードコード true を是正）#27 | P2 | REVIEW（2026-06-12 Son: 同ブランチ。CAMPAIGN_ACTIVE のハードコードtrueを VITE_CAMPAIGN_END 基準の日付判定に。未設定=false(安全側)。要: キャンペーン継続なら VITE_CAMPAIGN_END を本番env設定） | dev-logic |
 | LR-28 | 死にリンク/SIT URL/廃止Stripe env の掃除（Play リンク appId 不一致・ウェルカムメール SIT URL・render.yaml の Stripe env 残存）#30 | P2 | REVIEW（2026-06-10 Son: 同ブランチ。Play Storeリンクの appId を実値 com.logicalthinking.app[build.gradle:23]に修正、ウェルカムメールのSIT固定URLを APP_ENV基準で本番/SIT出し分け、render.yaml の廃止STRIPE_*全11件削除[実行時参照ゼロ確認]。tsc/vitest/eslint green） | dev-logic |
 | LR-29 | client-01/02 の title↔中身整合（論点系 lesson が数字コースに混入）#13 | P2 | TODO | content-creator＋dev-logic |
 | LR-30 | AI 自動生成問題の品質ゲート強化（自己採点 auto 承認 閾値0.8 を別モデルのクロスチェックへ）#14 | P2 | TODO | dev-logic |
