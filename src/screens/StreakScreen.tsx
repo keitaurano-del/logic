@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { getStreak, getStudyDates, getTotalStudyDays, getStreakFreezeCount, MAX_STREAK_FREEZE } from '../stats'
+import { getStreak, getStudyDates, getTotalStudyDays, getStreakFreezeCount, MAX_STREAK_FREEZE, localDateStr } from '../stats'
 import { ArrowLeftIcon, ArrowRightIcon, FlameIcon, BandageIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { t, getLocale } from '../i18n'
@@ -52,7 +52,9 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
   // Build calendar cells: 6 rows × 7 cols (Sun-Sat)
   const firstDow = new Date(year, month, 1).getDay() // 0=Sun
   const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const todayStr = today.toISOString().slice(0, 10)
+  // ローカル日付（実質 JST）で「今日」を判定する。toISOString は UTC 基準のため、
+  // JST 0–9 時に前日扱いとなりカレンダーの「今日」強調が 1 日ズレる（LR-36）。
+  const todayStr = localDateStr(today)
 
   const cells: (number | null)[] = []
   for (let i = 0; i < firstDow; i++) cells.push(null)
