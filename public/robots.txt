@@ -1,0 +1,5 @@
+# LR-46: 本番URL は現行 Render ドメイン。独自ドメイン化時に Sitemap URL を差し替えること。
+User-agent: *
+Allow: /
+
+Sitemap: https://logic-u5wn.onrender.com/sitemap.xml

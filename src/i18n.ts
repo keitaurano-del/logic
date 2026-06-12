@@ -21,6 +21,21 @@ function detectLocale(): Locale {
 
 let currentLocale: Locale = detectLocale()
 
+// LR-22: keep <html lang="…"> in sync with the active UI locale so screen
+// readers pronounce the interface in the right language. Safe no-op in SSR /
+// non-DOM (e.g. test) environments where document is undefined.
+function applyHtmlLang(loc: Locale): void {
+  try {
+    if (typeof document !== 'undefined' && document.documentElement) {
+      document.documentElement.lang = loc
+    }
+  } catch { /* */ }
+}
+
+// Set lang from the detected locale at module load so the very first paint
+// already reflects the user's language (index.html ships with lang="ja").
+applyHtmlLang(currentLocale)
+
 export function getLocale(): Locale {
   return currentLocale
 }
@@ -30,6 +45,7 @@ export function setLocale(loc: Locale): void {
     localStorage.setItem(STORAGE_KEY, loc)
   } catch { /* */ }
   currentLocale = loc
+  applyHtmlLang(loc)
   // Nuclear but reliable: full reload to re-render every component with new strings
   window.location.reload()
 }
@@ -728,6 +744,9 @@ const STRINGS: Record<Locale, Strings> = {
     'auth.linkResend': 'リンクを再送信',
     'auth.linkResent': 'ログインリンクを再送信しました',
     'auth.linkOpenMailApp': 'メールアプリを開く',
+    'auth.linkCheckSpam': '届かない場合は、迷惑メールフォルダもご確認ください。',
+    'auth.linkMailAppHint': 'メールアプリを開けませんでした。ご利用のメールアプリで受信トレイをご確認ください。',
+    'auth.linkResendCooldown': '再送信（{sec}秒）',
     // ログイン直後のウェルカム画面
     'welcome.eyebrow': 'ようこそ',
     'welcome.heading': '{name} さん、はじめましょう',
@@ -2783,6 +2802,9 @@ const STRINGS: Record<Locale, Strings> = {
     'auth.linkResend': 'Resend link',
     'auth.linkResent': 'New login link sent',
     'auth.linkOpenMailApp': 'Open mail app',
+    'auth.linkCheckSpam': "If you don't see it, please also check your spam folder.",
+    'auth.linkMailAppHint': "Couldn't open a mail app. Please check your inbox in your email app.",
+    'auth.linkResendCooldown': 'Resend ({sec}s)',
     // Welcome screen shown right after auth success
     'welcome.eyebrow': 'Welcome',
     'welcome.heading': "Let's get started, {name}",

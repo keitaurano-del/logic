@@ -5,6 +5,51 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#FAFAFB" />
+
+    <!-- LR-46: SEO / social metadata.
+         本番URL は現行の Render ドメイン。独自ドメイン化したら canonical /
+         og:url / sitemap / robots の各 URL を差し替えること。 -->
+    <meta name="description" content="ロジカルシンキング・ケース面接・クリティカルシンキングを毎日3分から。AIがあなた専用の問題を作る論理思考トレーニングアプリ。" />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://logic-u5wn.onrender.com/" />
+    <!-- EN版LP（ローカライズされたトップページ）は未提供のため hreflang alternate は張らない。
+         EN の LP を用意したら hreflang="ja"/"en"/"x-default" を追加する。 -->
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Logic — 論理思考トレーニング" />
+    <meta property="og:description" content="ロジカルシンキング・ケース面接・クリティカルシンキングを毎日3分から。AIがあなた専用の問題を作る論理思考トレーニングアプリ。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://logic-u5wn.onrender.com/" />
+    <!-- TODO: 専用OG画像（1200×630）を後で用意。暫定でアプリロゴ(512²)を指定。 -->
+    <meta property="og:image" content="https://logic-u5wn.onrender.com/logo-512.png" />
+    <meta property="og:site_name" content="Logic" />
+    <meta property="og:locale" content="ja_JP" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Logic — 論理思考トレーニング" />
+    <meta name="twitter:description" content="ロジカルシンキング・ケース面接・クリティカルシンキングを毎日3分から。AIがあなた専用の問題を作る論理思考トレーニングアプリ。" />
+    <meta name="twitter:image" content="https://logic-u5wn.onrender.com/logo-512.png" />
+
+    <!-- Structured data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Logic",
+      "description": "ロジカルシンキング・ケース面接・クリティカルシンキングを毎日3分から学べる論理思考トレーニングアプリ。",
+      "url": "https://logic-u5wn.onrender.com/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web, Android, iOS",
+      "inLanguage": "ja",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      }
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">

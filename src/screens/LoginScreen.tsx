@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { sendMagicLink, isSupabaseConfigured, type User } from '../supabase'
 import { t } from '../i18n'
+import { useResendCooldown, openMailApp } from './authSentHelpers'
 
 interface LoginScreenProps {
   onLoginSuccess: (user: User) => void
@@ -14,6 +15,8 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [mailHint, setMailHint] = useState(false)
+  const { remaining, start: startCooldown, active: cooldownActive } = useResendCooldown()
   const ready = isSupabaseConfigured()
 
   const BG = 'var(--bg-slate-deep)'
@@ -51,7 +54,7 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
   }
 
   async function handleResend() {
-    if (loading) return
+    if (loading || cooldownActive) return
     setError(''); setSuccessMsg(''); setLoading(true)
     const result = await sendMagicLink(email)
     setLoading(false)
@@ -61,6 +64,12 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
       return
     }
     setSuccessMsg(t('auth.linkResent'))
+    startCooldown()
+  }
+
+  function handleOpenMail() {
+    const opened = openMailApp()
+    setMailHint(!opened)
   }
 
   const title = step === 'sent' ? t('auth.linkSentTitle') : t('auth.loginTitle')
@@ -127,16 +136,36 @@ export function LoginScreen({ onLoginSuccess: _onLoginSuccess }: LoginScreenProp
             <p style={{ fontSize: '0.9333rem', color: TEXT2, margin: '0 0 4px', textAlign: 'center', lineHeight: 1.6 }}>
               {t('auth.linkSentTo', { email })}
             </p>
+            <button
+              onClick={handleOpenMail}
+              style={{
+                width: '100%', padding: '14px',
+                background: 'var(--brand-grad-h)',
+                border: 'none', borderRadius: 12,
+                fontSize: '1rem', fontWeight: 700, color: 'var(--accent-fg)',
+                cursor: 'pointer', marginTop: 8,
+              }}
+            >
+              {t('auth.linkOpenMailApp')}
+            </button>
+            {mailHint && (
+              <p role="status" aria-live="polite" style={{ fontSize: '0.8667rem', color: TEXT2, margin: '8px 0 0', textAlign: 'center', lineHeight: 1.6 }}>
+                {t('auth.linkMailAppHint')}
+              </p>
+            )}
+            <p style={{ fontSize: '0.8667rem', color: TEXT2, margin: '12px 0 0', textAlign: 'center', lineHeight: 1.6 }}>
+              {t('auth.linkCheckSpam')}
+            </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', marginTop: 16 }}>
               <button
                 onClick={handleResend}
-                disabled={loading}
-                style={{ background: 'none', border: 'none', color: 'var(--brand)', fontSize: '0.9333rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: loading ? 0.5 : 1 }}
+                disabled={loading || cooldownActive}
+                style={{ background: 'none', border: 'none', color: 'var(--brand)', fontSize: '0.9333rem', fontWeight: 600, cursor: (loading || cooldownActive) ? 'not-allowed' : 'pointer', padding: '10px 0', opacity: (loading || cooldownActive) ? 0.5 : 1 }}
               >
-                {t('auth.linkResend')}
+                {cooldownActive ? t('auth.linkResendCooldown', { sec: remaining }) : t('auth.linkResend')}
               </button>
               <button
-                onClick={() => { setStep('email'); setError(''); setSuccessMsg('') }}
+                onClick={() => { setStep('email'); setError(''); setSuccessMsg(''); setMailHint(false) }}
                 style={{ background: 'none', border: 'none', color: TEXT2, fontSize: '0.9333rem', cursor: 'pointer', padding: '8px 0' }}
               >
                 {t('auth.backToLogin')}
