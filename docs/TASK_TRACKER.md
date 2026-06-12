@@ -65,8 +65,8 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-33 | 復習ハブ等の無料境界見直し（直近 N 件は無料解放）#21 | P2 | TODO | dev-logic＋Keita |
 | LR-34 | 復習SRS天井7日固定の段階ラダー化（ease は保存されるが間隔計算に未使用の半デッド）#16 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | dev-logic＋Keita |
 | LR-35 | テーマの OS 追従＋アクセント選択UIの導線復活（UI は ThemeSettings.tsx 現存だが死蔵で到達不可）#18 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | designer＋dev-logic |
-| LR-36 | ストリーク日付の UTC/ローカル混在を localDate 統一（JST 深夜の1日ズレ）#19 | P2 | TODO | dev-logic |
-| LR-37 | ErrorBoundary の i18n 化＋Sentry 送信＋「ホームへ戻る」導線#20 | P2 | TODO | dev-logic |
+| LR-36 | ストリーク日付の UTC/ローカル混在を localDate 統一（JST 深夜の1日ズレ）#19 | P2 | REVIEW（2026-06-12 Son: ブランチ feat/p1-streak-errorboundary-lr36-37[mainから独立]。調査結果＝ストリークのコアロジック(stats.ts)は既に localDateStr 統一済で「継続が途切れる」系の実バグは無し。残る生きたUTCバグは StreakScreen のカレンダー「今日」強調1箇所のみ→localDateStr()に修正(JST0-9時の前日ズレ解消・保存フォーマット不変)。tsc/vitest655/eslint green） | dev-logic |
+| LR-37 | ErrorBoundary の i18n 化＋Sentry 送信＋「ホームへ戻る」導線#20 | P2 | REVIEW（2026-06-12 Son: 同ブランチ。ErrorBoundary を componentDidCatch で Sentry captureException 送信、和文ハードコードを静的t()でi18n化(ja/en)、「もう一度試す」＋「ホームに戻る」導線追加。tsc/vitest655/eslint green） | dev-logic |
 | LR-38 | モーダル/シートの focus-trap・初期/復帰フォーカスを共通化#58 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
 | LR-39 | 日付/数値ロケールの統一＋インライン生hex/フォント追従の是正#59 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
 | LR-40 | In-App Review 依頼（成功の瞬間に1回・低評価はフィードバックへ二段）#22 | P2 | TODO | dev-logic |
