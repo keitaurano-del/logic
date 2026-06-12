@@ -15,7 +15,7 @@ import { suggestJournalTags } from './journalApi'
 import { applyConsolidations, canonicalizeTags } from './tagConsolidation'
 import { JournalXpToast } from './JournalXpToast'
 import { JournalRichText } from './JournalRichText'
-import { awardJournalXp } from '../../stats'
+import { awardJournalXp, isJournalXpAwarded } from '../../stats'
 import { t, getLocale } from '../../i18n'
 
 interface JournalDetailSheetProps {
@@ -26,6 +26,8 @@ interface JournalDetailSheetProps {
   initialPhase?: Phase
   onClose: () => void
   onSaved?: (j: DailyJournal) => void
+  /** JF-6: 保存成功後にホームタブへ戻すための導線。指定があれば保存後に呼ぶ。 */
+  onNavigateHome?: () => void
 }
 
 type Phase = 'morning' | 'evening'
@@ -94,7 +96,7 @@ function decideInitialPhase(j: DailyJournal | null): Phase {
   return h < 16 ? 'morning' : 'evening'
 }
 
-export function JournalDetailSheet({ userId, date, initialJournal, initialPhase, onClose, onSaved }: JournalDetailSheetProps) {
+export function JournalDetailSheet({ userId, date, initialJournal, initialPhase, onClose, onSaved, onNavigateHome }: JournalDetailSheetProps) {
   const [journal, setJournal] = useState<DailyJournal | null>(initialJournal ?? null)
   const [morningMood, setMorningMood] = useState<Mood | null>((initialJournal?.morning_mood as Mood | null) ?? null)
   const [morningWeather, setMorningWeather] = useState<Weather | null>((initialJournal?.morning_weather as Weather | null) ?? null)
@@ -310,8 +312,17 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
     const prevMorningWeather = (journal?.morning_weather as Weather | null) ?? null
     const prevEveningMood = (journal?.evening_mood as Mood | null) ?? (journal?.mood as Mood | null) ?? null
     const prevEveningWeather = (journal?.evening_weather as Weather | null) ?? (journal?.weather as Weather | null) ?? null
-    const wasMorning = hasMorningContent(journal?.schedule_notes ?? '', journal?.tags ?? [], prevMorningMood, prevMorningWeather)
-    const wasEvening = hasEveningContent(prevEveningMood, prevEveningWeather, journal?.evening_reflection ?? '')
+    // JF-5: 二重演出/二重付与の防止。
+    //   ① journal 前状態のコンテンツ有無（従来判定）に加えて、
+    //   ② 過去に当日同フェーズの XP を付与済みか（永続ガード）も「was=完成済み」として扱う。
+    //   journal 状態が何らかの理由で前回内容を反映していなくても、既に付与済みのフェーズなら
+    //   再保存で演出も付与も一切出さない。新規完成（未付与）のときだけ演出する。
+    const wasMorning =
+      hasMorningContent(journal?.schedule_notes ?? '', journal?.tags ?? [], prevMorningMood, prevMorningWeather) ||
+      isJournalXpAwarded(date, 'morning')
+    const wasEvening =
+      hasEveningContent(prevEveningMood, prevEveningWeather, journal?.evening_reflection ?? '') ||
+      isJournalXpAwarded(date, 'evening')
     const nowMorning = hasMorningContent(trimmedSchedule, tags, morningMood, morningWeather)
     const nowEvening = hasEveningContent(eveningMood, eveningWeather, trimmedReflection)
 
@@ -330,13 +341,25 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
     setTimeout(() => setSavedToast(false), 1500)
 
     // 初めて朝/夜が完成した瞬間のみ XP 付与 + アニメーション。
-    // awardJournalXp は同日同フェーズで既に付与済みなら 0 を返すので二重付与は起きない。
+    // awardJournalXp は同日同フェーズで既に付与済みなら 0 を返すので二重付与は起きない（JF-5）。
+    let celebrated = false
     if (!wasMorning && nowMorning) {
       const gained = awardJournalXp(date, 'morning')
-      if (gained > 0) setXpToast({ xp: gained, label: t('journal.xpMorningLabel') })
+      if (gained > 0) { setXpToast({ xp: gained, label: t('journal.xpMorningLabel') }); celebrated = true }
     } else if (!wasEvening && nowEvening) {
       const gained = awardJournalXp(date, 'evening')
-      if (gained > 0) setXpToast({ xp: gained, label: t('journal.xpEveningLabel') })
+      if (gained > 0) { setXpToast({ xp: gained, label: t('journal.xpEveningLabel') }); celebrated = true }
+    }
+
+    // JF-6: 保存成功後はシートを閉じてホームへ戻す。
+    // 祝福演出を出した場合は、演出が見えるよう少し待ってから遷移する（演出 onDone でも遷移するが、
+    // フォールバックとして時間でも遷移を保証する）。演出が無ければ短い保存トースト後にそのまま戻る。
+    if (onNavigateHome) {
+      if (celebrated) {
+        setTimeout(() => onNavigateHome(), 2400)
+      } else {
+        setTimeout(() => onNavigateHome(), 700)
+      }
     }
 
     // バックグラウンドで AI タグ提案。既存タグが少なく (<4)、本文がある場合のみ。

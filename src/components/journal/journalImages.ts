@@ -3,8 +3,10 @@ import type { JournalImage } from './types'
 
 const BUCKET = 'journal-images'
 const SIGNED_URL_TTL_SEC = 3600
-const MAX_DIMENSION = 1920
-const COMPRESS_QUALITY = 0.85
+// JF-1: 上限を 1920→1600 に下げてデコード/エンコード負荷とアップロード量を削減。
+// 1600px あればサムネ・ライトボックス表示には十分。
+const MAX_DIMENSION = 1600
+const COMPRESS_QUALITY = 0.82
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'])
 
 export class ImageUploadError extends Error {
@@ -16,27 +18,73 @@ export class ImageUploadError extends Error {
   }
 }
 
+/** drawImage 元 (ImageBitmap か HTMLImageElement) の自然サイズを取る。 */
+type DrawSource = ImageBitmap | HTMLImageElement
+function sourceSize(src: DrawSource): { w: number; h: number } {
+  if ('width' in src && 'height' in src) {
+    // ImageBitmap / HTMLImageElement どちらも width/height を持つ（HTMLImageElement は naturalWidth 優先）
+    const w = (src as HTMLImageElement).naturalWidth || src.width
+    const h = (src as HTMLImageElement).naturalHeight || src.height
+    return { w, h }
+  }
+  return { w: 0, h: 0 }
+}
+
 /**
- * File / Blob を最大 1920px の JPEG (quality 0.85) に圧縮する。
- * - 既に短辺がそれ以下なら長辺を 1920 に合わせる程度のリサイズに留める
+ * JF-1: createImageBitmap の resize オプションで「デコード時に」縮小する軽量経路。
+ * メインスレッドの drawImage 負荷を避け、対応ブラウザ（Capacitor WebView 含む）では大幅に速い。
+ * 非対応・失敗時は null を返し、呼び出し側が従来の <img>+canvas 経路へフォールバックする。
+ */
+async function decodeAndResize(file: File): Promise<DrawSource | null> {
+  if (typeof createImageBitmap !== 'function') return null
+  try {
+    // まず素のサイズを得るためのデコード。resize 指定は元サイズが分からないと比率がずれるので
+    // 一旦 imageOrientation のみ補正してデコードし、サイズを見てから縮小判断する。
+    const probe = await createImageBitmap(file, { imageOrientation: 'from-image' })
+    const longest = Math.max(probe.width, probe.height)
+    if (longest <= MAX_DIMENSION) return probe
+    const scale = MAX_DIMENSION / longest
+    const targetW = Math.max(1, Math.round(probe.width * scale))
+    const resized = await createImageBitmap(probe, {
+      resizeWidth: targetW,
+      resizeQuality: 'medium',
+    })
+    probe.close()
+    return resized
+  } catch {
+    return null
+  }
+}
+
+/**
+ * File / Blob を最大 1600px の JPEG (quality 0.82) に圧縮する。
+ * - createImageBitmap が使えるならデコード時リサイズで軽量化（JF-1）
+ * - 使えない/失敗時は <img>+canvas の従来経路にフォールバック
+ * - 既に長辺がそれ以下なら拡大はしない
  * - 失敗した場合は ImageUploadError を投げる
  */
 async function compressToJpeg(file: File): Promise<{ blob: Blob; width: number; height: number }> {
-  const dataUrl: string = await new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to read file'))
-    reader.readAsDataURL(file)
-  })
+  let source: DrawSource | null = await decodeAndResize(file)
 
-  const img: HTMLImageElement = await new Promise((resolve, reject) => {
-    const i = new Image()
-    i.onload = () => resolve(i)
-    i.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to decode image'))
-    i.src = dataUrl
-  })
+  if (!source) {
+    // フォールバック: FileReader → <img> デコード
+    const dataUrl: string = await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to read file'))
+      reader.readAsDataURL(file)
+    })
+    source = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image()
+      i.onload = () => resolve(i)
+      i.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to decode image'))
+      i.src = dataUrl
+    })
+  }
 
-  let { width, height } = img
+  const natural = sourceSize(source)
+  let width = natural.w
+  let height = natural.h
   const longest = Math.max(width, height)
   if (longest > MAX_DIMENSION) {
     const scale = MAX_DIMENSION / longest
@@ -48,8 +96,13 @@ async function compressToJpeg(file: File): Promise<{ blob: Blob; width: number; 
   canvas.width = width
   canvas.height = height
   const ctx = canvas.getContext('2d')
-  if (!ctx) throw new ImageUploadError('compress-failed', 'no canvas context')
-  ctx.drawImage(img, 0, 0, width, height)
+  if (!ctx) {
+    if ('close' in source) (source as ImageBitmap).close()
+    throw new ImageUploadError('compress-failed', 'no canvas context')
+  }
+  ctx.drawImage(source, 0, 0, width, height)
+  // ImageBitmap はメモリ解放のため明示 close
+  if ('close' in source) (source as ImageBitmap).close()
 
   const blob: Blob | null = await new Promise((resolve) => {
     canvas.toBlob((b) => resolve(b), 'image/jpeg', COMPRESS_QUALITY)
@@ -66,10 +119,14 @@ function makeObjectPath(userId: string, date: string): string {
   return `${userId}/${date}/${uuid}.jpg`
 }
 
+/** JF-3: アップロードの進行段階。UI で「圧縮中 / 送信中」を出し分けるために通知する。 */
+export type UploadStage = 'compressing' | 'uploading'
+
 export async function uploadJournalImage(
   userId: string,
   date: string,
   file: File,
+  onStage?: (stage: UploadStage) => void,
 ): Promise<{ image?: JournalImage; error?: ImageUploadError }> {
   if (!ALLOWED_MIME.has(file.type)) {
     return { error: new ImageUploadError('invalid-type', `unsupported mime: ${file.type}`) }
@@ -84,11 +141,13 @@ export async function uploadJournalImage(
 
   let compressed: { blob: Blob; width: number; height: number }
   try {
+    onStage?.('compressing')
     compressed = await compressToJpeg(file)
   } catch (e) {
     return { error: e instanceof ImageUploadError ? e : new ImageUploadError('compress-failed', String(e)) }
   }
 
+  onStage?.('uploading')
   const path = makeObjectPath(userId, date)
   const { error } = await supabase.storage
     .from(BUCKET)

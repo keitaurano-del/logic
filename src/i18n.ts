@@ -285,6 +285,9 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.imagesErrorSize': '画像サイズが大きすぎます',
     'journal.imagesErrorUpload': '画像のアップロードに失敗しました',
     'journal.imagesUploading': 'アップロード中…',
+    'journal.imagesCompressing': '画像を準備中…',
+    'journal.imagesBatchProgress': '{done}/{total} 枚アップロード済み',
+    'journal.imagesBatchFailed': '{n} 枚のアップロードに失敗しました。再試行してください。',
     'journal.imagesRetry': '再試行',
     'journal.imagesCancel': 'キャンセル',
 
@@ -2337,6 +2340,9 @@ const STRINGS: Record<Locale, Strings> = {
     'journal.imagesErrorSize': 'Image is too large',
     'journal.imagesErrorUpload': 'Failed to upload image',
     'journal.imagesUploading': 'Uploading…',
+    'journal.imagesCompressing': 'Preparing image…',
+    'journal.imagesBatchProgress': '{done}/{total} photos uploaded',
+    'journal.imagesBatchFailed': '{n} photo(s) failed to upload. Please retry.',
     'journal.imagesRetry': 'Retry',
     'journal.imagesCancel': 'Cancel',
 

@@ -754,6 +754,7 @@ function AppV3() {
               onUpdateAssistantName={updateAssistantName}
               onOpenLesson={(id) => handleOpenLesson(id, { type: 'journal' })}
               onOpenCourse={(cat) => navigate({ type: 'roadmap', category: cat })}
+              onNavigateHome={() => navigate({ type: 'home' })}
             />
           ) : (
             <JournalPaywall onUpgrade={() => navigate({ type: 'pricing' })} />

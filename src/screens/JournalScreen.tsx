@@ -20,6 +20,8 @@ interface JournalScreenProps {
   onOpenLesson?: (lessonId: number) => void
   /** AI アシスタントの推薦コースタップから呼ばれる遷移ハンドラ（カテゴリ名で受け取る） */
   onOpenCourse?: (category: string) => void
+  /** JF-6: ジャーナル保存後にホームタブへ戻す導線（AppV3 のタブ制御へ結線） */
+  onNavigateHome?: () => void
 }
 
 interface JournalGuestPreviewProps {
@@ -184,7 +186,7 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
   )
 }
 
-export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCourse }: JournalScreenProps) {
+export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCourse, onNavigateHome }: JournalScreenProps) {
   // 学習時間計測 — ジャーナル画面の滞在時間を study_sessions に記録
   useStudyTimer({ type: 'journal' })
   const [streak, setStreak] = useState(0)
@@ -244,7 +246,7 @@ export function JournalScreen({ userId, assistantName, onOpenLesson, onOpenCours
 
       <div style={{ flex: 1, padding: '16px 16px 120px', display: 'flex', flexDirection: 'column' }}>
         <JournalGoalsHeader userId={userId} />
-        <JournalCalendar userId={userId} assistantName={assistantName} onSaved={bumpRefresh} />
+        <JournalCalendar userId={userId} assistantName={assistantName} onSaved={bumpRefresh} onNavigateHome={onNavigateHome} />
         <JournalRecentList userId={userId} refreshKey={refreshKey} limit={5} />
       </div>
 

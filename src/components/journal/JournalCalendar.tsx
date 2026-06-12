@@ -13,6 +13,8 @@ interface JournalCalendarProps {
   assistantName?: string
   /** ジャーナルを保存したときに親に通知（recent list の再フェッチ等で使用） */
   onSaved?: () => void
+  /** JF-6: ジャーナル保存後にホームタブへ戻すための導線（AppV3 まで結線） */
+  onNavigateHome?: () => void
 }
 
 const MONTH_LABEL_JA = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
@@ -27,7 +29,7 @@ function dateStr(y: number, m: number, d: number): string {
   return `${y}-${pad(m + 1)}-${pad(d)}`
 }
 
-export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
+export function JournalCalendar({ userId, onSaved, onNavigateHome }: JournalCalendarProps) {
   const [cursor, setCursor] = useState(() => {
     const d = new Date()
     return { year: d.getFullYear(), month: d.getMonth() }
@@ -241,6 +243,12 @@ export function JournalCalendar({ userId, onSaved }: JournalCalendarProps) {
           initialPhase={initialPhase ?? undefined}
           onClose={() => { setSelected(null); setInitialPhase(null) }}
           onSaved={() => { handleRefresh(); onSaved?.() }}
+          onNavigateHome={onNavigateHome ? () => {
+            // シートを閉じてからホームタブへ（JF-6）
+            setSelected(null)
+            setInitialPhase(null)
+            onNavigateHome()
+          } : undefined}
         />
       )}
     </div>

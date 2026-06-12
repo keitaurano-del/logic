@@ -502,6 +502,15 @@ function saveJournalXpMap(map: JournalXpMap) {
 }
 
 /**
+ * 指定日同フェーズの XP が既に付与済みかを副作用なしで返す（読み取り専用ガード）。
+ * JF-5: 編集再保存で演出が再度出ないよう、UI 側で「過去に付与済みか」を判定するために使う。
+ */
+export function isJournalXpAwarded(date: string, phase: 'morning' | 'evening'): boolean {
+  const map = loadJournalXpMap()
+  return !!map[date]?.[phase]
+}
+
+/**
  * 指定日のジャーナル朝/夜 XP を 1 回だけ付与する。
  * 既に同日同フェーズで付与済みなら 0 を返し、その他副作用なし。
  * 新規付与時は addXp を呼び、付与した XP 量を返す。

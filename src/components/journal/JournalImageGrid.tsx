@@ -6,6 +6,7 @@ import {
   getJournalImageUrls,
   uploadJournalImage,
   type ImageUploadError,
+  type UploadStage,
 } from './journalImages'
 import { JOURNAL_IMAGE_MAX_COUNT, type JournalImage } from './types'
 
@@ -20,7 +21,9 @@ interface JournalImageGridProps {
   disabled?: boolean
 }
 
-type PendingStatus = 'uploading' | 'error'
+// JF-3: 進捗を可視化するためステージを細分化。
+//   'compressing' = 圧縮中 / 'uploading' = ストレージ送信中 / 'error' = 失敗
+type PendingStatus = 'compressing' | 'uploading' | 'error'
 
 interface PendingUpload {
   id: string
@@ -31,10 +34,17 @@ interface PendingUpload {
   errorCode?: ImageUploadError['code']
 }
 
+// JF-1: 同時アップロード数の上限（Storage への過負荷とメインスレッド占有を避ける）
+const MAX_CONCURRENT_UPLOADS = 2
+
 export function JournalImageGrid({ userId, date, images, editing, onChange, disabled }: JournalImageGridProps) {
   const [urls, setUrls] = useState<Record<string, string | null>>({})
   const [pending, setPending] = useState<PendingUpload[]>([])
   const [error, setError] = useState<string | null>(null)
+  // JF-2/JF-1: 非同期アップロード完了時に「最新の」images を読むための ref。
+  // クロージャに閉じ込めた古い images を onChange に渡して既存画像を取りこぼす事故を防ぐ。
+  const imagesRef = useRef<JournalImage[]>(images)
+  useEffect(() => { imagesRef.current = images }, [images])
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   // pending preview の objectURL は unmount 時にクリーンアップする
@@ -87,25 +97,59 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   const canAddMore = images.length + pending.length < JOURNAL_IMAGE_MAX_COUNT
 
   // 1 枚アップロードを実行し、結果に応じて pending の状態を更新する。
-  // 成功時は pending から外して successful 配列に積む。失敗時は status='error' にして残す。
+  // 成功時: localPreview を移管し pending から外して image を返す。
+  // 失敗時: status='error' に戻し errorCode を返す。
+  // state 更新はすべて関数更新形（prev => ...）。複数枚同時でも古いクロージャを参照しない。
   const runUpload = useCallback(async (
     slot: PendingUpload,
   ): Promise<{ image?: JournalImage; errorCode?: ImageUploadError['code'] }> => {
-    const { image, error: e } = await uploadJournalImage(userId, date, slot.file)
+    const onStage = (stage: UploadStage) => {
+      setPending((prev) => prev.map((p) =>
+        p.id === slot.id ? { ...p, status: stage, errorCode: undefined } : p,
+      ))
+    }
+    const { image, error: e } = await uploadJournalImage(userId, date, slot.file, onStage)
     if (image) {
       // 成功: signed URL が取れるまで使う暫定 preview を確保（slot.previewUrl を流用）
       localPreviewRef.current.set(image.path, slot.previewUrl)
       pendingUrlsRef.current.delete(slot.previewUrl)
       // ↑ pendingUrlsRef からは外したので unmount 時の revoke 対象は localPreviewRef 側に移管
+      setPending((prev) => prev.filter((p) => p.id !== slot.id))
+      // 最新 images（ref）に積む。古いクロージャの images を使わない（JF-2 取りこぼし防止）。
+      const next = [...imagesRef.current, image]
+      imagesRef.current = next
+      onChange(next)
       return { image }
     }
-    return { errorCode: e?.code ?? 'upload-failed' }
-  }, [date, userId])
+    const errorCode = e?.code ?? 'upload-failed'
+    setPending((prev) => prev.map((p) =>
+      p.id === slot.id ? { ...p, status: 'error' as const, errorCode } : p,
+    ))
+    return { errorCode }
+  }, [date, userId, onChange])
+
+  // 並列数を MAX_CONCURRENT_UPLOADS に制限して slots を消化する簡易ワーカープール。
+  const runBatch = useCallback(async (slots: PendingUpload[]) => {
+    let cursor = 0
+    const worker = async () => {
+      while (cursor < slots.length) {
+        const slot = slots[cursor++]
+        await runUpload(slot)
+      }
+    }
+    const workers = Array.from(
+      { length: Math.min(MAX_CONCURRENT_UPLOADS, slots.length) },
+      () => worker(),
+    )
+    await Promise.all(workers)
+  }, [runUpload])
 
   const handleFilesPicked = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return
     setError(null)
-    const remaining = JOURNAL_IMAGE_MAX_COUNT - images.length - pending.length
+    // 最新の images/pending から残り枠を算出（古いクロージャを避けるため ref と関数更新形を使用）
+    const currentImages = imagesRef.current.length
+    const remaining = JOURNAL_IMAGE_MAX_COUNT - currentImages - pending.length
     if (remaining <= 0) {
       setError(t('journal.imagesLimitReached', { max: String(JOURNAL_IMAGE_MAX_COUNT) }))
       return
@@ -114,53 +158,28 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
     if (files.length > remaining) {
       setError(t('journal.imagesLimitTrim', { max: String(JOURNAL_IMAGE_MAX_COUNT) }))
     }
-    // pending を立てる (uploading 状態でローカル preview 即表示)
-    const startedPending: PendingUpload[] = arr.map((f) => {
+    // pending を立てる (compressing 状態でローカル preview 即表示)。id は衝突しない一意値。
+    const startedPending: PendingUpload[] = arr.map((f, i) => {
       const previewUrl = URL.createObjectURL(f)
       pendingUrlsRef.current.add(previewUrl)
       return {
-        id: `${Date.now()}-${Math.random()}`,
+        id: `${Date.now()}-${i}-${Math.random().toString(36).slice(2)}`,
         previewUrl,
         file: f,
-        status: 'uploading' as const,
+        status: 'compressing' as const,
       }
     })
     setPending((prev) => [...prev, ...startedPending])
+    await runBatch(startedPending)
+  }, [pending.length, runBatch])
 
-    // 順次アップロード（並列だと Storage 側でレート気になるので直列）
-    const successful: JournalImage[] = []
-    for (const slot of startedPending) {
-      const { image, errorCode } = await runUpload(slot)
-      if (image) {
-        successful.push(image)
-        setPending((prev) => prev.filter((p) => p.id !== slot.id))
-      } else {
-        // 失敗: pending に残して error 状態にする (preview は維持、retry ボタン表示)
-        setPending((prev) => prev.map((p) =>
-          p.id === slot.id ? { ...p, status: 'error' as const, errorCode } : p,
-        ))
-      }
-    }
-    if (successful.length > 0) {
-      onChange([...images, ...successful])
-    }
-  }, [images, onChange, pending.length, runUpload])
-
-  // 失敗した pending を再アップロード
+  // 失敗した pending を再アップロード（JF-2）。runUpload が成功/失敗の state 遷移を一手に担う。
   const handleRetry = useCallback(async (slot: PendingUpload) => {
     setPending((prev) => prev.map((p) =>
-      p.id === slot.id ? { ...p, status: 'uploading' as const, errorCode: undefined } : p,
+      p.id === slot.id ? { ...p, status: 'compressing' as const, errorCode: undefined } : p,
     ))
-    const { image, errorCode } = await runUpload(slot)
-    if (image) {
-      setPending((prev) => prev.filter((p) => p.id !== slot.id))
-      onChange([...images, image])
-    } else {
-      setPending((prev) => prev.map((p) =>
-        p.id === slot.id ? { ...p, status: 'error' as const, errorCode } : p,
-      ))
-    }
-  }, [images, onChange, runUpload])
+    await runUpload(slot)
+  }, [runUpload])
 
   // 失敗した pending を破棄
   const handleCancelPending = useCallback((slotId: string) => {
@@ -230,6 +249,9 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   }, [lightboxIdx, images.length])
 
   const showEmptyHint = !editing && images.length === 0 && pending.length === 0
+  // JF-3: 進行中（圧縮 or 送信）の枚数。バッチ全体の進捗「N/M アップロード中」を出す。
+  const inFlightCount = pending.filter((p) => p.status !== 'error').length
+  const errorCount = pending.filter((p) => p.status === 'error').length
 
   return (
     <div className="journal-images">
@@ -278,16 +300,23 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
               key={p.id}
               className="journal-images__cell"
               role="listitem"
-              aria-busy={p.status === 'uploading'}
+              aria-busy={p.status !== 'error'}
             >
               <div className="journal-images__thumb-btn journal-images__thumb-btn--uploading">
                 <img src={p.previewUrl} alt="" className="journal-images__thumb" />
-                {p.status === 'uploading' && (
+                {p.status !== 'error' && (
                   <>
                     <div className="journal-images__overlay" aria-hidden="true" />
+                    {/* JF-3: 進捗インジケータ（indeterminate バー + スピナー）。
+                        圧縮 / 送信のステージに応じて文言を出し分ける。 */}
                     <div className="journal-images__spinner" aria-hidden="true" />
+                    <div className="journal-images__progress" aria-hidden="true">
+                      <div className="journal-images__progress-bar" />
+                    </div>
                     <div className="journal-images__status-label" aria-live="polite">
-                      {t('journal.imagesUploading')}
+                      {p.status === 'compressing'
+                        ? t('journal.imagesCompressing')
+                        : t('journal.imagesUploading')}
                     </div>
                   </>
                 )}
@@ -352,6 +381,21 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
           }}
           style={{ display: 'none' }}
         />
+      )}
+
+      {/* JF-3: バッチ全体の進捗。複数枚アップロード中であることが一目で分かる。 */}
+      {inFlightCount > 0 && (
+        <div className="journal-images__batch-progress" role="status" aria-live="polite">
+          {t('journal.imagesBatchProgress', {
+            done: String(images.length),
+            total: String(images.length + inFlightCount),
+          })}
+        </div>
+      )}
+      {inFlightCount === 0 && errorCount > 0 && (
+        <div className="journal-images__error" role="alert">
+          {t('journal.imagesBatchFailed', { n: String(errorCount) })}
+        </div>
       )}
 
       {error && <div className="journal-images__error" role="alert">{error}</div>}
