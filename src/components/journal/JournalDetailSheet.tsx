@@ -96,7 +96,7 @@ function decideInitialPhase(j: DailyJournal | null): Phase {
   return h < 16 ? 'morning' : 'evening'
 }
 
-export function JournalDetailSheet({ userId, date, initialJournal, initialPhase, onClose, onSaved, onNavigateHome }: JournalDetailSheetProps) {
+export function JournalDetailSheet({ userId, date, initialJournal, initialPhase, onClose, onSaved }: JournalDetailSheetProps) {
   const [journal, setJournal] = useState<DailyJournal | null>(initialJournal ?? null)
   const [morningMood, setMorningMood] = useState<Mood | null>((initialJournal?.morning_mood as Mood | null) ?? null)
   const [morningWeather, setMorningWeather] = useState<Weather | null>((initialJournal?.morning_weather as Weather | null) ?? null)
@@ -372,15 +372,12 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
       if (gained > 0) { setXpToast({ xp: gained, label: t('journal.xpEveningLabel') }); celebrated = true }
     }
 
-    // JF-6: 保存成功後はシートを閉じてホームへ戻す。
-    // 祝福演出を出した場合は、演出が見えるよう少し待ってから遷移する（演出 onDone でも遷移するが、
-    // フォールバックとして時間でも遷移を保証する）。演出が無ければ短い保存トースト後にそのまま戻る。
-    if (onNavigateHome) {
-      if (celebrated) {
-        scheduleTimeout(() => onNavigateHome(), 2400)
-      } else {
-        scheduleTimeout(() => onNavigateHome(), 700)
-      }
+    // JF-6（修正 2026-06-12）: 保存成功後はシートを閉じて「ジャーナル画面」に戻る（ホームタブには飛ばさない）。
+    // 祝福演出を出した場合は、演出が見えるよう少し待ってから閉じる。演出が無ければ短い保存トースト後に閉じる。
+    if (celebrated) {
+      scheduleTimeout(() => onClose(), 2400)
+    } else {
+      scheduleTimeout(() => onClose(), 700)
     }
 
     // バックグラウンドで AI タグ提案。既存タグが少なく (<4)、本文がある場合のみ。
