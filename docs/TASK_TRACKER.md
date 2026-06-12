@@ -39,7 +39,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-12 | レッスン本体の課金ロック実装 or 訴求を実装と一致（RoadmapScreenV3 に課金ロック無し）#7 | P1 | TODO | dev-logic＋Keita |
 | LR-13 | 正式な無料トライアルSKU化（Play Billing のトライアル付きベースプラン）#9 | P1 | TODO | dev-logic |
 | LR-14 | 課金ファネルのアナリティクス計測導入（paywall_view→checkout を PostHog or Firebase で最小導入。現状計測ゼロ）#8 | P1 | TODO | dev-logic |
-| LR-15 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテスト追加＋CI 必須化）#24 | P1 | TODO | dev-logic |
+| LR-15 | 課金テスト整備（verify 成功/期限切れ/未ack・RTDN 各type・entitlement 解決のテスト追加＋CI 必須化）#24 | P1 | REVIEW（2026-06-12 Son: ブランチ feat/p2-tabstack-ci-lr32-15。CIに vitest 必須ゲート追加(.github/workflows/ci.yml＝課金/認証含む全ユニットテストをPR/main pushでブロッキング)。課金テスト本体は billing-auth 系ブランチに既存。push 4453688） | dev-logic |
 | LR-16 | 購入検証失敗の回復（起動/ログイン時の restorePurchases 復旧ループ＋指数バックオフ。現状 restorePurchases は呼出元ゼロ）#48 | P1 | REVIEW（2026-06-10 Son: ブランチ feat/p1-billing-recovery-cleanup-lr16-28[積層]。起動/ログイン時にサーバが未課金を返したら restorePurchases→verifyPurchase(Bearer)で再検証・再記録、一時失敗は指数バックオフ最大4・恒久失敗即終了・成功で打切り、非ブロッキング/in-flightガード/native限定。tsc/vitest711/eslint green） | dev-logic |
 | LR-17 | R8/ProGuard 有効化＋keep ルール整備（課金ロジック難読化/シュリンク）#49 | P1 | REVIEW（2026-06-10 Son: LR-6 と同一対応に内包。ブランチ feat/p0-billing-auth-lr123 で build.gradle minifyEnabled/shrinkResources true＋proguard-rules.pro に課金/認証/Capacitor の keep ルール整備済。要: Android再ビルドで難読化確認） | dev-logic |
 | LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | REVIEW（2026-06-12 Son: ブランチ feat/p1-web-quickwins-lr18-22-46[最新main]。送信後画面に「メールを開く」CTA・迷惑メール案内・再送45秒クールダウンをLogin/Onboarding両方に。native mail plugin不在でbest-effort+fallback。tsc/vitest657/eslint green） | dev-logic |
@@ -61,7 +61,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-29 | client-01/02 の title↔中身整合（論点系 lesson が数字コースに混入）#13 | P2 | TODO | content-creator＋dev-logic |
 | LR-30 | AI 自動生成問題の品質ゲート強化（自己採点 auto 承認 閾値0.8 を別モデルのクロスチェックへ）#14 | P2 | TODO | dev-logic |
 | LR-31 | ja-en 非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一の解消（CONTENT/THUMBNAIL 監査既出分）#25 | P2 | TODO | content-creator＋designer |
-| LR-32 | 起動 MIN_BOOT_MS の2回目以降短縮＋タブ独立履歴スタック（#12 戻りナビ本体は実装/回帰テスト済＝残はタブスタックのみ）#15 | P2 | TODO | dev-logic |
+| LR-32 | 起動 MIN_BOOT_MS の2回目以降短縮＋タブ独立履歴スタック（#12 戻りナビ本体は実装/回帰テスト済＝残はタブスタックのみ）#15 | P2 | TODO（2026-06-12 Son: 起動短縮＋タブスタックの実装を試みたが、AppV3.tsx を触るため**並行作業中の LR-20(dev-logic / perf/lesson-lazy-load)と作業ツリー衝突**。LR-20 が AppV3/lessonData を大きく変更中のため、LR-20 確定/マージ後に着手するのが安全。ヘルパ雛形は退避済） | dev-logic |
 | LR-33 | 復習ハブ等の無料境界見直し（直近 N 件は無料解放）#21 | P2 | TODO | dev-logic＋Keita |
 | LR-34 | 復習SRS天井7日固定の段階ラダー化（ease は保存されるが間隔計算に未使用の半デッド）#16 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | dev-logic＋Keita |
 | LR-35 | テーマの OS 追従＋アクセント選択UIの導線復活（UI は ThemeSettings.tsx 現存だが死蔵で到達不可）#18 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | designer＋dev-logic |
