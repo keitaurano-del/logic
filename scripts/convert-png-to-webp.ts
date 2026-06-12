@@ -1,8 +1,13 @@
 /**
  * scripts/convert-png-to-webp.ts
  *
- * public/images/v3/ 以下の全 PNG を WebP に変換する。
+ * アプリに同梱される public/ 配下の大きい PNG を WebP に変換する。
  * 変換後は同ディレクトリに同名の .webp を生成し、元 PNG を削除する。
+ *
+ * 変換対象（ROOTS）:
+ *   - public/images/v3/         レッスン/サムネ画像（af06 で初回変換）
+ *   - public/ranks/             ランク PNG（perf/app-size-reduction で追加）
+ *   - public/review-pyramid.png / review-mece.png 図解 PNG（同上）
  *
  * 実行:
  *   npx tsx scripts/convert-png-to-webp.ts
@@ -17,15 +22,31 @@ import { join, dirname, basename, extname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const ROOT = join(__dirname, '..', 'public', 'images', 'v3')
-const QUALITY = 85
+const PUBLIC = join(__dirname, '..', 'public')
+// 変換対象（ディレクトリは再帰、ファイルは単体）
+const ROOTS = [
+  join(PUBLIC, 'images', 'v3'),
+  join(PUBLIC, 'ranks'),
+  join(PUBLIC, 'review-pyramid.png'),
+  join(PUBLIC, 'review-mece.png'),
+]
+const QUALITY = 80
 const DRY_RUN = process.argv.includes('--dry-run')
 
-async function collectPngs(dir: string): Promise<string[]> {
-  const entries = await readdir(dir, { withFileTypes: true })
+async function collectPngs(target: string): Promise<string[]> {
+  let st
+  try {
+    st = await stat(target)
+  } catch {
+    return [] // 既に変換済み等で存在しない場合はスキップ
+  }
+  if (st.isFile()) {
+    return extname(target).toLowerCase() === '.png' ? [target] : []
+  }
+  const entries = await readdir(target, { withFileTypes: true })
   const results: string[] = []
   for (const entry of entries) {
-    const full = join(dir, entry.name)
+    const full = join(target, entry.name)
     if (entry.isDirectory()) {
       results.push(...(await collectPngs(full)))
     } else if (entry.isFile() && extname(entry.name).toLowerCase() === '.png') {
@@ -36,7 +57,10 @@ async function collectPngs(dir: string): Promise<string[]> {
 }
 
 async function main() {
-  const pngs = await collectPngs(ROOT)
+  const pngs: string[] = []
+  for (const root of ROOTS) {
+    pngs.push(...(await collectPngs(root)))
+  }
   console.log(`\n対象 PNG: ${pngs.length} ファイル`)
 
   if (DRY_RUN) {
