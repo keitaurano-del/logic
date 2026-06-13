@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { isPaid } from './subscription'
+import { getAuthHeaders } from './supabase'
 import { t, localeBody } from './i18n'
 import './FermiLesson.css'
 
@@ -50,9 +51,10 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
     setIsLoading(true)
     setError(null)
     try {
+      const authHeaders = await getAuthHeaders()
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify(localeBody({ question: currentQuestion, userInput })),
       })
       if (!res.ok) throw new Error('failed')
@@ -70,9 +72,10 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
     setIsLoading(true)
     setError(null)
     try {
+      const authHeaders = await getAuthHeaders()
       const res = await fetch(`${API_BASE}/api/fermi/question`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify(localeBody({})),
       })
       if (!res.ok) throw new Error('failed')

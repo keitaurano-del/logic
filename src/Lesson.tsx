@@ -28,15 +28,18 @@ import ReportProblem from './ReportProblem'
 import { t, localeBody, getLocale } from './i18n'
 import { getStepAnnotation, hasAnyAnnotation, savePhraseToFlashcards, type Phrase } from './englishLearningData'
 import { isPaid } from './subscription'
+import { getAuthHeaders } from './supabase'
 import './Lesson.css'
 
 import { API_BASE } from './apiBase'
 
 async function generateAiCards(lessonTitle: string, category: string, wrongAnswers: { question: string; correctAnswer: string }[]) {
   try {
+    // 認証ユーザーは Bearer 付与で per-user クォータ識別。未ログインはゲスト動作。
+    const authHeaders = await getAuthHeaders()
     const res = await fetch(`${API_BASE}/api/flashcards/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify(localeBody({ wrongAnswers, category, lessonTitle })),
     })
     if (!res.ok) return

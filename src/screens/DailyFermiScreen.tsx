@@ -8,6 +8,7 @@ import { t, getLocale } from '../i18n'
 import { formatJpUnit, formatResult, applyUnitMultiplier, type FermiLocale } from '../fermiNumberFormat'
 import { getGuestId } from '../guestId'
 import { getRankingUserId } from '../syncService'
+import { getAuthHeaders } from '../supabase'
 import { haptic } from '../platform/haptics'
 import { useDailyGuide, GuideStyle } from '../tutorial/dailyGuide'
 import { isPaid } from '../subscription'
@@ -331,9 +332,10 @@ function FermiChatModal({ question, locale, onClose }: {
     setInput('')
     setLoading(true)
     try {
+      const authHeaders = await getAuthHeaders()
       const res = await fetch(`${API_BASE}/api/fermi/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({ question, messages: newMessages, locale }),
       })
       const data = await res.json()
@@ -680,9 +682,10 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
     setSubmitError('')
     setFeedback(null)
     try {
+      const authHeaders = await getAuthHeaders()
       const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({ question, userInput: answer, locale, hintUsed, elapsedSec, guestId: getGuestId() }),
       })
       const data = await res.json()

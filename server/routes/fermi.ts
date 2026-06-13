@@ -2,6 +2,8 @@ import { Router, type Request, type Response } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { RequestHandler } from 'express'
+import { resolveAuthedUser } from '../auth.js'
+import { checkAndIncrementAIQuota } from '../aiQuota.js'
 
 // =============================================
 // フェルミ推定 問題プール（20問、日付ローテーション）
@@ -62,6 +64,14 @@ export function createFermiRouter(
         return res.status(400).json({ error: 'question and userInput required' })
       }
       const isEn = locale === 'en'
+
+      // 認証ユーザーは per-user 月次クォータ（有料ハードキャップ）。
+      // ゲストはレートリミッタ任せ。body.userId は識別に使わない。
+      const authed = await resolveAuthedUser(req, supabase)
+      const quota = await checkAndIncrementAIQuota(supabase, authed?.id)
+      if (!quota.allowed) {
+        return res.status(429).json({ error: quota.reason })
+      }
       const elapsedMin = Math.round((elapsedSec || 0) / 60)
 
       // ペナルティは「萎えさせない」方針で控えめに設定する。
@@ -353,6 +363,13 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
       }
       const isEn = locale === 'en'
 
+      // 認証ユーザーは per-user 月次クォータ。ゲストはレートリミッタ任せ。
+      const authed = await resolveAuthedUser(req, supabase)
+      const quota = await checkAndIncrementAIQuota(supabase, authed?.id)
+      if (!quota.allowed) {
+        return res.status(429).json({ error: quota.reason })
+      }
+
       const systemPrompt = isEn
         ? `You are a Fermi estimation coach. The user is working on the following problem:
 
@@ -396,6 +413,14 @@ Keep responses concise (2-4 sentences). Do not solve the problem for them.`
   router.post('/question', fermiLimiter, async (req: Request, res: Response) => {
     try {
       const isEn = req.body?.locale === 'en'
+
+      // 認証ユーザーは per-user 月次クォータ。ゲストはレートリミッタ任せ。
+      const authed = await resolveAuthedUser(req, supabase)
+      const quota = await checkAndIncrementAIQuota(supabase, authed?.id)
+      if (!quota.allowed) {
+        return res.status(429).json({ error: quota.reason })
+      }
+
       const today = todayJST()
       const userPrompt = isEn
         ? 'Generate exactly one Fermi estimation problem in English. Pick something from everyday Western/global business or society that is good for decomposition practice. Return only the question on a single line — no preface, no explanation.'

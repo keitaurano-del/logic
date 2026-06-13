@@ -2,6 +2,7 @@ import type { LessonData } from './lessonData'
 import { isPaid } from './subscription'
 import { localeBody, getLocale } from './i18n'
 import { safeSetItem } from './storageUsage'
+import { getAuthHeaders } from './supabase'
 
 const STORAGE_KEY = 'logic-ai-problems'
 import { API_BASE } from './apiBase'
@@ -52,9 +53,12 @@ export async function generateAIProblems(prompt: string): Promise<AIProblemSet> 
       ? 'AI problem generation is available on the paid plan.'
       : 'AI 問題生成は有料プランの機能です。')
   }
+  // 認証ユーザーは Bearer を付けて per-user 月次クォータで識別される。
+  // 未ログインはヘッダ無し＝ゲスト動作（レートリミッタ任せ・壊さない）。
+  const authHeaders = await getAuthHeaders()
   const res = await fetch(`${API_BASE}/api/generate-problems`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders },
     body: JSON.stringify(localeBody({ prompt })),
   })
   if (!res.ok) {

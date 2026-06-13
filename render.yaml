@@ -25,29 +25,10 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-      # Stripe
-      - key: STRIPE_SECRET_KEY
-        sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
-      - key: STRIPE_PRICE_MONTHLY
-        sync: false
-      - key: STRIPE_PRICE_YEARLY
-        sync: false
-      - key: STRIPE_PRICE_BASIC_MONTHLY
-        sync: false
-      - key: STRIPE_PRICE_BASIC_YEARLY
-        sync: false
-      - key: STRIPE_PRICE_STANDARD_MONTHLY
-        sync: false
-      - key: STRIPE_PRICE_STANDARD_YEARLY
-        sync: false
-      - key: STRIPE_PRICE_PREMIUM_MONTHLY
-        sync: false
-      - key: STRIPE_PRICE_PREMIUM_YEARLY
-        sync: false
-      - key: STRIPE_PRICE_BETA_CAMPAIGN
-        sync: false
+      # LR-28: Stripe env は全廃。Web 課金は 2026-05-04 に廃止済みで、コード上の
+      # stripe 参照はコメント / レガシー DB 列名（stripe_subscription_id、実体は
+      # Google Play トークン）のみ。process.env.STRIPE_* / VITE_STRIPE_* を実行時に
+      # 読む箇所は無いことを確認したため削除した。
       # Report problem: email
       - key: SMTP_HOST
         sync: false

@@ -18,6 +18,7 @@ import rateLimit from 'express-rate-limit'
 import { google } from 'googleapis'
 import { GoogleAuth, OAuth2Client } from 'google-auth-library'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { resolveAuthedUser } from '../auth.js'
 
 // Pub/Sub JWT 署名検証用クライアント（シングルトン）。
 // Google は https://www.googleapis.com/oauth2/v3/certs の公開鍵で JWT に署名し、
@@ -107,12 +108,22 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
   // ------------------------------------------
   // Google Play Billing 購入検証 (SCRUM-116)
   // ------------------------------------------
-  router.post('/api/billing/verify', billingVerifyLimiter, async (req, res) => {
+  // express.json() がグローバル登録される前にこの router が mount されるため、
+  // verify でも rtdn と同様に route 単位で JSON ボディをパースする
+  // （body-parser は idempotent。グローバル json と二重でも安全）。
+  router.post('/api/billing/verify', billingVerifyLimiter, express.json({ limit: '64kb' }), async (req, res) => {
     try {
-      const { purchaseToken, productId, userId } = req.body as {
+      // LR-1: 認証ユーザー束縛。body.userId は信用せず、Authorization: Bearer の
+      // Supabase access_token を service-role で検証して得た userId を権威とする。
+      const authedUser = await resolveAuthedUser(req, supabase)
+      if (!authedUser) {
+        return res.status(401).json({ error: 'Unauthorized' })
+      }
+      const userId = authedUser.id
+
+      const { purchaseToken, productId } = req.body as {
         purchaseToken: string
         productId: string
-        userId?: string
       }
 
       if (!purchaseToken || !productId) {
@@ -196,8 +207,8 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
         ? new Date(gpExpiryTimeMillis).toISOString()
         : new Date(Date.now() + (isYearly ? 365 : 30) * 24 * 60 * 60 * 1000).toISOString()
 
-      // Supabase に upsert
-      if (supabase && userId) {
+      // Supabase に upsert（user_id は認証済みユーザーに束縛、body の値は使わない）
+      if (supabase) {
         await supabase
           .from('subscriptions')
           .upsert(

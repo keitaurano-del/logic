@@ -49,8 +49,11 @@ android {
             } else {
                 logger.warn('[logic] key.properties が無いため release は debug 鍵で署名されます (Play Store 提出には key.properties が必要)')
             }
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // LR-6: R8 によるコード縮小・難読化＋未使用リソース削除を有効化。
+            // keep ルールは proguard-rules.pro 側で安全側に広めに定義している。
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 

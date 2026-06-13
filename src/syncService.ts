@@ -498,6 +498,20 @@ function mergeArrays(local: string[], remote: string[]): string[] {
 export async function syncSubscriptionFromRemote(): Promise<void> {
   if (!supabase || !_currentUserId) return
   try {
+    // LR-2: サーバ権威のエンタイトルメントを最優先で取得し sessionStorage に固定する。
+    // 取得できればこれが authoritative。取れない（オフライン等）場合は下の
+    // admin_overrides / subscriptions の localStorage 反映にフォールバックする。
+    const { refreshEntitlement } = await import('./subscription')
+    const entitlement = await refreshEntitlement().catch(() => null)
+
+    // LR-16: サーバが「未課金」を返したが実際は Play で購入済み、というズレを救済する。
+    // restorePurchases() → verifyPurchase() で再検証してサーバに記録しなおす。
+    // 非ブロッキング・Android native 以外は no-op・多重起動ガード付き。失敗は握り潰す。
+    try {
+      const { recoverEntitlementIfNeeded } = await import('./billing/recovery')
+      void recoverEntitlementIfNeeded(entitlement)
+    } catch { /* 回復ルーチンの読み込み失敗は無視（UX を止めない） */ }
+
     // admin_overrides を最優先（自動付与プラン）
     const { data: override } = await supabase
       .from('admin_overrides')
@@ -758,4 +772,11 @@ export async function syncOnLogout(): Promise<void> {
   } catch (e) {
     console.warn('[sync] syncOnLogout clear failed:', e)
   }
+
+  // LR-2: サーバ権威のエンタイトルメントキャッシュ（sessionStorage）もクリアし、
+  // ログアウト後に前ユーザーの有料状態が残らないようにする。
+  try {
+    const { clearEntitlementCache } = await import('./subscription')
+    clearEntitlementCache()
+  } catch { /* noop */ }
 }
