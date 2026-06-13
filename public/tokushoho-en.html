@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<!--
+  TODO(LR-4 Keita confirm): This is a public legal notice; items requiring confirmed values were NOT changed in this task.
+  Fact-check notes (source-code cross-check by Son):
+    - Pricing: JPY 350 (monthly) / JPY 2,450 (annual) matches src/subscription.ts PLAN_PRICES (consistent with implementation — OK).
+      Reconcile with any older LP figures (e.g. JPY 3,500 / 6,980) — Keita final confirmation.
+    - 7-day free trial (annual only): no trial logic exists in code (subscription.ts / Pricing.tsx);
+      it depends on the Play Console base-plan/offer config. Confirm with Keita whether an "annual-only 7-day free" offer
+      is actually configured in Play Console (if not, delete that paragraph — risk of misleading representation).
+    - Operating manager "Keita Shibata", address, phone, business name: confirm against registry/actual values with Keita.
+    - Qualified-invoice (consumption-tax) registration number: include T+13 digits if registered — Keita confirm.
+    - Supported-OS (Android version) notation: confirm it matches the actual minSdk with dev-logic/Keita.
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
