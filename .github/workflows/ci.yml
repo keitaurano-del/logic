@@ -38,6 +38,10 @@ jobs:
         # PR #92 / #94 で error / warning ともに 0 達成済 → blocking に昇格。
         run: npm run lint
 
+      - name: Unit tests (vitest)
+        # LR-15: 課金/認証含むユニットテストを CI 必須ゲートに（失敗で CI を落とす）。
+        run: npx vitest run
+
   a11y:
     runs-on: ubuntu-latest
     timeout-minutes: 15
