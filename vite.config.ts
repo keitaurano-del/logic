@@ -90,12 +90,14 @@ export default defineConfig({
             if (id.includes('@sentry')) return 'vendor-sentry'
             if (id.includes('react-dom') || /node_modules\/react\//.test(id)) return 'vendor-react'
           }
-          // lessonData をカテゴリ別に分離 (各 ~30-70KB)。
-          // allLessons が静的 import で集約しているため初回ロードでまとめて
-          // fetch されるが、複数並列 + cache friendly になる。
+          // LR-20: lessonData をカテゴリ別 + 言語別に分離する。
+          //   lessonData.ts が動的 import() するため、各カテゴリは個別チャンクに
+          //   なり初期エントリから外れる。さらに ja / en を別チャンクにすることで、
+          //   getLocale() の言語のレッスンだけが runtime で fetch される
+          //   （未使用言語は読み込まない → 実効ペイロード約半減）。
           if (id.includes('/src/') && /Lessons(?:En)?\.ts$/.test(id)) {
-            const m = id.match(/\/src\/(\w+?)Lessons(?:En)?\.ts$/)
-            if (m) return `lessons-${m[1].toLowerCase()}`
+            const m = id.match(/\/src\/(\w+?)Lessons(En)?\.ts$/)
+            if (m) return `lessons-${m[1].toLowerCase()}${m[2] ? '-en' : ''}`
           }
         },
       },

@@ -23,7 +23,7 @@ import { t, getLocale } from './i18n'
 import { getAIProblem, type AIProblemSet } from './aiProblemStore'
 import { getInitialUser, onAuthChange } from './supabase'
 import { getTodayProblem, generateTodayProblem, isDailyCompleted, markDailyCompleted } from './dailyProblem'
-import { allLessons } from './lessonData'
+import { allLessons, loadAllLessons, areLessonsLoaded } from './lessonData'
 import { recordCompletion, addStudyTime, getCompletedCount, getStreak, getStudyHours, getCompletedLessons } from './stats'
 import { getCardStats } from './flashcardData'
 import { initFromFlashcards } from './progressStore'
@@ -176,6 +176,9 @@ function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'home' })
   const [tab, setTab] = useState<Tab>('home')
   const [lessonSearch, setLessonSearch] = useState('')
+  // LR-20: レッスンデータ（コード分割済み）を先読みする。読み込み完了で
+  //   再レンダリングし、allLessons[id] 参照が正しい値を返すようにする。
+  const [, setLessonsReady] = useState(() => areLessonsLoaded())
 
   // Hide bottom nav on scroll down, show on scroll up
   const [navHidden, setNavHidden] = useState(false)
@@ -241,6 +244,16 @@ function App() {
 
   // Init progress from flashcards on mount
   useEffect(() => { initFromFlashcards() }, [])
+
+  // LR-20: レッスンデータを先読み（コード分割された各カテゴリチャンクを並列ロード）
+  useEffect(() => {
+    if (areLessonsLoaded()) return
+    let cancelled = false
+    loadAllLessons()
+      .then(() => { if (!cancelled) setLessonsReady(true) })
+      .catch((e) => { console.error('[lessons] preload failed', e) })
+    return () => { cancelled = true }
+  }, [])
 
   // SCRUM-160: Supabaseユーザー名を取得
   useEffect(() => {

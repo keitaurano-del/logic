@@ -43,7 +43,7 @@ const LoginScreen = lazy(() => import('./screens/LoginScreen').then(m => ({ defa
 const DailyProblemScreen = lazy(() => import('./screens/DailyProblemScreen').then(m => ({ default: m.DailyProblemScreen })))
 const JournalScreen = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalScreen })))
 const JournalGuestPreview = lazy(() => import('./screens/JournalScreen').then(m => ({ default: m.JournalGuestPreview })))
-import { allLessons, getAllLessonsFlat } from './lessonData'
+import { allLessons, getAllLessonsFlat, loadAllLessons } from './lessonData'
 import { COURSES, getCourseById } from './courseData'
 import { loadPlacementResult } from './placementData'
 import { getCurrentLevel } from './screens/homeHelpers'
@@ -353,6 +353,14 @@ function AppV3() {
     }
     // ネイティブ SplashScreen は 1500ms 後に隠す → React の BootLoadingScreen が引き継ぐ
     const splashTimer = setTimeout(() => { void hideSplash() }, 1500)
+    // LR-20: レッスンデータ（コード分割済み）を boot 中に並列で先読みする。
+    //   allLessons[id] / getAllLessonsFlat() を使う全画面は authReady ゲートの
+    //   後でしかマウントされないため、ここで await しておけば従来どおり同期で
+    //   参照できる。ロード失敗時も boot をブロックしない（縮退して空マップ）。
+    const lessonsPromise = loadAllLessons().catch((e) => {
+      console.error('[lessons] preload failed', e)
+      return undefined
+    })
     // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
@@ -363,6 +371,8 @@ function AppV3() {
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')
       await ensureMinBoot()
+      // レッスンデータのロード完了を待ってから画面を出す（未ロード由来のちらつき防止）
+      await lessonsPromise
       setAuthReady(true)
       clearTimeout(splashTimer)
       void hideSplash()
@@ -370,6 +380,7 @@ function AppV3() {
     }).catch(async () => {
       // ネットワークエラー等でも必ずSplashを閉じてホームへ遷移させる
       await ensureMinBoot()
+      await lessonsPromise
       clearTimeout(splashTimer)
       setAuthReady(true)
       void hideSplash()

@@ -81,136 +81,133 @@ export type LessonData = {
   steps: LessonStep[]
 }
 
-import { logicLessonMap } from './logicLessons'
-import { logicLessonMapEn } from './logicLessonsEn'
 import { getLocale } from './i18n'
-import { caseLessonMap } from './caseLessons'
-import { caseLessonMapEn } from './caseLessonsEn'
-import { criticalLessonMap } from './criticalLessons'
-import { criticalLessonMapEn } from './criticalLessonsEn'
-import { hypothesisLessonMap } from './hypothesisLessons'
-import { hypothesisLessonMapEn } from './hypothesisLessonsEn'
-import { problemSettingLessonMap } from './problemSettingLessons'
-import { problemSettingLessonMapEn } from './problemSettingLessonsEn'
-import { issueLessonMap } from './issueLessons'
-import { issueLessonMapEn } from './issueLessonsEn'
-import { designThinkingLessonMap } from './designThinkingLessons'
-import { designThinkingLessonMapEn } from './designThinkingLessonsEn'
-import { lateralThinkingLessonMap } from './lateralThinkingLessons'
-import { lateralThinkingLessonMapEn } from './lateralThinkingLessonsEn'
-import { analogyThinkingLessonMap } from './analogyThinkingLessons'
-import { analogyThinkingLessonMapEn } from './analogyThinkingLessonsEn'
-import { systemsThinkingLessonMap } from './systemsThinkingLessons'
-import { systemsThinkingLessonMapEn } from './systemsThinkingLessonsEn'
-import { proposalLessonMap } from './proposalLessons'
-import { proposalLessonMapEn } from './proposalLessonsEn'
-import { proposalCourseLessonMap } from './proposalCourseLessons'
-import { proposalCourseLessonMapEn } from './proposalCourseLessonsEn'
-import { philosophyLessonMap } from './philosophyLessons'
-import { philosophyLessonMapEn } from './philosophyLessonsEn'
-import { easternPhilosophyLessonMap } from './easternPhilosophyLessons'
-import { easternPhilosophyLessonMapEn } from './easternPhilosophyLessonsEn'
-import { clientWorkLessonMap } from './clientWorkLessons'
-import { clientWorkLessonMapEn } from './clientWorkLessonsEn'
-import { feedbackCaseLessonMap } from './feedbackCaseLessons'
-import { feedbackCaseLessonMapEn } from './feedbackCaseLessonsEn'
-import { catchupLessonMap } from './catchupLessons'
-import { catchupLessonMapEn } from './catchupLessonsEn'
-import { fermiLessonMap } from './fermiLessons'
-import { fermiLessonMapEn } from './fermiLessonsEn'
-import { fermiLessonMapPattern } from './fermiLessonsPattern'
-import { fermiLessonMapPatternEn } from './fermiLessonsPatternEn'
-import { fermiLessonMapPractice } from './fermiLessonsPractice'
-import { fermiLessonMapPracticeEn } from './fermiLessonsPracticeEn'
-import { extraLessonMap } from './extraLessons'
-import { extraLessonMapEn } from './extraLessonsEn'
-import { strategyLessonMap } from './strategyLessons'
-import { strategyLessonMapEn } from './strategyLessonsEn'
-import { numeracyLessonMap } from './numeracyLessons'
-import { numeracyLessonMapEn } from './numeracyLessonsEn'
-import { peakPerformanceLessonMap } from './peakPerformanceLessons'
-import { peakPerformanceLessonMapEn } from './peakPerformanceLessonsEn'
-import { staminaLessonMap } from './staminaLessons'
-import { staminaLessonMapEn } from './staminaLessonsEn'
-import { whyWhyLessonMap } from './whyWhyLessons'
-import { whyWhyLessonMapEn } from './whyWhyLessonsEn'
-import { careerResumeLessonMap } from './careerResumeLessons'
-import { careerSpiLessonMap } from './careerSpiLessons'
-import { careerTamatebakoLessonMap } from './careerTamatebakoLessons'
-import { careerInterviewLessonMap } from './careerInterviewLessons'
-import { careerSalaryLessonMap } from './careerSalaryLessons'
-import { cognitiveLessonMap } from './cognitiveLessons'
-import { cognitiveLessonMapEn } from './cognitiveLessonsEn'
-import { documentationLessonMap } from './documentationLessons'
-import { documentationLessonMapEn } from './documentationLessonsEn'
-import { listeningLessonMap } from './listeningLessons'
-import { adhdLeverageLessonMap } from './adhdLeverageLessons'
-import { adhdLeverageLessonMapEn } from './adhdLeverageLessonsEn'
-import { focusLessonMap } from './focusLessons'
-import { focusLessonMapEn } from './focusLessonsEn'
-import { logicalWritingLessonMap } from './logicalWritingLessons'
-import { logicalWritingLessonMapEn } from './logicalWritingLessonsEn'
 
-// 全レッスンマップを locale で切り替える。en 版が存在するカテゴリは
-// 英訳済みマップを、それ以外は ja 版にフォールバック (transitional)。
-const _pickByLocale = <T>(ja: T, en: T): T => (getLocale() === 'en' ? en : ja)
+// ============================================================================
+// LR-20: レッスンデータの遅延ロード（コード分割）
+// ----------------------------------------------------------------------------
+// 以前は 34 カテゴリ × ja/en = 69 個のレッスンマップを「静的 import」で初期
+// バンドルに同梱していた（レッスン系チャンクだけで ~2MB）。
+//
+// 本実装では:
+//   1. 各レッスンマップを動的 import() に変更 → Vite が個別チャンクに分割し、
+//      初期エントリ（AppV3 / index）から外れる。
+//   2. getLocale() の言語のレッスンだけをロードする（未使用言語は読み込まない）。
+//   3. 起動時に loadAllLessons() を一度だけ await して全カテゴリを並列ロードし、
+//      module レベルのキャッシュに展開する。これにより allLessons[id] /
+//      getAllLessonsFlat() の「同期 API」は従来どおり維持される（呼び出し側の
+//      変更ゼロ）。ロード完了は AppV3 / App の boot ゲートで保証する。
+//
+// locale 切り替えは setLocale() が window.location.reload() を行うため、
+// 1 セッション中に locale が変わることはない。よって常に「現在の locale の
+// レッスンのみ」をメモリに保持すれば足りる。
+// ============================================================================
 
-// ロケールが変わるたびに再構築する以外は同じマージ結果を使い回す。
-// Proxy / getAllLessonsFlat のホットパスで毎回 spread するのを避ける。
-let _cachedMerged: Record<number, LessonData> | null = null
+type LessonMap = Record<number, LessonData>
+type MapLoader = () => Promise<LessonMap>
+
+// カテゴリごとの動的ローダー。[ja, en] のペアで保持し、getLocale() に応じて
+// 片方だけを呼び出す。en 版が存在しないカテゴリは ja を en にもフォールバック。
+const _loaders: Array<[ja: MapLoader, en: MapLoader]> = [
+  [() => import('./logicLessons').then(m => m.logicLessonMap), () => import('./logicLessonsEn').then(m => m.logicLessonMapEn)],
+  [() => import('./caseLessons').then(m => m.caseLessonMap), () => import('./caseLessonsEn').then(m => m.caseLessonMapEn)],
+  [() => import('./criticalLessons').then(m => m.criticalLessonMap), () => import('./criticalLessonsEn').then(m => m.criticalLessonMapEn)],
+  [() => import('./hypothesisLessons').then(m => m.hypothesisLessonMap), () => import('./hypothesisLessonsEn').then(m => m.hypothesisLessonMapEn)],
+  [() => import('./problemSettingLessons').then(m => m.problemSettingLessonMap), () => import('./problemSettingLessonsEn').then(m => m.problemSettingLessonMapEn)],
+  [() => import('./issueLessons').then(m => m.issueLessonMap), () => import('./issueLessonsEn').then(m => m.issueLessonMapEn)],
+  [() => import('./designThinkingLessons').then(m => m.designThinkingLessonMap), () => import('./designThinkingLessonsEn').then(m => m.designThinkingLessonMapEn)],
+  [() => import('./lateralThinkingLessons').then(m => m.lateralThinkingLessonMap), () => import('./lateralThinkingLessonsEn').then(m => m.lateralThinkingLessonMapEn)],
+  [() => import('./analogyThinkingLessons').then(m => m.analogyThinkingLessonMap), () => import('./analogyThinkingLessonsEn').then(m => m.analogyThinkingLessonMapEn)],
+  [() => import('./systemsThinkingLessons').then(m => m.systemsThinkingLessonMap), () => import('./systemsThinkingLessonsEn').then(m => m.systemsThinkingLessonMapEn)],
+  [() => import('./proposalLessons').then(m => m.proposalLessonMap), () => import('./proposalLessonsEn').then(m => m.proposalLessonMapEn)],
+  [() => import('./proposalCourseLessons').then(m => m.proposalCourseLessonMap), () => import('./proposalCourseLessonsEn').then(m => m.proposalCourseLessonMapEn)],
+  [() => import('./philosophyLessons').then(m => m.philosophyLessonMap), () => import('./philosophyLessonsEn').then(m => m.philosophyLessonMapEn)],
+  [() => import('./easternPhilosophyLessons').then(m => m.easternPhilosophyLessonMap), () => import('./easternPhilosophyLessonsEn').then(m => m.easternPhilosophyLessonMapEn)],
+  [() => import('./clientWorkLessons').then(m => m.clientWorkLessonMap), () => import('./clientWorkLessonsEn').then(m => m.clientWorkLessonMapEn)],
+  [() => import('./feedbackCaseLessons').then(m => m.feedbackCaseLessonMap), () => import('./feedbackCaseLessonsEn').then(m => m.feedbackCaseLessonMapEn)],
+  [() => import('./catchupLessons').then(m => m.catchupLessonMap), () => import('./catchupLessonsEn').then(m => m.catchupLessonMapEn)],
+  [() => import('./fermiLessons').then(m => m.fermiLessonMap), () => import('./fermiLessonsEn').then(m => m.fermiLessonMapEn)],
+  [() => import('./fermiLessonsPattern').then(m => m.fermiLessonMapPattern), () => import('./fermiLessonsPatternEn').then(m => m.fermiLessonMapPatternEn)],
+  [() => import('./fermiLessonsPractice').then(m => m.fermiLessonMapPractice), () => import('./fermiLessonsPracticeEn').then(m => m.fermiLessonMapPracticeEn)],
+  [() => import('./extraLessons').then(m => m.extraLessonMap), () => import('./extraLessonsEn').then(m => m.extraLessonMapEn)],
+  [() => import('./strategyLessons').then(m => m.strategyLessonMap), () => import('./strategyLessonsEn').then(m => m.strategyLessonMapEn)],
+  [() => import('./numeracyLessons').then(m => m.numeracyLessonMap), () => import('./numeracyLessonsEn').then(m => m.numeracyLessonMapEn)],
+  [() => import('./peakPerformanceLessons').then(m => m.peakPerformanceLessonMap), () => import('./peakPerformanceLessonsEn').then(m => m.peakPerformanceLessonMapEn)],
+  // 体力デザインコース（lessonId 440-444）
+  [() => import('./staminaLessons').then(m => m.staminaLessonMap), () => import('./staminaLessonsEn').then(m => m.staminaLessonMapEn)],
+  [() => import('./whyWhyLessons').then(m => m.whyWhyLessonMap), () => import('./whyWhyLessonsEn').then(m => m.whyWhyLessonMapEn)],
+  // 就職・転職コース群（ja 版のみ、en も同じ ja を一時的に使用）
+  [() => import('./careerResumeLessons').then(m => m.careerResumeLessonMap), () => import('./careerResumeLessons').then(m => m.careerResumeLessonMap)],
+  [() => import('./careerSpiLessons').then(m => m.careerSpiLessonMap), () => import('./careerSpiLessons').then(m => m.careerSpiLessonMap)],
+  [() => import('./careerTamatebakoLessons').then(m => m.careerTamatebakoLessonMap), () => import('./careerTamatebakoLessons').then(m => m.careerTamatebakoLessonMap)],
+  [() => import('./careerInterviewLessons').then(m => m.careerInterviewLessonMap), () => import('./careerInterviewLessons').then(m => m.careerInterviewLessonMap)],
+  [() => import('./careerSalaryLessons').then(m => m.careerSalaryLessonMap), () => import('./careerSalaryLessons').then(m => m.careerSalaryLessonMap)],
+  // 認知科学コース群
+  [() => import('./cognitiveLessons').then(m => m.cognitiveLessonMap), () => import('./cognitiveLessonsEn').then(m => m.cognitiveLessonMapEn)],
+  // ドキュメンテーションコース
+  [() => import('./documentationLessons').then(m => m.documentationLessonMap), () => import('./documentationLessonsEn').then(m => m.documentationLessonMapEn)],
+  // 構造化リスニングコース（ja のみ、en は ja を一時的に使用）
+  [() => import('./listeningLessons').then(m => m.listeningLessonMap), () => import('./listeningLessons').then(m => m.listeningLessonMap)],
+  // ADHD レバレッジコース（en は専用英訳あり）
+  [() => import('./adhdLeverageLessons').then(m => m.adhdLeverageLessonMap), () => import('./adhdLeverageLessonsEn').then(m => m.adhdLeverageLessonMapEn)],
+  // 「今に集中する」コース（マインドフルネス + 注意の技術）
+  [() => import('./focusLessons').then(m => m.focusLessonMap), () => import('./focusLessonsEn').then(m => m.focusLessonMapEn)],
+  // ロジカルライティングコース
+  [() => import('./logicalWritingLessons').then(m => m.logicalWritingLessonMap), () => import('./logicalWritingLessonsEn').then(m => m.logicalWritingLessonMapEn)],
+]
+
+// 現在の locale でロード済みのマージ済みマップ。
+let _cachedMerged: LessonMap | null = null
 let _cachedLocale: string | null = null
-function _getMergedLessons(): Record<number, LessonData> {
+// 進行中の読み込み Promise（多重起動を防ぐ）。
+let _loadPromise: Promise<LessonMap> | null = null
+let _loadPromiseLocale: string | null = null
+
+/**
+ * 現在の locale の全レッスンカテゴリを並列で動的 import し、module レベルの
+ * キャッシュ（_cachedMerged）に展開する。冪等で、同一 locale の同時呼び出しは
+ * 同じ Promise を共有する。
+ *
+ * 起動時（AppV3 / App の boot ゲート）で一度 await すれば、以降の
+ * allLessons[id] / getAllLessonsFlat() は従来どおり同期で正しい値を返す。
+ */
+export async function loadAllLessons(): Promise<LessonMap> {
   const locale = getLocale()
   if (_cachedMerged && _cachedLocale === locale) return _cachedMerged
-  _cachedMerged = {
-    ..._pickByLocale(logicLessonMap, logicLessonMapEn),
-    ..._pickByLocale(caseLessonMap, caseLessonMapEn),
-    ..._pickByLocale(criticalLessonMap, criticalLessonMapEn),
-    ..._pickByLocale(hypothesisLessonMap, hypothesisLessonMapEn),
-    ..._pickByLocale(problemSettingLessonMap, problemSettingLessonMapEn),
-    ..._pickByLocale(issueLessonMap, issueLessonMapEn),
-    ..._pickByLocale(designThinkingLessonMap, designThinkingLessonMapEn),
-    ..._pickByLocale(lateralThinkingLessonMap, lateralThinkingLessonMapEn),
-    ..._pickByLocale(analogyThinkingLessonMap, analogyThinkingLessonMapEn),
-    ..._pickByLocale(systemsThinkingLessonMap, systemsThinkingLessonMapEn),
-    ..._pickByLocale(proposalLessonMap, proposalLessonMapEn),
-    ..._pickByLocale(proposalCourseLessonMap, proposalCourseLessonMapEn),
-    ..._pickByLocale(philosophyLessonMap, philosophyLessonMapEn),
-    ..._pickByLocale(easternPhilosophyLessonMap, easternPhilosophyLessonMapEn),
-    ..._pickByLocale(clientWorkLessonMap, clientWorkLessonMapEn),
-    ..._pickByLocale(feedbackCaseLessonMap, feedbackCaseLessonMapEn),
-    ..._pickByLocale(catchupLessonMap, catchupLessonMapEn),
-    ..._pickByLocale(fermiLessonMap, fermiLessonMapEn),
-    ..._pickByLocale(fermiLessonMapPattern, fermiLessonMapPatternEn),
-    ..._pickByLocale(fermiLessonMapPractice, fermiLessonMapPracticeEn),
-    ..._pickByLocale(extraLessonMap, extraLessonMapEn),
-    ..._pickByLocale(strategyLessonMap, strategyLessonMapEn),
-    ..._pickByLocale(numeracyLessonMap, numeracyLessonMapEn),
-    ..._pickByLocale(peakPerformanceLessonMap, peakPerformanceLessonMapEn),
-    // 体力デザインコース（lessonId 440-444）
-    ..._pickByLocale(staminaLessonMap, staminaLessonMapEn),
-    ..._pickByLocale(whyWhyLessonMap, whyWhyLessonMapEn),
-    // 就職・転職コース群（ja 版のみ、en は同じ ja を一時的に使用）
-    ..._pickByLocale(careerResumeLessonMap, careerResumeLessonMap),
-    ..._pickByLocale(careerSpiLessonMap, careerSpiLessonMap),
-    ..._pickByLocale(careerTamatebakoLessonMap, careerTamatebakoLessonMap),
-    ..._pickByLocale(careerInterviewLessonMap, careerInterviewLessonMap),
-    ..._pickByLocale(careerSalaryLessonMap, careerSalaryLessonMap),
-    // 認知科学コース群
-    ..._pickByLocale(cognitiveLessonMap, cognitiveLessonMapEn),
-    // ドキュメンテーションコース
-    ..._pickByLocale(documentationLessonMap, documentationLessonMapEn),
-    // 構造化リスニングコース（ja のみ、en は ja を一時的に使用）
-    ..._pickByLocale(listeningLessonMap, listeningLessonMap),
-    // ADHD レバレッジコース（en は ja にフォールバック、本格的な英訳は後日）
-    ..._pickByLocale(adhdLeverageLessonMap, adhdLeverageLessonMapEn),
-    // 「今に集中する」コース（マインドフルネス + 注意の技術、en は ja にフォールバック）
-    ..._pickByLocale(focusLessonMap, focusLessonMapEn),
-    // ロジカルライティングコース（en は ja にフォールバック、本格翻訳は後日）
-    ..._pickByLocale(logicalWritingLessonMap, logicalWritingLessonMapEn),
-  }
-  _cachedLocale = locale
-  return _cachedMerged
+  if (_loadPromise && _loadPromiseLocale === locale) return _loadPromise
+
+  const isEn = locale === 'en'
+  _loadPromiseLocale = locale
+  _loadPromise = (async () => {
+    const maps = await Promise.all(_loaders.map(([ja, en]) => (isEn ? en : ja)()))
+    const merged: LessonMap = {}
+    for (const m of maps) Object.assign(merged, m)
+    _cachedMerged = merged
+    _cachedLocale = locale
+    _loadPromise = null
+    _loadPromiseLocale = null
+    return merged
+  })()
+  return _loadPromise
+}
+
+/**
+ * loadAllLessons() のエイリアス（呼び出し側で意図が明確になるよう別名で公開）。
+ */
+export const ensureLessonsLoaded = loadAllLessons
+
+/** ロード済みかどうか（同期判定用）。 */
+export function areLessonsLoaded(): boolean {
+  return _cachedMerged !== null && _cachedLocale === getLocale()
+}
+
+// ロード前は空マップを返す（クラッシュさせない）。boot ゲートで loadAllLessons()
+// を await 済みであることを前提とするが、未ロード時も undefined / 空配列を返す
+// 安全な縮退動作にする。
+const _EMPTY: LessonMap = {}
+function _getMergedLessons(): LessonMap {
+  if (_cachedMerged && _cachedLocale === getLocale()) return _cachedMerged
+  return _EMPTY
 }
 
 export const allLessons: Record<number, LessonData> = new Proxy({} as Record<number, LessonData>, {
@@ -222,7 +219,8 @@ export const allLessons: Record<number, LessonData> = new Proxy({} as Record<num
   },
 })
 
-// Proxyは Object.values() で列挙できないため、フラットな Map を返すヘルパー
+// Proxyは Object.values() で列挙できないため、フラットな Map を返すヘルパー。
+// ロード前は空オブジェクトを返す（boot ゲートでロード済みであることが前提）。
 export function getAllLessonsFlat(): Record<number, LessonData> {
   return _getMergedLessons()
 }
