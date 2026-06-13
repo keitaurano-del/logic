@@ -129,6 +129,31 @@ const FERMI_POOL_JA: FermiQuestion[] = [
   { question: '日本の会社員が1年間に押す「Enterキー」の総回数は？', hint: 'PCワーカー人口×1人/日のEnter回数（メール送信＋検索＋コード実行など）×営業日で分解。', difficulty: 'standard', domain: 'volume' },
   // idx 49: advanced / volume
   { question: '日本の駅で1日に飲まれる自販機コーヒーの缶・ペットボトル本数は？', hint: '全国駅数×1駅の自販機台数×1台/日の販売本数のうちコーヒーの比率で分解。', difficulty: 'advanced', domain: 'volume' },
+  // ── 新規12問（cost / flow 厚め・DF-F22） ──
+  // idx 50: basic / cost
+  { question: '美容室（スタッフ4人規模）の1ヶ月の人件費は何円か？', hint: 'スタッフ人数×1人あたり月給で分解。社会保険料の事業主負担（給与の約15%）も上乗せして考えよう。', difficulty: 'basic', domain: 'cost' },
+  // idx 51: basic / flow
+  { question: '昼12時台に、全国の牛丼チェーン店内で同時に食事している客は何人か？', hint: '店舗数×1店舗の客席数×昼ピークの満席率で、その瞬間に店内にいる人数を概算する。', difficulty: 'basic', domain: 'flow' },
+  // idx 52: basic / unit
+  { question: '街の個人経営パン屋の1日の売上は何円か？', hint: '1日の来店客数×客単価で分解。朝・昼の波と、1人が複数個買う点を意識しよう。', difficulty: 'basic', domain: 'unit' },
+  // idx 53: basic / market
+  { question: '日本の文房具市場の年間規模は何円か？', hint: '人口×1人あたり年間文房具支出で分解。学生・オフィス需要が中心で、単価は低いが購入頻度が高い。', difficulty: 'basic', domain: 'market' },
+  // idx 54: standard / cost
+  { question: 'コンビニ1店舗の1ヶ月の運営コスト（人件費＋光熱費＋本部ロイヤリティ）は何円か？', hint: '24時間営業の人件費（時給×シフト人数×時間）＋光熱費＋売上連動のロイヤリティで分解。', difficulty: 'standard', domain: 'cost' },
+  // idx 55: standard / flow
+  { question: '平日朝の通勤ラッシュ時、首都圏の鉄道に同時に乗車している人は何人か？', hint: '首都圏の鉄道通勤者数×ピーク時間帯に電車内にいる比率で、その瞬間の乗車人数を概算する。', difficulty: 'standard', domain: 'flow' },
+  // idx 56: standard / cost
+  { question: '中規模スーパー1店舗の年間の食品廃棄ロスは何円分か？', hint: '年間売上×生鮮・惣菜の構成比×その廃棄率で分解。値引きシール後も売れ残る分を意識しよう。', difficulty: 'standard', domain: 'cost' },
+  // idx 57: standard / volume
+  { question: '日本で1年間に消費される使い捨て割り箸は何膳か？', hint: '外食・中食の年間利用回数×割り箸が出る比率で分解。コンビニ弁当・テイクアウトも含めよう。', difficulty: 'standard', domain: 'volume' },
+  // idx 58: advanced / cost
+  { question: '東京の中規模オフィスビル（10階建て）の年間運営コストは何円か？', hint: '延床面積から、清掃・警備・設備保守・エレベータ・光熱費・固定資産税に分けて積み上げる。1坪あたり年間管理費の感覚を持とう。', difficulty: 'advanced', domain: 'cost' },
+  // idx 59: advanced / flow
+  { question: '日本国内で今この瞬間に「配送中（集荷済み・未配達）」の宅配荷物は何個あるか？', hint: '1日の宅配取扱個数×荷物が物流網に滞在する平均日数で、ストックとしての滞留個数を概算する（フロー×滞在時間＝ストック）。', difficulty: 'advanced', domain: 'flow' },
+  // idx 60: advanced / unit
+  { question: '大手回転寿司チェーン1店舗の年間営業利益は何円か？', hint: '年間売上から原価（売上の約45%）・人件費・賃料・光熱費を引いて利益を出す。低原価率と高回転がカギ。', difficulty: 'advanced', domain: 'unit' },
+  // idx 61: advanced / unit
+  { question: '個人開業の歯科医院1院の年間営業利益は何円か？', hint: '1日の患者数×診療単価×診療日数で売上を出し、人件費・材料費・賃料・設備リース料を引く。保険診療と自費診療の単価差も意識。', difficulty: 'advanced', domain: 'unit' },
 ]
 
 const FERMI_POOL_EN: FermiQuestion[] = [
@@ -235,6 +260,31 @@ const FERMI_POOL_EN: FermiQuestion[] = [
   { question: 'How many text/chat messages (SMS + messaging apps) are sent worldwide in a single day?', hint: 'Multiply the number of messaging-app users by an average messages-sent-per-user-per-day, recognizing that app messaging volume now dwarfs traditional SMS.', difficulty: 'standard', domain: 'volume', theme: 'industry-throughput' },
   // idx 49: advanced / market (global-tam)
   { question: 'What is the global annual electricity-generation revenue (utility sales to end users, USD)?', hint: 'Combine total world electricity consumption (in terawatt-hours) with an average retail price per kWh, blending cheap-power and expensive-power regions.', difficulty: 'advanced', domain: 'market', theme: 'global-tam' },
+  // ── new 12 (cost / flow heavy・DF-F22) ──
+  // idx 50: basic / cost (cost-structure)
+  { question: 'What is the monthly labor cost (USD) of a 4-stylist hair salon in the United States?', hint: 'Staff count × monthly pay per stylist, then add payroll taxes and benefits (roughly +15–25% on top of wages).', difficulty: 'basic', domain: 'cost', theme: 'cost-structure' },
+  // idx 51: basic / flow (platform-concurrency)
+  { question: 'How many people are eating inside US fast-food restaurants at the same moment during the noon lunch peak?', hint: 'Number of outlets × seats per outlet × the fraction of seats filled at the lunch peak gives the headcount at one instant.', difficulty: 'basic', domain: 'flow', theme: 'platform-concurrency' },
+  // idx 52: basic / unit (unit-economics)
+  { question: 'What is the daily revenue (USD) of a single independent neighborhood bakery?', hint: 'Customers per day × average spend per customer. Account for the morning rush and the fact that one buyer takes several items.', difficulty: 'basic', domain: 'unit', theme: 'unit-economics' },
+  // idx 53: basic / market (market-sizing)
+  { question: 'What is the annual revenue (USD) of the office-supply market in the United States?', hint: 'Office workers + students × annual spend per person on paper, pens, and supplies. Low unit price but high repeat purchase.', difficulty: 'basic', domain: 'market', theme: 'market-sizing' },
+  // idx 54: standard / cost (cost-structure)
+  { question: 'What is the monthly operating cost (rent + labor + utilities) of a single US convenience store?', hint: 'Add up store rent, staff wages (hourly wage × shift hours × staff), and utilities. Build labor from the hours the store stays open.', difficulty: 'standard', domain: 'cost', theme: 'cost-structure' },
+  // idx 55: standard / flow (platform-concurrency)
+  { question: 'How many passengers are riding US public transit (bus + rail) at the same instant during the morning commute peak?', hint: 'Daily transit boardings → concentrate into the morning peak hour, then convert to riders in transit at one moment using average trip duration.', difficulty: 'standard', domain: 'flow', theme: 'platform-concurrency' },
+  // idx 56: standard / cost (cost-structure)
+  { question: 'What is the annual cost (USD) of unsold food thrown away by a single mid-size US supermarket?', hint: 'Annual store sales × the share that is fresh/perishable × the spoilage rate of that category. Include markdowns that still go unsold.', difficulty: 'standard', domain: 'cost', theme: 'cost-structure' },
+  // idx 57: standard / volume (national-sizing)
+  { question: 'How many disposable coffee cups are thrown away in the United States per year?', hint: 'Coffee-to-go drinkers × to-go cups per drinker per day × 365. Anchor on the share of daily coffee that is bought in a disposable cup.', difficulty: 'standard', domain: 'volume', theme: 'national-sizing' },
+  // idx 58: advanced / cost (cost-structure)
+  { question: 'What is the annual operating cost (USD) of a mid-size 10-story office building in a major US city?', hint: 'From rentable floor area, build up cleaning, security, HVAC/maintenance, elevators, utilities, insurance and property tax. Anchor on operating cost per square foot per year.', difficulty: 'advanced', domain: 'cost', theme: 'cost-structure' },
+  // idx 59: advanced / flow (platform-supply-demand)
+  { question: 'How many parcels are in transit (picked up but not yet delivered) across the United States at any given moment?', hint: 'Daily parcel volume × the average number of days a parcel spends in the network gives the stock in transit (flow × dwell time = stock).', difficulty: 'advanced', domain: 'flow', theme: 'platform-supply-demand' },
+  // idx 60: advanced / unit (unit-economics)
+  { question: 'What is the annual operating profit (USD) of a single full-service casual-dining restaurant?', hint: 'From annual revenue, subtract food cost (~30%), labor (~30%), and rent + utilities + overhead, leaving a thin single-digit margin. Build revenue from covers × ticket × days.', difficulty: 'advanced', domain: 'unit', theme: 'unit-economics' },
+  // idx 61: advanced / unit (unit-economics)
+  { question: 'What is the annual operating profit (USD) of a single-dentist private practice in the United States?', hint: 'Revenue = patients/day × revenue per visit × working days; then subtract staff pay, supplies/lab, rent, and equipment costs to reach profit.', difficulty: 'advanced', domain: 'unit', theme: 'unit-economics' },
 ]
 
 export const FERMI_POOL: FermiQuestion[] = getLocale() === 'en' ? FERMI_POOL_EN : FERMI_POOL_JA
@@ -364,6 +414,30 @@ const FERMI_STATS_JA: FermiStat[][] = [
   [{ label: 'PCワーカー人口（参考）', value: '約3,000万人' }, { label: '1人/日のEnter回数（参考）', value: '約200〜500回' }, { label: '営業日', value: '約240日' }],
   // 49: 駅の自販機コーヒー1日販売本数
   [{ label: '全国駅数', value: '約9,500駅' }, { label: '1駅の自販機台数（参考）', value: '約3〜10台' }, { label: '1台/日の販売本数（参考）', value: '約20〜30本' }, { label: 'コーヒー比率（参考）', value: '約20%' }],
+  // 50: 美容室4人の月人件費
+  [{ label: 'スタッフ人数', value: '4人' }, { label: '美容師の平均月給（参考）', value: '約25〜30万円' }, { label: '社会保険の事業主負担（参考）', value: '給与の約15%' }],
+  // 51: 牛丼チェーン昼ピークの同時食事人数
+  [{ label: '牛丼チェーン総店舗数（参考）', value: '約4,000〜5,000店' }, { label: '1店舗の客席数（参考）', value: '約30〜50席' }, { label: '昼ピークの満席率（参考）', value: '約70〜90%' }],
+  // 52: 個人経営パン屋の1日売上
+  [{ label: '1日の来店客数（参考）', value: '約150〜300人' }, { label: '客単価（参考）', value: '約700〜1,000円' }, { label: '営業時間', value: '約8〜10時間' }],
+  // 53: 文房具市場の年間規模
+  [{ label: '日本の人口', value: '約1.24億人' }, { label: '1人あたり年間文房具支出（参考）', value: '約3,000〜5,000円' }, { label: '需要の中心', value: '学生・オフィス' }],
+  // 54: コンビニ1店舗の月運営コスト
+  [{ label: 'アルバイト時給（参考）', value: '約1,100円' }, { label: '24時間の必要シフト延べ時間（参考）', value: '約40〜50人時/日' }, { label: '光熱費（参考）', value: '約30〜50万円/月' }, { label: '本部ロイヤリティ', value: '粗利の約40〜60%' }],
+  // 55: 朝ラッシュの首都圏鉄道同時乗車人数
+  [{ label: '首都圏の鉄道通勤者数（参考）', value: '約2,000万人' }, { label: '朝ピーク時間帯', value: '約1〜2時間' }, { label: 'ピーク時に電車内にいる比率（参考）', value: '約20〜30%' }],
+  // 56: 中規模スーパーの年間食品廃棄ロス
+  [{ label: '1店舗の年間売上（参考）', value: '約10〜20億円' }, { label: '生鮮・惣菜の構成比（参考）', value: '約40%' }, { label: 'その廃棄率（参考）', value: '約2〜5%' }],
+  // 57: 使い捨て割り箸の年間消費膳数
+  [{ label: '日本の人口', value: '約1.24億人' }, { label: '1人/日の外食・中食での割り箸（参考）', value: '約0.3〜0.5膳' }, { label: '国内消費量（参考）', value: '年約200億膳規模' }],
+  // 58: 中規模オフィスビルの年間運営コスト
+  [{ label: '延床面積（参考）', value: '約3,000〜5,000坪' }, { label: '年間管理運営費（参考）', value: '約2〜4万円/坪・年' }, { label: '主な内訳', value: '清掃、警備、設備保守、光熱費、固定資産税' }],
+  // 59: 配送中の宅配荷物の滞留個数
+  [{ label: '日本の宅配年間取扱個数（参考）', value: '約50億個' }, { label: '1日あたり取扱個数（参考）', value: '約1,300〜1,400万個' }, { label: '物流網での滞在日数（参考）', value: '約1〜2日' }],
+  // 60: 回転寿司チェーン1店舗の年間営業利益
+  [{ label: '1店舗の年間売上（参考）', value: '約2〜3億円' }, { label: '原価率（参考）', value: '約45%' }, { label: '人件費率（参考）', value: '約20〜25%' }, { label: '営業利益率（参考）', value: '約5〜10%' }],
+  // 61: 個人歯科医院1院の年間営業利益
+  [{ label: '1院の年間売上（参考）', value: '約5,000万〜1億円' }, { label: '1日の患者数（参考）', value: '約20〜40人' }, { label: '主な経費', value: '人件費、材料費、賃料、設備リース' }, { label: '営業利益率（参考）', value: '約20〜30%' }],
 ]
 
 const FERMI_STATS_EN: FermiStat[][] = [
@@ -469,6 +543,30 @@ const FERMI_STATS_EN: FermiStat[][] = [
   [{ label: 'Global messaging-app users', value: '~3B' }, { label: 'Worked estimate', value: 'Messaging-app users ~3B; ~30–40 sent messages/user/day → ~90–120 billion/day from one major platform alone; across all platforms total is on the order of ~100–150B/day (WhatsApp alone ~100B/day).' }],
   // 49: global-tam (advanced)
   [{ label: 'World population', value: '~8B' }, { label: 'global electricity use', value: '~29,000 TWh/year' }, { label: 'Worked estimate', value: 'Global electricity consumption ~28,000–30,000 TWh/year; blended retail price ~$0.10–0.15/kWh → roughly $3–4 trillion/year. State TWh × price/kWh explicitly as the backbone.' }],
+  // 50: cost-structure (basic)
+  [{ label: 'Salon staff', value: '4 stylists' }, { label: 'Monthly pay/stylist', value: '~$3,000–4,000' }, { label: 'Payroll add-on', value: '~+20%' }, { label: 'Worked estimate', value: '4 stylists × ~$3,500/mo ≈ $14,000 in wages; +~20% for payroll taxes/benefits → ~$17,000/month. Order: ~$10^4/month in labor.' }],
+  // 51: platform-concurrency (basic)
+  [{ label: 'US fast-food outlets', value: '~200,000' }, { label: 'Seats/outlet', value: '~40' }, { label: 'Lunch-peak fill', value: '~50–70%' }, { label: 'Worked estimate', value: '~200,000 outlets × ~40 seats × ~60% filled at the noon peak ≈ 4.8M people seated at once. Many outlets are drive-thru/takeout heavy, so dine-in concurrency is order ~10^6.' }],
+  // 52: unit-economics (basic)
+  [{ label: 'Customers/day', value: '~200–300' }, { label: 'Spend/customer', value: '~$8' }, { label: 'Open hours', value: '~8–10' }, { label: 'Worked estimate', value: '~250 customers/day × ~$8 average spend ≈ $2,000/day. Cross-check: a small bakery typically does ~$1,500–3,000/day → order of ~$10^3/day.' }],
+  // 53: market-sizing (basic)
+  [{ label: 'US', value: '~330M people' }, { label: 'Spend/person/yr', value: '~$40' }, { label: 'Demand', value: 'students + offices' }, { label: 'Worked estimate', value: '~330M people × ~$40/yr on stationery and supplies ≈ $13B. Cross-check vs. reported US office-supply/stationery retail (~$10–15B) → order of ~$10^10.' }],
+  // 54: cost-structure (standard)
+  [{ label: 'Clerk wage', value: '~$13/hr' }, { label: 'Daily staff-hours', value: '~40–50' }, { label: 'Utilities', value: '~$3,000/mo' }, { label: 'Worked estimate', value: 'Labor: ~45 staff-hours/day × ~$13 × 30 ≈ $17,500/mo; rent ~$6,000; utilities ~$3,000; misc ~$2,000 → ~$28,000/month operating cost. Order: tens of thousands USD/month.' }],
+  // 55: platform-concurrency (standard)
+  [{ label: 'US daily transit boardings', value: '~30M' }, { label: 'Morning peak', value: '~2 hours' }, { label: 'Avg trip', value: '~25 min' }, { label: 'Worked estimate', value: '~30M weekday boardings; ~25% fall in the morning peak hour → ~7.5M boardings/hour; each rider is aboard ~25 min (~0.4 hr) → ~3M people in transit at the peak instant. Order: ~10^6 concurrent riders.' }],
+  // 56: cost-structure (standard)
+  [{ label: 'Store annual sales', value: '~$20M' }, { label: 'Perishable share', value: '~40%' }, { label: 'Spoilage rate', value: '~2–5%' }, { label: 'Worked estimate', value: '$20M sales × ~40% perishable ($8M) × ~3% spoilage ≈ $240K/year thrown away. Cross-check: grocery shrink runs ~1–3% of total sales (~$200–600K on $20M) → order of hundreds of thousands USD/year.' }],
+  // 57: national-sizing (standard)
+  [{ label: 'US adults', value: '~250M' }, { label: 'Drink coffee daily', value: '~60%' }, { label: 'To-go share', value: '~1 cup/day for ~25%' }, { label: 'Worked estimate', value: '~150M daily coffee drinkers; ~25% buy ~1 disposable to-go cup/day → ~38M cups/day × 365 ≈ 14B cups/year. Commonly cited US figure is ~50B disposable cups/year incl. all beverages → order of ~10^10.' }],
+  // 58: cost-structure (advanced)
+  [{ label: 'Rentable area', value: '~150,000 sq ft' }, { label: 'OpEx/sq ft/yr', value: '~$8–12' }, { label: 'Cost lines', value: 'cleaning, security, HVAC, utilities, taxes' }, { label: 'Worked estimate', value: '~150,000 sq ft × ~$10/sq ft/yr operating expense ≈ $1.5M/year (cleaning, security, maintenance, utilities, insurance, property tax). Order: low single-digit millions USD/year.' }],
+  // 59: platform-supply-demand (advanced)
+  [{ label: 'US parcels/year', value: '~22B' }, { label: 'Parcels/day', value: '~60M' }, { label: 'Dwell in network', value: '~2–3 days' }, { label: 'Worked estimate', value: '~60M parcels/day × ~2.5 days average dwell in the network ≈ 150M parcels in transit at any moment (flow × dwell = stock). Order: ~10^8 parcels in transit.' }],
+  // 60: unit-economics (advanced)
+  [{ label: 'Restaurant annual sales', value: '~$2M' }, { label: 'Food cost', value: '~30%' }, { label: 'Labor', value: '~30%' }, { label: 'Worked estimate', value: '$2M revenue − ~30% food − ~30% labor − ~25% rent/utilities/overhead leaves ~10–15% pre-tax, but typical full-service margins run ~3–6% → ~$60–120K operating profit. Order: tens of thousands to ~$10^5 USD/year.' }],
+  // 61: unit-economics (advanced)
+  [{ label: 'Practice annual revenue', value: '~$800K' }, { label: 'Patients/day', value: '~20–30' }, { label: 'Overhead', value: '~60–65% of revenue' }, { label: 'Worked estimate', value: '~$800K revenue × ~35% net (after ~65% overhead for staff, supplies, lab, rent) ≈ ~$280K owner operating profit. Cross-check: solo-dentist practices commonly net ~$150–300K → order of ~$10^5/year.' }],
 ]
 
 export const FERMI_STATS: FermiStat[][] = getLocale() === 'en' ? FERMI_STATS_EN : FERMI_STATS_JA
