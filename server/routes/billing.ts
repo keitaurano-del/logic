@@ -26,29 +26,49 @@ import { resolveAuthedUser } from '../auth.js'
 const _pubsubVerifyClient = new OAuth2Client()
 
 /**
- * Pub/Sub Push リクエストの Authorization Bearer JWT を検証する。
- * - 検証に使う audience: RTDN_ENDPOINT_URL 環境変数（未設定時はスキップ）
- * - email が *.gcp-sa-pubsub.iam.gserviceaccount.com であることを確認
- * - 失敗時は false を返す（throw しない）
+ * 本番環境かどうかの判定（LR-26）。
+ * Render 等の本番デプロイは NODE_ENV='production'。APP_ENV は 'sit'（検証）以外を本番扱い
+ * とする既存方針（index.ts の appSource 判定）に合わせ、production 判定を保守的に行う。
  */
-async function verifyPubSubJwt(authHeader: string | undefined): Promise<boolean> {
-  // 環境変数未設定の場合は検証スキップ（RTDN 設定前の開発環境を壊さない）。
+export function isProductionEnv(): boolean {
+  if (process.env.NODE_ENV === 'production') return true
+  // APP_ENV が設定されていて 'sit'/'development'/'test' 等の非本番値でなければ本番扱い。
+  const appEnv = process.env.APP_ENV
+  if (appEnv === 'production' || appEnv === 'prod') return true
+  return false
+}
+
+// verifyPubSubJwt の結果。'verified'/'invalid' に加え、本番で未設定＝検証不能を区別する。
+export type PubSubVerifyResult = 'verified' | 'invalid' | 'unconfigured-prod'
+
+/**
+ * Pub/Sub Push リクエストの Authorization Bearer JWT を検証する。
+ * - 検証に使う audience: RTDN_ENDPOINT_URL 環境変数
+ * - email が *.gserviceaccount.com であることを確認
+ * - LR-26: 本番(production)で RTDN_ENDPOINT_URL 未設定の場合は検証要件を満たせないため
+ *   'unconfigured-prod' を返してフェイルクローズ（呼び出し側が拒否する）。
+ *   非 production では従来どおり 'verified' を返して通過させる（開発を壊さない・警告は呼び出し側）。
+ */
+export async function verifyPubSubJwt(authHeader: string | undefined): Promise<PubSubVerifyResult> {
   const audience = process.env.RTDN_ENDPOINT_URL
-  if (!audience) return true
+  if (!audience) {
+    // 未設定: 本番なら検証必須を満たせない＝拒否。非本番は従来どおりスキップ通過。
+    return isProductionEnv() ? 'unconfigured-prod' : 'verified'
+  }
 
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : undefined
-  if (!token) return false
+  if (!token) return 'invalid'
 
   try {
     const ticket = await _pubsubVerifyClient.verifyIdToken({ idToken: token, audience })
     const payload = ticket.getPayload()
-    return (
+    const ok =
       payload?.email_verified === true &&
       typeof payload.email === 'string' &&
       payload.email.endsWith('.gserviceaccount.com')
-    )
+    return ok ? 'verified' : 'invalid'
   } catch {
-    return false
+    return 'invalid'
   }
 }
 
@@ -262,10 +282,17 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
   router.post('/api/billing/rtdn', rtdnLimiter, express.json({ limit: '256kb' }), async (req, res) => {
     try {
       // Pub/Sub Push JWT 署名検証。
-      // RTDN_ENDPOINT_URL が設定されている場合のみ検証し、不正リクエストを 401 で拒否。
-      // 未設定（開発環境・RTDN 設定前）は通過させる。
-      const jwtOk = await verifyPubSubJwt(req.headers.authorization)
-      if (!jwtOk) {
+      // - 検証成功: 通過。
+      // - 検証失敗(invalid): 401 で拒否。
+      // - 本番で RTDN_ENDPOINT_URL 未設定(unconfigured-prod): 検証不能のためフェイルクローズ。
+      //   未検証のまま課金状態を書き換えるのは危険なので 503 で拒否し、未処理にする（LR-26）。
+      // - 非本番で未設定: verifyPubSubJwt が 'verified' を返すため従来どおり通過（開発を壊さない）。
+      const jwtResult = await verifyPubSubJwt(req.headers.authorization)
+      if (jwtResult === 'unconfigured-prod') {
+        console.error('rtdn: RTDN_ENDPOINT_URL is not set in production — refusing unverified RTDN (fail-closed)')
+        return res.status(503).json({ error: 'RTDN verification not configured' })
+      }
+      if (jwtResult === 'invalid') {
         console.warn('rtdn: JWT verification failed, rejecting request')
         return res.status(401).json({ error: 'Unauthorized' })
       }
