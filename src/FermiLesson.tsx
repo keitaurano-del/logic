@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { isPaid } from './subscription'
 import { getAuthHeaders } from './supabase'
 import { t, localeBody } from './i18n'
+import { consumeFermiSse } from './fermiSseClient'
 import './FermiLesson.css'
 
 import { API_BASE } from './apiBase'
@@ -46,23 +47,57 @@ export default function FermiLesson({ onBack, onUpgrade }: Props) {
     else setCurrentQuestion(pickRandom())
   }
 
+  // 従来の非ストリーミング JSON 経路（フォールバック）。SSE が使えない／途中失敗
+  // したときに既存挙動へ戻すため、独立した関数として温存する。
+  const submitJson = async (authHeaders: Record<string, string>) => {
+    const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
+      body: JSON.stringify(localeBody({ question: currentQuestion, userInput })),
+    })
+    if (!res.ok) throw new Error('failed')
+    const data = await res.json()
+    setFeedback(data.feedback || '')
+  }
+
   const submit = async () => {
     if (!userInput.trim() || isLoading) return
     setIsLoading(true)
     setError(null)
     try {
       const authHeaders = await getAuthHeaders()
-      const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify(localeBody({ question: currentQuestion, userInput })),
-      })
-      if (!res.ok) throw new Error('failed')
-      const data = await res.json()
-      setFeedback(data.feedback || '')
-      setStep('feedback')
+      // SSE 優先: 採点とフィードバック本文を逐次表示する。
+      // 失敗（非対応・途中切断・error イベント）したら従来 JSON にフォールバック。
+      let sseOk = false
+      try {
+        const res = await fetch(`${API_BASE}/api/fermi/feedback`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', ...authHeaders },
+          body: JSON.stringify(localeBody({ question: currentQuestion, userInput })),
+        })
+        const ct = res.headers.get('content-type') || ''
+        if (!res.ok || !ct.includes('text/event-stream')) {
+          throw new Error('sse-unavailable')
+        }
+        // 最初の chunk が来たら入力画面から feedback 画面へ切り替えて逐次表示。
+        setFeedback('')
+        setStep('feedback')
+        await consumeFermiSse(res.body, {
+          onChunk: (_text, fullText) => setFeedback(fullText),
+        })
+        sseOk = true
+      } catch {
+        sseOk = false
+      }
+
+      if (!sseOk) {
+        // フォールバック: 従来 JSON 経路で取り直す（既存挙動に戻す）。
+        await submitJson(authHeaders)
+        setStep('feedback')
+      }
     } catch {
       setError(t('fermi.errorFeedback'))
+      setStep('input')
     } finally {
       setIsLoading(false)
     }

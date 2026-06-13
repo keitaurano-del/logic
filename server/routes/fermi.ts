@@ -155,6 +155,56 @@ export function validateFermiMessages(
   return { valid: true, messages: out }
 }
 
+// =============================================
+// SCORE_JSON 抽出（LR-25 #46: SSE / JSON 両経路で共用する純粋ロジック）
+// =============================================
+export type FermiScoreDetails = { logic?: string; originality?: string; clarity?: string }
+export type FermiScoreParsed = {
+  score?: number
+  scoreBreakdown?: string
+  scoreDetails?: FermiScoreDetails
+}
+
+/**
+ * モデル応答テキストから先頭の `SCORE_JSON:{...}` を抽出し、採点情報と
+ * 本文テキスト（SCORE_JSON 行を除いたフィードバック）に分離する純粋関数。
+ *
+ * 非ストリーミング JSON 経路と SSE 経路の双方から呼ぶことで、採点パースの
+ * 挙動を 1 箇所に集約し後方互換を担保する。SCORE_JSON が無い／壊れている
+ * 場合でも本文はそのまま返し、score は undefined にする（壊さない）。
+ */
+export function parseFermiScore(rawText: string): FermiScoreParsed & { feedbackText: string } {
+  let score: number | undefined
+  let scoreBreakdown: string | undefined
+  let scoreDetails: FermiScoreDetails | undefined
+  let feedbackText = rawText
+  const scoreMatch = rawText.match(/SCORE_JSON:\s*({.*?})(?:\n|$)/s)
+  if (scoreMatch) {
+    try {
+      const parsed = JSON.parse(scoreMatch[1])
+      score = Math.min(100, Math.max(0, Math.round(parsed.score || 0)))
+      scoreBreakdown = parsed.breakdown
+      if (parsed.details && typeof parsed.details === 'object') {
+        scoreDetails = {
+          logic: typeof parsed.details.logic === 'string' ? parsed.details.logic : undefined,
+          originality: typeof parsed.details.originality === 'string' ? parsed.details.originality : undefined,
+          clarity: typeof parsed.details.clarity === 'string' ? parsed.details.clarity : undefined,
+        }
+      }
+    } catch { /* ignore: 壊れた SCORE_JSON でも本文は返す */ }
+    feedbackText = rawText.replace(/SCORE_JSON:[^\n]*/g, '').trimEnd()
+  }
+  return { score, scoreBreakdown, scoreDetails, feedbackText }
+}
+
+/**
+ * クライアントが SSE ストリーミングを要求しているか（Accept: text/event-stream）。
+ * これが true のときだけ SSE 経路に入り、そうでなければ従来の JSON 応答を維持する。
+ */
+export function wantsEventStream(acceptHeader: string | undefined | null): boolean {
+  return typeof acceptHeader === 'string' && acceptHeader.toLowerCase().includes('text/event-stream')
+}
+
 export function createFermiRouter(
   client: Anthropic,
   supabase: SupabaseClient | null,
@@ -403,48 +453,24 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
         ? `Question: ${question}\n\nUser's decomposition:\n${userInput}\n\nPlease give feedback on this decomposition.\n\n[Scoring adjustment: hint penalty −${hintPenalty}pts, time penalty −${timePenalty}pts (${elapsedMin} min elapsed)]`
         : `問題: ${question}\n\nユーザーの分解:\n${userInput}\n\nこの分解にフィードバックをお願いします。\n\n[採点調整: ヒントペナルティ −${hintPenalty}点, 時間ペナルティ −${timePenalty}点 (${elapsedMin}分経過)]`
 
-      const response = await client.messages.create({
+      const requestParams = {
         // フェルミの feedback は添削/助言（採点込み）なので上位モデル（LR-25 #47）
         model: aiModelGrading(),
         max_tokens: 2400,
         system: [{ type: 'text' as const, text: isEn ? systemPromptEn : systemPromptJa, cache_control: { type: 'ephemeral' as const } }],
-        messages: [{ role: 'user', content: userMessage }],
-      })
-      // 切れ検知: max_tokens で打ち切られたらログに残す（将来の調整用）
-      if (response.stop_reason === 'max_tokens') {
-        console.warn('[fermi/feedback] response truncated at max_tokens — consider raising limit or tightening prompt')
+        messages: [{ role: 'user' as const, content: userMessage }],
       }
-      const rawText = response.content[0].type === 'text' ? response.content[0].text : ''
 
-      // SCORE_JSON パース
-      let score: number | undefined
-      let scoreBreakdown: string | undefined
-      let scoreDetails: { logic?: string; originality?: string; clarity?: string } | undefined
-      let feedbackText = rawText
-      const scoreMatch = rawText.match(/SCORE_JSON:\s*({.*?})(?:\n|$)/s)
-      if (scoreMatch) {
-        try {
-          const parsed = JSON.parse(scoreMatch[1])
-          score = Math.min(100, Math.max(0, Math.round(parsed.score || 0)))
-          scoreBreakdown = parsed.breakdown
-          if (parsed.details && typeof parsed.details === 'object') {
-            scoreDetails = {
-              logic: typeof parsed.details.logic === 'string' ? parsed.details.logic : undefined,
-              originality: typeof parsed.details.originality === 'string' ? parsed.details.originality : undefined,
-              clarity: typeof parsed.details.clarity === 'string' ? parsed.details.clarity : undefined,
-            }
-          }
-        } catch { /* ignore */ }
-        feedbackText = rawText.replace(/SCORE_JSON:[^\n]*/g, '').trimEnd()
-      }
-      // ======= DB保存 (non-blocking) =======
+      const { guestId, userId } = req.body as { guestId?: string; userId?: string }
+
+      // 完了時に DB へ保存する共通処理（SSE / JSON 双方で同一の副作用を行う）。
       // score_breakdown カラムは text。details も含めて JSON 文字列で保存し、後方互換のため
       // 読み出し時に「JSON.parse できれば構造化、そうでなければ生テキスト」とする。
-      const breakdownPayload = scoreDetails
-        ? JSON.stringify({ breakdown: scoreBreakdown, details: scoreDetails })
-        : scoreBreakdown
-      const { guestId, userId } = req.body as { guestId?: string; userId?: string }
-      if (supabase) {
+      const saveAnswer = (parsed: FermiScoreParsed & { feedbackText: string }) => {
+        if (!supabase) return
+        const breakdownPayload = parsed.scoreDetails
+          ? JSON.stringify({ breakdown: parsed.scoreBreakdown, details: parsed.scoreDetails })
+          : parsed.scoreBreakdown
         const today = todayJST()
         supabase.from('fermi_answers').insert({
           question_date: today,
@@ -454,17 +480,124 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
           user_input: userInput,
           hint_used: hintUsed ?? false,
           elapsed_sec: elapsedSec ?? null,
-          score: score ?? null,
+          score: parsed.score ?? null,
           score_breakdown: breakdownPayload ?? null,
-          ai_feedback: feedbackText,
+          ai_feedback: parsed.feedbackText,
           locale: locale || 'ja',
         }).then(({ error }) => {
           if (error) console.warn('fermi_answers insert error:', error.message)
         })
       }
-      // ==========================================
 
-      res.json({ feedback: feedbackText, score, scoreBreakdown, scoreDetails })
+      // =========================================================
+      // SSE 経路: Accept: text/event-stream のときだけストリーミング。
+      // それ以外は従来どおり JSON を返す（後方互換）。
+      // クォータ/検証はここに来るまでに従来どおり通過済み。
+      // =========================================================
+      if (wantsEventStream(req.headers.accept)) {
+        res.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
+        res.setHeader('Cache-Control', 'no-cache, no-transform')
+        res.setHeader('Connection', 'keep-alive')
+        res.setHeader('X-Accel-Buffering', 'no') // nginx/プロキシのバッファリング無効化
+        res.flushHeaders?.()
+
+        const send = (obj: unknown) => {
+          res.write(`data: ${JSON.stringify(obj)}\n\n`)
+          // @ts-expect-error compression 等が付ける flush は型に出ないことがある
+          res.flush?.()
+        }
+
+        // SCORE_JSON は応答の「先頭1行」に来る。改行が来るまで先頭バッファに溜め、
+        // 確定したら score イベントを1回送り、以降のデルタを chunk として逐次流す。
+        let headBuffer = ''
+        let scoreEmitted = false
+        let bodyStarted = false
+        let fullText = ''
+        // score イベントで送った採点値。完了時の保存（saveAnswer）で再利用する。
+        let lastScore: FermiScoreParsed = {}
+
+        // 先頭バッファから SCORE_JSON を抽出し score イベントを送る。残りの本文先頭を返す。
+        const flushHead = () => {
+          const nl = headBuffer.indexOf('\n')
+          if (nl === -1) return // まだ1行目が確定していない
+          const firstLine = headBuffer.slice(0, nl)
+          const rest = headBuffer.slice(nl + 1)
+          const parsed = parseFermiScore(firstLine + '\n')
+          lastScore = { score: parsed.score, scoreBreakdown: parsed.scoreBreakdown, scoreDetails: parsed.scoreDetails }
+          send({ type: 'score', score: parsed.score ?? null, breakdown: parsed.scoreBreakdown ?? null, details: parsed.scoreDetails ?? null })
+          scoreEmitted = true
+          bodyStarted = true
+          headBuffer = ''
+          if (rest) {
+            fullText += rest
+            send({ type: 'chunk', text: rest })
+          }
+        }
+
+        try {
+          const stream = client.messages.stream(requestParams)
+          stream.on('text', (delta: string) => {
+            if (bodyStarted) {
+              fullText += delta
+              send({ type: 'chunk', text: delta })
+              return
+            }
+            headBuffer += delta
+            flushHead()
+          })
+
+          await stream.finalMessage()
+
+          // ストリーム終了時、まだ1行目が確定していない（改行が来なかった＝SCORE_JSON しか
+          // 無い等の極端ケース）場合の保険。全文を SCORE_JSON 抽出にかけ、score と残り本文を送る。
+          if (!bodyStarted && headBuffer) {
+            const parsed = parseFermiScore(headBuffer)
+            lastScore = { score: parsed.score, scoreBreakdown: parsed.scoreBreakdown, scoreDetails: parsed.scoreDetails }
+            if (!scoreEmitted) {
+              send({ type: 'score', score: parsed.score ?? null, breakdown: parsed.scoreBreakdown ?? null, details: parsed.scoreDetails ?? null })
+              scoreEmitted = true
+            }
+            fullText += parsed.feedbackText
+            if (parsed.feedbackText) send({ type: 'chunk', text: parsed.feedbackText })
+          }
+
+          // 完了時にまとめて副作用（保存）。本文は chunk で流した fullText（SCORE_JSON 行を
+          // 含まない）、採点は score イベントで送った lastScore を真として保存する。
+          saveAnswer({
+            score: lastScore.score,
+            scoreBreakdown: lastScore.scoreBreakdown,
+            scoreDetails: lastScore.scoreDetails,
+            feedbackText: fullText,
+          })
+
+          send({ type: 'done' })
+        } catch (e: unknown) {
+          console.error('fermi feedback SSE error:', e)
+          // ヘッダ送出済みなので status は変えられない。error イベントで通知して終了。
+          send({ type: 'error', message: e instanceof Error ? e.message : String(e) })
+        } finally {
+          res.end()
+        }
+        return
+      }
+
+      // =========================================================
+      // 従来 JSON 経路（後方互換・完全維持）
+      // =========================================================
+      const response = await client.messages.create(requestParams)
+      // 切れ検知: max_tokens で打ち切られたらログに残す（将来の調整用）
+      if (response.stop_reason === 'max_tokens') {
+        console.warn('[fermi/feedback] response truncated at max_tokens — consider raising limit or tightening prompt')
+      }
+      const rawText = response.content[0].type === 'text' ? response.content[0].text : ''
+      const parsed = parseFermiScore(rawText)
+      saveAnswer(parsed)
+      res.json({
+        feedback: parsed.feedbackText,
+        score: parsed.score,
+        scoreBreakdown: parsed.scoreBreakdown,
+        scoreDetails: parsed.scoreDetails,
+      })
     } catch (e: unknown) {
       console.error('fermi feedback error:', e)
       res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
