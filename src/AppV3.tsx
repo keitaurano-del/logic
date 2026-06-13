@@ -90,6 +90,8 @@ import { t } from './i18n'
 import { useAssistantName } from './hooks/useAssistantName'
 import { addNotificationTapListener, rescheduleAllReminders } from './notifications'
 import { checkAndInitInstall } from './installReset'
+import { getMinBootMs, isFirstLaunch, markBooted } from './bootTiming'
+import { createTabStack, rememberScreen, restoreScreen } from './tabStack'
 import { ReviewPreviewScreen } from './screens/ReviewPreviewScreen'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Header } from './components/platform/Header'
@@ -233,6 +235,8 @@ function AppV3() {
   const [showReviewPrompt, setShowReviewPrompt] = useState(false)
   // popstate ハンドラ内でscreen stateを参照するための ref
   const screenRef = useRef<Screen>(screen)
+  // LR-32: タブごとに最後の画面を覚えるスタック（タブ再訪時の復元用・揮発しないようref保持）
+  const tabStackRef = useRef(createTabStack<Screen>())
   // popstate による遷移かどうかのフラグ（push 抑制用）
   const isPopNavRef = useRef(false)
   void isAdmin() // reserved for future admin checks
@@ -348,7 +352,8 @@ function AppV3() {
     applyTheme(loadTheme())
     // BootLoadingScreen は最低 2 秒は出す（ユーザーがブランドを認識する余白 + 裏でリモート同期を確実に走らせる）
     const bootStart = Date.now()
-    const MIN_BOOT_MS = 2000
+    // LR-32: 初回起動は 2000ms（ブランド認識の余白）、2回目以降は短縮（400ms）。
+    const MIN_BOOT_MS = getMinBootMs(isFirstLaunch())
     const ensureMinBoot = async () => {
       const elapsed = Date.now() - bootStart
       if (elapsed < MIN_BOOT_MS) {
@@ -377,6 +382,7 @@ function AppV3() {
       await ensureMinBoot()
       // レッスンデータのロード完了を待ってから画面を出す（未ロード由来のちらつき防止）
       await lessonsPromise
+      markBooted() // LR-32: 次回起動を短縮するため boot 成立を記録
       setAuthReady(true)
       clearTimeout(splashTimer)
       void hideSplash()
@@ -385,6 +391,7 @@ function AppV3() {
       // ネットワークエラー等でも必ずSplashを閉じてホームへ遷移させる
       await ensureMinBoot()
       await lessonsPromise
+      markBooted() // LR-32: 次回起動を短縮するため boot 成立を記録
       clearTimeout(splashTimer)
       setAuthReady(true)
       void hideSplash()
@@ -454,10 +461,21 @@ function AppV3() {
   }
 
   const handleTabChange = (next: Tab) => {
+    // LR-32: タブ独立履歴スタック。離脱タブの現在画面を覚え、遷移先タブに記憶が
+    //   あればそれを復元する。ルート画面・揮発画面は対象外（壊す方に倒さない）。
+    const stackOpts = { rootScreens: ROOT_SCREENS, restorableScreens: PERSISTABLE_SCREENS }
+    rememberScreen(tabStackRef.current, tab, screenRef.current, stackOpts)
     setTab(next)
     // 最後のアクティブタブを保存（ログイン済みユーザーの再起動後に復元するため）
     const storageTab = next === 'ranking' ? 'fermi-ranking' : next
     localStorage.setItem('logic-last-tab', storageTab)
+    // 遷移先タブに復元対象の記憶があればそこへ（navigate 第2引数 true = replace で既存ナビ非破壊）
+    const restored = restoreScreen(tabStackRef.current, next, stackOpts)
+    if (restored) {
+      navigate(restored, true)
+      return
+    }
+    // 記憶がなければ従来どおりタブのルート画面へ。
     // rankingタブはフェルミランキング画面へ
     if (next === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
