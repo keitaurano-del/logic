@@ -464,6 +464,16 @@ function AppV3() {
     // LR-32: タブ独立履歴スタック。離脱タブの現在画面を覚え、遷移先タブに記憶が
     //   あればそれを復元する。ルート画面・揮発画面は対象外（壊す方に倒さない）。
     const stackOpts = { rootScreens: ROOT_SCREENS, restorableScreens: PERSISTABLE_SCREENS }
+    // 回帰修正(2026-06-13): 同じタブを再タップ、またはホームタブを選んだ時は
+    // 常にそのタブのルートへリセットする。これをしないと、ホームのサブ画面(daily-fermi 等)に
+    // 居る状態でホームを押すと「現在画面を記憶→即復元」してフェルミから戻れなくなる。
+    if (next === tab || next === 'home') {
+      tabStackRef.current.delete(next)
+      setTab(next)
+      localStorage.setItem('logic-last-tab', next === 'ranking' ? 'fermi-ranking' : next)
+      navigate({ type: next === 'ranking' ? 'fermi-ranking' : next }, true)
+      return
+    }
     rememberScreen(tabStackRef.current, tab, screenRef.current, stackOpts)
     setTab(next)
     // 最後のアクティブタブを保存（ログイン済みユーザーの再起動後に復元するため）
