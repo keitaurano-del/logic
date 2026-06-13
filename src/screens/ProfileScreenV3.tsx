@@ -14,6 +14,9 @@ import { getStudyDates as _getStudyDatesArr } from '../stats'
 import LessonIcon from '../LessonIcon'
 import { StarIcon } from '../icons'
 import { t, getLocale, localizedHtmlPath } from '../i18n'
+import { ShareIcon } from '../icons'
+import { openShareSheet } from '../platform/share'
+import { buildProfileShareContent } from '../platform/shareMessages'
 import { TrialEndingBanner } from '../components/TrialStatus'
 import { shouldShowTrialEndingBanner } from '../trialStatus'
 import '../components/levelup.css'
@@ -41,6 +44,7 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   const showTrialBanner = shouldShowTrialEndingBanner(isLoggedIn)
   const [sheet, setSheet] = useState<Sheet>(null)
   const [titleSheetOpen, setTitleSheetOpen] = useState(false)
+  const [sharing, setSharing] = useState(false)
   const streak = getLessonStreak()
   const completed = getCompletedCount()
   const xp = getXp()
@@ -53,6 +57,15 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
   const handleLogout = async () => {
     await logout()
     window.location.reload()
+  }
+
+  const handleShare = async () => {
+    if (sharing) return
+    setSharing(true)
+    try {
+      await openShareSheet(buildProfileShareContent(t, lv.level, xp))
+    } catch { /* キャンセル等は無視 */ }
+    finally { setSharing(false) }
   }
 
   return (
@@ -101,6 +114,25 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
               )}
             </button>
           </div>
+          {/* 成果をシェア（LR-42） */}
+          <button
+            type="button"
+            onClick={handleShare}
+            disabled={sharing}
+            aria-label={t('profile.shareProgress')}
+            style={{
+              width: 40, height: 40, flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              borderRadius: 12,
+              background: 'var(--border-on-dark)',
+              border: 'none',
+              color: 'var(--text-on-hero)',
+              cursor: sharing ? 'default' : 'pointer',
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            <ShareIcon width={18} height={18} />
+          </button>
         </div>
         <button
           type="button"

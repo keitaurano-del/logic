@@ -68,7 +68,9 @@ import type { AIProblemSet } from './aiProblemStore'
 import type { FlashcardMode } from './screens/FlashcardsScreen'
 import { loadTheme, applyTheme } from './theme'
 // import { loadGuestUser } from './guestUser'
-import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, XP_REWARDS } from './stats'
+import { getCompletedCount, getXp, getDisplayName, setDisplayName, recordCompletion, XP_REWARDS, getLessonStreak } from './stats'
+import { shouldRequestReview } from './platform/appReview'
+import { ReviewPrompt } from './components/ReviewPrompt'
 import { recordActivity } from './activityLog'
 import { updateDisplayName } from './supabase'
 import { isAdmin } from './admin'
@@ -227,6 +229,8 @@ function AppV3() {
   const [levelUpEvt, setLevelUpEvt] = useState<LevelUpEvent | null>(null)
   const [rankUpEvt, setRankUpEvt] = useState<RankUpEvent | null>(null)
   const [toastEvt, setToastEvt] = useState<LevelUpToastEvent | null>(null)
+  // LR-40: In-App Review 事前プロンプト表示フラグ（成功の瞬間に1回だけ）
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false)
   // popstate ハンドラ内でscreen stateを参照するための ref
   const screenRef = useRef<Screen>(screen)
   // popstate による遷移かどうかのフラグ（push 抑制用）
@@ -513,6 +517,12 @@ function AppV3() {
       // まとめて実施する。ここでは加算しない（二重計上を避けるため）。
       // 次のレッスンに備えて ref をリセット
       lessonStartTimeRef.current = 0
+      // LR-40: 成功の瞬間（3レッスン完了＋ストリーク3日）に達したら、
+      // レビュー事前プロンプトを1回だけ予約する。native 以外 / 既出は shouldRequestReview が false。
+      // 完了画面の演出が落ち着いた頃に出すため少し遅延。
+      if (shouldRequestReview({ completedLessons: getCompletedCount(), streakDays: getLessonStreak() })) {
+        setTimeout(() => setShowReviewPrompt(true), 2200)
+      }
       navigate({ type: 'lesson-complete', lessonId, durationSec, prevLevel, returnScreen: screen.returnScreen })
     } else if (tab === 'ranking') {
       navigate({ type: 'fermi-ranking' }, true)
@@ -1010,6 +1020,15 @@ function AppV3() {
           consumeLevelUpToast()
           setToastEvt(null)
         }}
+      />
+    )}
+
+    {/* LR-40: In-App Review 事前プロンプト（成功の瞬間に1回・二段）。
+        レベルアップ等の演出と重ならないよう、それらが無いときのみ表示。 */}
+    {showReviewPrompt && !rankUpEvt && !levelUpEvt && !toastEvt && (
+      <ReviewPrompt
+        onClose={() => setShowReviewPrompt(false)}
+        onFeedback={() => { setShowReviewPrompt(false); navigate({ type: 'feedback' }) }}
       />
     )}
 

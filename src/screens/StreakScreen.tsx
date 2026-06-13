@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react'
 import { getStreak, getStudyDates, getTotalStudyDays, getStreakFreezeCount, MAX_STREAK_FREEZE, localDateStr } from '../stats'
-import { ArrowLeftIcon, ArrowRightIcon, FlameIcon, BandageIcon } from '../icons'
+import { ArrowLeftIcon, ArrowRightIcon, FlameIcon, BandageIcon, ShareIcon } from '../icons'
 import { Header } from '../components/platform/Header'
 import { t, getLocale } from '../i18n'
+import { openShareSheet } from '../platform/share'
+import { buildStreakShareContent } from '../platform/shareMessages'
 
 interface StreakScreenProps {
   onBack: () => void
@@ -68,6 +70,16 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
 
   const dowLabels = getLocale() === 'ja' ? DOW_JA : DOW_EN
 
+  const [sharing, setSharing] = useState(false)
+  const handleShare = async () => {
+    if (sharing || streak <= 0) return
+    setSharing(true)
+    try {
+      await openShareSheet(buildStreakShareContent(t, streak))
+    } catch { /* キャンセル等は無視 */ }
+    finally { setSharing(false) }
+  }
+
   return (
     <div className="stack">
       <Header title={t('streak.title')} onBack={onBack} />
@@ -85,6 +97,27 @@ export function StreakScreen({ onBack }: StreakScreenProps) {
         <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginTop: 'var(--s-2)', fontWeight: 600 }}>
           {t('streak.currentLabel')}
         </div>
+        {streak > 0 && (
+          <button
+            type="button"
+            onClick={handleShare}
+            disabled={sharing}
+            style={{
+              marginTop: 'var(--s-4)',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              background: 'var(--accent-soft, var(--brand-soft))',
+              color: 'var(--accent, var(--brand))',
+              border: '1px solid color-mix(in srgb, var(--brand) 25%, transparent)',
+              borderRadius: 99, padding: '10px 20px',
+              fontSize: '0.9333rem', fontWeight: 700, cursor: sharing ? 'default' : 'pointer',
+              font: 'inherit', minHeight: 44,
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            <ShareIcon width={16} height={16} />
+            {t('share.button')}
+          </button>
+        )}
       </div>
 
       {/* Stats row */}

@@ -28,6 +28,9 @@ import { haptic } from '../platform/haptics'
 import { API_BASE } from './apiBase'
 import { getXp } from '../stats'
 import { t } from '../i18n'
+import { openShareSheet } from '../platform/share'
+import { buildDeviationShareContent } from '../platform/shareMessages'
+import { ShareIcon } from '../icons'
 
 interface PlacementTestScreenProps {
   /** 「終了する」を押下し、パーソナルコース生成完了時に呼び出される */
@@ -203,6 +206,16 @@ function ResultView({
     [axisScores, dev],
   )
 
+  const [sharing, setSharing] = useState(false)
+  const handleShare = async () => {
+    if (sharing) return
+    setSharing(true)
+    try {
+      await openShareSheet(buildDeviationShareContent(t, dev))
+    } catch { /* キャンセル等は無視 */ }
+    finally { setSharing(false) }
+  }
+
   return (
     <div className="stack" style={{ padding: '0 16px 24px' }}>
       <Header title={t('placement.resultHeader')} onBack={onBack} />
@@ -267,6 +280,12 @@ function ResultView({
           ))}
         </div>
       </section>
+
+      {/* ── 成果をシェア（LR-42） ───────────────── */}
+      <Button variant="default" size="lg" block onClick={handleShare} disabled={sharing} style={{ marginTop: 'var(--s-2)' }}>
+        <ShareIcon width={16} height={16} />
+        {t('share.button')}
+      </Button>
 
       {/* ── 問題の解説を見る ───────────────────── */}
       <Button variant="default" size="lg" block onClick={onShowReview} style={{ marginTop: 'var(--s-2)' }}>
