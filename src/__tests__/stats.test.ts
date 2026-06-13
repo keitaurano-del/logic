@@ -173,6 +173,28 @@ describe('stats.ts', () => {
       expect(getStreak()).toBe(2)
     })
 
+    // LR-36: ローカル早朝（UTC では前日）に学習・判定しても日付がズレず、
+    // ストリークが誤って途切れないことを確認する。studyDates の書き込み側
+    // (addStudyTime → localDateStr) と判定側 (getStreak → localDateStr) が
+    // 揃っているため、ローカル 0–9 時でも「今日」として正しく扱われる。
+    it('keeps the streak intact when studying in the local early morning (UTC previous day)', async () => {
+      const { addStudyTime, getStreak, getStudyDates, localDateStr } = await import('../stats')
+      // ローカル 5/23, 5/24 に学習。
+      vi.setSystemTime(new Date(2026, 4, 23, 9, 0))
+      addStudyTime(1000)
+      vi.setSystemTime(new Date(2026, 4, 24, 9, 0))
+      addStudyTime(1000)
+      // ローカル 5/25 の早朝 01:00 に学習（UTC では 5/24 になり得る時刻帯）。
+      const earlyMorning = new Date(2026, 4, 25, 1, 0)
+      vi.setSystemTime(earlyMorning)
+      addStudyTime(1000)
+      // 書き込まれた日付はローカル日付（5/25）であること。
+      expect(localDateStr(earlyMorning)).toBe('2026-05-25')
+      expect(getStudyDates()).toContain('2026-05-25')
+      // 23→24→25 が連続と判定され、ストリークは 3（早朝でも今日が前日扱いにならない）。
+      expect(getStreak()).toBe(3)
+    })
+
     it('breaks the streak when there is a gap', async () => {
       const { addStudyTime, getStreak } = await import('../stats')
       vi.setSystemTime(new Date(2026, 4, 20, 9, 0))

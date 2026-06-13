@@ -62,6 +62,12 @@ const STRINGS: Record<Locale, Strings> = {
     'common.edit': '編集',
     'common.close': '閉じる',
 
+    // Error boundary (LR-37) — class component から静的 t() で参照
+    'errorBoundary.title': '問題が発生しました',
+    'errorBoundary.body': '画面の読み込みに失敗しました。お手数ですが、もう一度お試しください。',
+    'errorBoundary.retry': 'もう一度試す',
+    'errorBoundary.home': 'ホームに戻る',
+
     // Lesson/course asset images (AF-06 オンデマンド読込)
     'asset.lessonImageAlt': 'レッスンの画像',
     'asset.courseImageAlt': 'コースの画像',
@@ -2116,6 +2122,12 @@ const STRINGS: Record<Locale, Strings> = {
     'common.retry': 'Try again',
     'common.edit': 'Edit',
     'common.close': 'Close',
+
+    // Error boundary (LR-37) — referenced from class component via static t()
+    'errorBoundary.title': 'Something went wrong',
+    'errorBoundary.body': 'We couldn’t load this screen. Please try again.',
+    'errorBoundary.retry': 'Try again',
+    'errorBoundary.home': 'Back to home',
 
     // Lesson/course asset images (AF-06 on-demand loading)
     'asset.lessonImageAlt': 'Lesson image',
