@@ -4,6 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import type { RequestHandler } from 'express'
 import { resolveAuthedUser } from '../auth.js'
 import { checkAndIncrementAIQuota } from '../aiQuota.js'
+import { aiModelGrading, aiModelLight } from '../config.js'
 
 // =============================================
 // フェルミ推定 問題プール（20問、日付ローテーション）
@@ -353,7 +354,8 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
         : `問題: ${question}\n\nユーザーの分解:\n${userInput}\n\nこの分解にフィードバックをお願いします。\n\n[採点調整: ヒントペナルティ −${hintPenalty}点, 時間ペナルティ −${timePenalty}点 (${elapsedMin}分経過)]`
 
       const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // フェルミの feedback は添削/助言（採点込み）なので上位モデル（LR-25 #47）
+        model: aiModelGrading(),
         max_tokens: 2400,
         system: [{ type: 'text' as const, text: isEn ? systemPromptEn : systemPromptJa, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
@@ -484,7 +486,8 @@ ${question}
 
       // messages: [{role: 'user'|'assistant', content: string}]（検証済み）
       const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // 前提確認チャットは軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 300,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: validated.messages.slice(-10), // 直近10往復まで
@@ -517,7 +520,8 @@ ${question}
         : `フェルミ推定の問題を1問だけ日本語で出してください。以下のカテゴリからランダムに選んでください：ビジネス規模・インフラ・消費行動・テクノロジー・社会統計・環境・スポーツ。参加者が分解して考えられる、面白くて意外性のある問題を作ってください。難易度は中級〜上級。問題文のみ1行で返してください（前置き・説明不要）。本日の日付ヒント: ${today}`
 
       const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // AI 問題生成は軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 200,
         messages: [{ role: 'user', content: userPrompt }],
       })
@@ -573,7 +577,8 @@ ${question}
 
       // まず問題を生成し、それを使ってヒントを生成（問題文をコンテキストとして渡す）
       const questionRes = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // デイリー問題生成は軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 200,
         messages: [{ role: 'user', content: userPrompt }],
       })
@@ -584,7 +589,8 @@ ${question}
         : `次のフェルミ推定問題に対する分解ヒントを1〜2文で端的に教えてください。問題に固有の具体的な内容を含め、前置き不要です。\n\n問題：「${question}」`
 
       const hintRes = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // デイリーヒント生成は軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 200,
         messages: [{ role: 'user', content: hintPrompt }],
       })

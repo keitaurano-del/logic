@@ -6,6 +6,7 @@ import type { RequestHandler } from 'express'
 // （ランタイムは tsx。`tsc -b` の対象外、`eslint .` の対象内）。
 import { buildVocabularyPromptHint } from '../../src/components/journal/tagVocabulary.js'
 import { parseConsolidations, stripConsolidationsSection } from '../../src/components/journal/tagConsolidation.js'
+import { aiModelLight } from '../config.js'
 
 const MOOD_LABELS_JA: Record<number, string> = {
   1: '最悪', 2: 'イマイチ', 3: '普通', 4: '良い', 5: '最高',
@@ -281,7 +282,8 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}
 【ユーザーの既存タグ（まずこれを再利用。重複は統合してよい）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
 
       const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // 日記サマリ生成は軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 800,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
@@ -512,7 +514,10 @@ ${lessonCatalogText}
 ${courseCatalogText}`
 
       const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // 学習日記の総括フィードバックは日記機能の付随タスク。
+        // LR-25 #47 の「採点・添削」の中核（writing-score / fermi feedback）ではないため軽タスク扱い（Haiku 据え置き）。
+        // 上位モデル化したい場合は env AI_MODEL_GRADING 化を別途検討（Keita 確認）。
+        model: aiModelLight(),
         max_tokens: 1000,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
@@ -618,7 +623,8 @@ ${evening || '（なし）'}
 【ユーザーの既存タグ（まずこれを再利用。重複は統合してよい）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
 
       const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // タグ生成は軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 320,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
@@ -700,7 +706,8 @@ Output ONLY the cleaned/structured text. No preamble, no explanation, no quotes 
 出力は **整形・構造化済みテキストのみ**。前置き・説明・引用符は付けない。`
 
       const response = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // 日記テキストの整形/構造化は軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 1200,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: trimmed }],

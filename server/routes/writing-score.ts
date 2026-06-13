@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { RequestHandler } from 'express'
+import { aiModelGrading } from '../config.js'
 
 // =============================================
 // ロジカルライティング採点 (POST /api/writing-score)
@@ -144,7 +145,8 @@ export function createWritingScoreRouter(client: Anthropic, writingScoreLimiter:
 
       try {
         const response = await client.messages.create({
-          model: 'claude-haiku-4-5-20251001',
+          // 採点（ロジカルライティングの中核価値）は上位モデル（LR-25 #47）
+          model: aiModelGrading(),
           max_tokens: 1500,
           system: SYSTEM_PROMPT,
           tools: [

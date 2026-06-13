@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { RateLimitRequestHandler } from 'express-rate-limit'
+import { aiModelLight } from '../config.js'
 
 // =============================================
 // AI カスタムコース生成
@@ -229,7 +230,8 @@ export function createCustomCourseRouter(
         : `学びたいこと:\n${prompt}\n\n選べるレッスン一覧（id<TAB>タイトル<TAB>(カテゴリ)）:\n${catalog}`
 
       const response = await anthropic.messages.create({
-        model: 'claude-haiku-4-5-20251001',
+        // カスタムコース生成は軽タスク（現状維持の Haiku）
+        model: aiModelLight(),
         max_tokens: 800,
         system: [{ type: 'text' as const, text: isEn ? systemEn : systemJa, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
