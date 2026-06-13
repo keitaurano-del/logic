@@ -44,7 +44,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-17 | R8/ProGuard 有効化＋keep ルール整備（課金ロジック難読化/シュリンク）#49 | P1 | REVIEW（2026-06-10 Son: LR-6 と同一対応に内包。ブランチ feat/p0-billing-auth-lr123 で build.gradle minifyEnabled/shrinkResources true＋proguard-rules.pro に課金/認証/Capacitor の keep ルール整備済。要: Android再ビルドで難読化確認） | dev-logic |
 | LR-18 | マジックリンク送信後画面の導線（メールを開く CTA＋迷惑メール案内＋再送クールダウン）#10 | P1 | REVIEW（2026-06-12 Son: ブランチ feat/p1-web-quickwins-lr18-22-46[最新main]。送信後画面に「メールを開く」CTA・迷惑メール案内・再送45秒クールダウンをLogin/Onboarding両方に。native mail plugin不在でbest-effort+fallback。tsc/vitest657/eslint green） | dev-logic |
 | LR-19 | オンボーディング順序の是正（価値体験を先行し属性入力・課金を後ろへ。birthYear 必須スキップ不可を緩和）#11 | P1 | TODO | dev-logic |
-| LR-20 | レッスンの遅延ロード（全レッスン ja+en 集約 約5MB を locale/カテゴリ単位に分割）#50 | P1 | TODO | dev-logic |
+| LR-20 | レッスンの遅延ロード（全レッスン ja+en 集約 約5MB を locale/カテゴリ単位に分割）#50 | P1 | REVIEW（2026-06-13 林: 実装完了・検証 green。lessonData.ts を全カテゴリ動的 import() 化＋getLocale() の言語のみロード、vite.config.ts で言語別チャンク分割。boot ゲートは AppV3.tsx:375 / App.tsx で loadAllLessons() を await 済み（空 Proxy 参照防止）。build でレッスンが lessons-&lt;cat&gt; / lessons-&lt;cat&gt;-en の別チャンクに分割されることを実証＝未使用言語は fetch されず実効ペイロード約半減。tsc/build/eslint(.)/vitest 649 全 green。ブランチ perf/lesson-lazy-load は origin 未push・main 2先行1遅れ(遅れは board 更新のみで非衝突)、PR 化は Keita 承認待ち） | dev-logic |
 | LR-21 | 図解SVGの i18n 化＋aria-label（18コンポーネントが日本語ハードコード＋代替テキスト無し）#55 | P1 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | dev-logic |
 | LR-22 | html lang をロケール切替で更新（現状 index.html 固定 "ja"・1行修正級）#56 | P1 | REVIEW（2026-06-12 Son: 同ブランチ。setLocale で documentElement.lang をロケール追従＋初期化時適用。tsc/vitest/eslint green） | dev-logic |
 | LR-23 | アクセント色の WCAG AA 確保（ライト面で実測 2.15-3.75・図解 stroke 含む）#57 | P1 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | designer＋dev-logic |
