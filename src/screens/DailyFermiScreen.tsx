@@ -709,7 +709,8 @@ export function DailyFermiScreen({ onBack, onReport, onOpenRanking, onUpgrade }:
       if (data.score != null) {
         fetch(`${API_BASE}/api/fermi/record-score`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          // 認証ヘッダを付け、サーバー側で user_id を検証済み UUID に束縛させる（#38 なりすまし防止）。
+          headers: { 'Content-Type': 'application/json', ...authHeaders },
           body: JSON.stringify({
             // 認証済みなら auth UUID、未ログインなら guest ID。
             // ランキングが profiles.occupation を join できるよう UUID で記録する。

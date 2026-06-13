@@ -61,6 +61,56 @@ export const FERMI_MAX_MESSAGES_TOTAL_LEN = 12000 // messages 全体の content 
 
 export type FermiChatMessage = { role: 'user' | 'assistant'; content: string }
 
+// =============================================
+// record-score の identity 束縛（LR-7 #38: なりすまし防止）
+// =============================================
+export const FERMI_MAX_USERNAME_LEN = 60
+
+export type RecordScoreIdentity = { userId: string; userName: string }
+
+/**
+ * /record-score に書き込む (user_id, user_name) を決定する。
+ *
+ * 脅威モデル (#38): クライアントは body で userId / userName を自由に申告できるため、
+ * 申告値をそのまま信用すると他人の auth UUID を騙ってランキングを汚染できてしまう。
+ *
+ * 方針:
+ * - 認証済み (Bearer トークン検証成功) の場合は user_id を**サーバー検証済みの UUID に強制**し、
+ *   クライアント申告の userId は無視する（なりすまし不可）。user_name は表示名なので申告を尊重
+ *   しつつ長さだけキャップする（未指定はデフォルト 'ゲスト'）。
+ * - 未認証 (ゲスト) の場合は既存挙動を壊さないため、申告 userId をそのまま使う
+ *   （guest ID は端末ローカル乱数で「知っていること」が所有証明という既存の脅威モデル）。
+ *   ただし guest が他人の auth UUID 形式を騙るのを防ぐため、UUID 形式の userId 申告は拒否して
+ *   'guest' にフォールバックする。
+ *
+ * 純粋関数（resolveAuthedUser の結果を注入）にしてユニットテスト可能にしている。
+ */
+export function resolveRecordScoreIdentity(
+  authedUserId: string | null | undefined,
+  claimedUserId: unknown,
+  claimedUserName: unknown,
+): RecordScoreIdentity {
+  const name = typeof claimedUserName === 'string' && claimedUserName.trim()
+    ? claimedUserName.trim().slice(0, FERMI_MAX_USERNAME_LEN)
+    : 'ゲスト'
+
+  // UUID 形式判定（fermi.ts /ranking の occupation join と同じ緩い判定に合わせる）。
+  const looksLikeUuid = (v: unknown): boolean =>
+    typeof v === 'string' && /^[0-9a-f-]{20,}$/i.test(v)
+
+  if (authedUserId) {
+    // 認証済み: サーバー検証済み UUID に強制束縛（クライアント申告 userId は無視）。
+    return { userId: authedUserId, userName: name }
+  }
+
+  // 未認証ゲスト: 申告 userId を使うが、auth UUID 形式の詐称は拒否して 'guest' に倒す。
+  const claimed = typeof claimedUserId === 'string' && claimedUserId.trim()
+    ? claimedUserId.trim()
+    : 'guest'
+  const userId = looksLikeUuid(claimed) ? 'guest' : claimed
+  return { userId, userName: name }
+}
+
 /**
  * /chat の messages 配列を検証する（プロンプト注入耐性 / コスト上限）。
  * - 配列であること、件数 1〜FERMI_MAX_MESSAGES
@@ -650,10 +700,15 @@ ${question}
       }
       if (typeof score !== 'number' || score < 0 || score > 100) return res.status(400).json({ error: 'score must be a number between 0 and 100' })
 
+      // なりすまし防止 (#38): 認証済みなら user_id をサーバー検証済み UUID に強制束縛する。
+      // クライアント申告の userId は信用しない。未認証ゲストは既存挙動を維持。
+      const authed = await resolveAuthedUser(req, supabase)
+      const identity = resolveRecordScoreIdentity(authed?.id, userId, userName)
+
       if (supabase) {
         const { error } = await supabase.from('fermi_scores').insert({
-          user_id: userId || 'guest',
-          user_name: userName || 'ゲスト',
+          user_id: identity.userId,
+          user_name: identity.userName,
           score,
           question_index: questionIndex ?? -1,
           elapsed_sec: elapsedSec ?? 0,

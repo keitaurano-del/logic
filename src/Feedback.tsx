@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { getLocale } from './i18n'
 import './Feedback.css'
 import { Capacitor } from '@capacitor/core'
@@ -18,10 +17,6 @@ const CATEGORY_GUIDE: Record<string, string> = {
   'その他': '何でもお気軽にお書きください。コンテンツや使い心地、感想何でも心待ちしています。',
 }
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-const _supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
-
 export default function Feedback({ onBack }: { onBack: () => void }) {
   const [category, setCategory] = useState<string>(CATEGORIES[0])
   const [message, setMessage] = useState('')
@@ -34,23 +29,15 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
     setLoading(true)
     setError('')
     try {
-      // サーバーサイドAPI経由で送信（Supabase保存 + Jira起票）
-      try {
-        const res = await fetch(`${_API_BASE}/api/feedback`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ category, message: message.trim(), locale: getLocale() }),
-        })
-        if (!res.ok) throw new Error('server error')
-      } catch {
-        // サーバー未接続時はSupabase直接フォールバック
-        if (_supabase) {
-          const { error: dbErr } = await _supabase.from('feedback').insert({
-            category, message: message.trim(), locale: getLocale(),
-          })
-          if (dbErr) throw new Error(dbErr.message)
-        }
-      }
+      // サーバーサイドAPI経由で送信（service-role で Supabase 保存 + Jira起票）。
+      // LR-7: 以前は失敗時に anon キーで feedback テーブルへ直 insert するフォールバックが
+      // あったが、RLS 締め直し（038）で匿名 insert を不可にするため API 経由のみに統一した。
+      const res = await fetch(`${_API_BASE}/api/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, message: message.trim(), locale: getLocale() }),
+      })
+      if (!res.ok) throw new Error('server error')
 
       setSent(true)
     } catch (e: unknown) {
