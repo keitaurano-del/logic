@@ -61,7 +61,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-29 | client-01/02 の title↔中身整合（論点系 lesson が数字コースに混入）#13 | P2 | TODO | content-creator＋dev-logic |
 | LR-30 | AI 自動生成問題の品質ゲート強化（自己採点 auto 承認 閾値0.8 を別モデルのクロスチェックへ）#14 | P2 | TODO | dev-logic |
 | LR-31 | ja-en 非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一の解消（CONTENT/THUMBNAIL 監査既出分）#25 | P2 | TODO | content-creator＋designer |
-| LR-32 | 起動 MIN_BOOT_MS の2回目以降短縮＋タブ独立履歴スタック（#12 戻りナビ本体は実装/回帰テスト済＝残はタブスタックのみ）#15 | P2 | TODO（2026-06-12 Son: 起動短縮＋タブスタックの実装を試みたが、AppV3.tsx を触るため**並行作業中の LR-20(dev-logic / perf/lesson-lazy-load)と作業ツリー衝突**。LR-20 が AppV3/lessonData を大きく変更中のため、LR-20 確定/マージ後に着手するのが安全。ヘルパ雛形は退避済） | dev-logic |
+| LR-32 | 起動 MIN_BOOT_MS の2回目以降短縮＋タブ独立履歴スタック（#12 戻りナビ本体は実装/回帰テスト済＝残はタブスタックのみ）#15 | P2 | DONE（main マージ・frontend自動デプロイ 2026-06-13・LR-20後に再実装／旧: 2026-06-12 Son: 起動短縮＋タブスタックの実装を試みたが、AppV3.tsx を触るため**並行作業中の LR-20(dev-logic / perf/lesson-lazy-load)と作業ツリー衝突**。LR-20 が AppV3/lessonData を大きく変更中のため、LR-20 確定/マージ後に着手するのが安全。ヘルパ雛形は退避済） | dev-logic |
 | LR-33 | 復習ハブ等の無料境界見直し（直近 N 件は無料解放）#21 | P2 | TODO | dev-logic＋Keita |
 | LR-34 | 復習SRS天井7日固定の段階ラダー化（ease は保存されるが間隔計算に未使用の半デッド）#16 | P2 | CANCELLED（2026-06-10 Keita承認・時期尚早でTODOから省略） | dev-logic＋Keita |
 | LR-35 | テーマの OS 追従＋アクセント選択UIの導線復活（UI は ThemeSettings.tsx 現存だが死蔵で到達不可）#18 | P2 | CANCELLED（2026-06-10 Keita承認・効果薄でTODOから省略） | designer＋dev-logic |
