@@ -84,6 +84,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
 | LR-49 | 難易度フィールドの新設＋難易度カーブ補強（#17 は構造化 difficulty フィールド不在で裏取り不能＝この前提タスクが先行条件）#17 | P3 | CANCELLED 🔒[Keita] | dev-logic＋content-creator |
+| LR-50 | フェルミ feedback SSE 1行目ドロップの是正（LR-25 #46 後続）。server/routes/fermi.ts の SSE 経路 flushHead で、応答1行目に SCORE_JSON が無い/壊れている場合に本文1行目が破棄され JSON経路(parseFermiScore で全文保持)と非対称になる。修正＝flushHead で parsed.feedbackText も chunk 配信し欠落解消（SCORE_JSON が行全体なら feedbackText='' で無害）。DoD: no-SCORE_JSON でも本文欠落なし／既存 fermi-score-parse.test 6件 green 維持／flushHead を小関数化し単体テスト追加。レア＋安全側に倒れる軽微。出典: 2026-06-14 林の LR-25 レビュー@f023757 | P3 | TODO | dev-logic |
 
 ### 項番→LR 対応表（実装漏れ監査・全62項）
 
