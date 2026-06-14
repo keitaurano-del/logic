@@ -20,21 +20,33 @@ alter table public.profiles
   add column if not exists birth_year smallint;
 
 -- 既存ユーザーの age_range から birth_year を逆算 (NULL のみ更新、既存値を尊重)
+-- LR-8/#40: age_range は元々連番外の手動SQL(現 040_onboarding_profile_columns.sql)で
+--   追加されたカラム。本マイグレが 040 より先に流れる新規DBでもエラーにならないよう、
+--   カラム存在を実行時判定してから backfill する。本番(age_range 既存)では従来と同一挙動。
 do $$
 declare
   current_year int := extract(year from now())::int;
 begin
-  update public.profiles
-  set birth_year = case age_range
-    when 'teens'  then (current_year - 16)::smallint
-    when '20s'    then (current_year - 25)::smallint
-    when '30s'    then (current_year - 35)::smallint
-    when '40s'    then (current_year - 45)::smallint
-    when '50plus' then (current_year - 55)::smallint
-    else null
-  end
-  where birth_year is null
-    and age_range is not null;
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'profiles'
+      and column_name = 'age_range'
+  ) then
+    execute format($sql$
+      update public.profiles
+      set birth_year = case age_range
+        when 'teens'  then (%1$s - 16)::smallint
+        when '20s'    then (%1$s - 25)::smallint
+        when '30s'    then (%1$s - 35)::smallint
+        when '40s'    then (%1$s - 45)::smallint
+        when '50plus' then (%1$s - 55)::smallint
+        else null
+      end
+      where birth_year is null
+        and age_range is not null
+    $sql$, current_year);
+  end if;
 end $$;
 
 -- CHECK 制約: 妥当な範囲のみ
