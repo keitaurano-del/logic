@@ -205,6 +205,30 @@ export function wantsEventStream(acceptHeader: string | undefined | null): boole
   return typeof acceptHeader === 'string' && acceptHeader.toLowerCase().includes('text/event-stream')
 }
 
+/**
+ * SSE 経路の先頭バッファ処理を純関数として切り出したもの（LR-50）。
+ *
+ * 入力 `headBuffer` は「本文先頭から1行目確定までに溜めたテキスト」。
+ * - 改行がまだ無い（1行目未確定）→ null を返す（呼び出し側は待機）。
+ * - 1行目が確定したら headBuffer 全体を parseFermiScore にかけ、
+ *   `{ parsed, leadingChunk }` を返す。
+ *
+ * `leadingChunk` は score イベント送出後に最初の chunk として配信すべき本文
+ * （= SCORE_JSON 行を除いた本文先頭）。parseFermiScore に headBuffer 全体を渡すため、
+ * 非ストリーミング JSON 経路（parseFermiScore で全文保持）と完全に対称になる。
+ *
+ * これにより LR-25 #46 の後続バグ（1行目に SCORE_JSON が無い／壊れている場合に
+ * 本文1行目が破棄されていた）が解消される。SCORE_JSON が行全体を占めるケースでは
+ * parsed.feedbackText='' になり leadingChunk も '' なので、二重配信・空行混入は起きない。
+ */
+export function splitFermiSseHead(
+  headBuffer: string,
+): { parsed: FermiScoreParsed & { feedbackText: string }; leadingChunk: string } | null {
+  if (headBuffer.indexOf('\n') === -1) return null // まだ1行目が確定していない
+  const parsed = parseFermiScore(headBuffer)
+  return { parsed, leadingChunk: parsed.feedbackText }
+}
+
 export function createFermiRouter(
   client: Anthropic,
   supabase: SupabaseClient | null,
@@ -517,20 +541,21 @@ On the line after SCORE_JSON, start with the "## Strong points" section and cont
         let lastScore: FermiScoreParsed = {}
 
         // 先頭バッファから SCORE_JSON を抽出し score イベントを送る。残りの本文先頭を返す。
+        // 純関数 splitFermiSseHead（LR-50）に判定/分離を委譲し、副作用（send 等）だけここで行う。
         const flushHead = () => {
-          const nl = headBuffer.indexOf('\n')
-          if (nl === -1) return // まだ1行目が確定していない
-          const firstLine = headBuffer.slice(0, nl)
-          const rest = headBuffer.slice(nl + 1)
-          const parsed = parseFermiScore(firstLine + '\n')
+          const head = splitFermiSseHead(headBuffer)
+          if (!head) return // まだ1行目が確定していない
+          const { parsed, leadingChunk } = head
           lastScore = { score: parsed.score, scoreBreakdown: parsed.scoreBreakdown, scoreDetails: parsed.scoreDetails }
           send({ type: 'score', score: parsed.score ?? null, breakdown: parsed.scoreBreakdown ?? null, details: parsed.scoreDetails ?? null })
           scoreEmitted = true
           bodyStarted = true
           headBuffer = ''
-          if (rest) {
-            fullText += rest
-            send({ type: 'chunk', text: rest })
+          // leadingChunk = SCORE_JSON 行を除いた本文先頭（1行目本文 + それ以降を両方含む）。
+          // SCORE_JSON が無い場合に1行目本文が落ちないよう、必ず leadingChunk を配信する。
+          if (leadingChunk) {
+            fullText += leadingChunk
+            send({ type: 'chunk', text: leadingChunk })
           }
         }
 
