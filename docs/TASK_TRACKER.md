@@ -59,7 +59,7 @@ task-manager エージェントが管理するタスク台帳の正本。
 | LR-27 | キャンペーンの日付ベース自動制御（CAMPAIGN_ACTIVE のハードコード true を是正）#27 | P2 | DONE（main マージ・自動デプロイ 2026-06-13／2026-06-12 Son: 同ブランチ。CAMPAIGN_ACTIVE のハードコードtrueを VITE_CAMPAIGN_END 基準の日付判定に。未設定=false(安全側)。要: キャンペーン継続なら VITE_CAMPAIGN_END を本番env設定） | dev-logic |
 | LR-28 | 死にリンク/SIT URL/廃止Stripe env の掃除（Play リンク appId 不一致・ウェルカムメール SIT URL・render.yaml の Stripe env 残存）#30 | P2 | DONE（main マージ・自動デプロイ 2026-06-13／2026-06-10 Son: 同ブランチ。Play Storeリンクの appId を実値 com.logicalthinking.app[build.gradle:23]に修正、ウェルカムメールのSIT固定URLを APP_ENV基準で本番/SIT出し分け、render.yaml の廃止STRIPE_*全11件削除[実行時参照ゼロ確認]。tsc/vitest/eslint green） | dev-logic |
 | LR-29 | client-01/02 の title↔中身整合（論点系 lesson が数字コースに混入）#13 | P2 | TODO | content-creator＋dev-logic |
-| LR-30 | AI 自動生成問題の品質ゲート強化（自己採点 auto 承認 閾値0.8 を別モデルのクロスチェックへ）#14 | P2 | TODO | dev-logic |
+| LR-30 | AI 自動生成問題の品質ゲート強化（自己採点 auto 承認 閾値0.8 を別モデルのクロスチェックへ）#14 | P2 | DONE（2026-06-14 Son: autogen_problems.py の品質ゲート強化を main マージ。構造/一意正解チェック必須＋独立クロス評価の二重ゲート＋--no-auto-approveフラグ。オフラインツール・デプロイ非経路。py_compile/自作テスト31 green） | dev-logic |
 | LR-31 | ja-en 非対称・図ミスマッチ・サムネのスペル崩れ・course title 不統一の解消（CONTENT/THUMBNAIL 監査既出分）#25 | P2 | TODO | content-creator＋designer |
 | LR-32 | 起動 MIN_BOOT_MS の2回目以降短縮＋タブ独立履歴スタック（#12 戻りナビ本体は実装/回帰テスト済＝残はタブスタックのみ）#15 | P2 | DONE（main マージ・frontend自動デプロイ 2026-06-13・LR-20後に再実装／旧: 2026-06-12 Son: 起動短縮＋タブスタックの実装を試みたが、AppV3.tsx を触るため**並行作業中の LR-20(dev-logic / perf/lesson-lazy-load)と作業ツリー衝突**。LR-20 が AppV3/lessonData を大きく変更中のため、LR-20 確定/マージ後に着手するのが安全。ヘルパ雛形は退避済） | dev-logic |
 | LR-33 | 復習ハブ等の無料境界見直し（直近 N 件は無料解放）#21 | P2 | TODO | dev-logic＋Keita |
