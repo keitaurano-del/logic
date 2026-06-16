@@ -69,6 +69,8 @@ async function decodeAndResize(file: File): Promise<DrawSource | null> {
  */
 async function compressToJpeg(file: File): Promise<{ blob: Blob; width: number; height: number }> {
   let source: DrawSource | null = await decodeAndResize(file)
+  // <img> フォールバック経路で確保した data URL / 要素を確実に解放するため保持しておく。
+  let fallbackImg: HTMLImageElement | null = null
 
   if (!source) {
     // フォールバック: FileReader → <img> デコード
@@ -78,41 +80,79 @@ async function compressToJpeg(file: File): Promise<{ blob: Blob; width: number; 
       reader.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to read file'))
       reader.readAsDataURL(file)
     })
-    source = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const i = new Image()
       i.onload = () => resolve(i)
       i.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to decode image'))
       i.src = dataUrl
     })
+    source = img
+    fallbackImg = img
   }
 
-  const natural = sourceSize(source)
-  let width = natural.w
-  let height = natural.h
-  const longest = Math.max(width, height)
-  if (longest > MAX_DIMENSION) {
-    const scale = MAX_DIMENSION / longest
-    width = Math.round(width * scale)
-    height = Math.round(height * scale)
-  }
+  // JF-7: canvas / ImageBitmap / <img> のメモリを「成功・例外を問わず」確実に解放する。
+  // モバイル WebView では canvas のバックバッファ（最大 1600px ≒ 約 10MB の RGBA）が
+  // GC まで残り、3〜4 枚目で createImageBitmap / canvas.toBlob が失敗し
+  // compress-failed（ユーザーには「アップロードに失敗」と表示）になっていた。
+  // 一度枯渇するとリロードまで回復しないため再試行も失敗する＝報告症状と一致。
+  let canvas: HTMLCanvasElement | null = null
+  try {
+    const natural = sourceSize(source)
+    let width = natural.w
+    let height = natural.h
+    const longest = Math.max(width, height)
+    if (longest > MAX_DIMENSION) {
+      const scale = MAX_DIMENSION / longest
+      width = Math.round(width * scale)
+      height = Math.round(height * scale)
+    }
 
-  const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-  const ctx = canvas.getContext('2d')
-  if (!ctx) {
+    canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      throw new ImageUploadError('compress-failed', 'no canvas context')
+    }
+    ctx.drawImage(source, 0, 0, width, height)
+    // drawImage 済みなので元ソースは即解放できる（ImageBitmap は明示 close）。
     if ('close' in source) (source as ImageBitmap).close()
-    throw new ImageUploadError('compress-failed', 'no canvas context')
-  }
-  ctx.drawImage(source, 0, 0, width, height)
-  // ImageBitmap はメモリ解放のため明示 close
-  if ('close' in source) (source as ImageBitmap).close()
+    source = null
 
-  const blob: Blob | null = await new Promise((resolve) => {
-    canvas.toBlob((b) => resolve(b), 'image/jpeg', COMPRESS_QUALITY)
-  })
-  if (!blob) throw new ImageUploadError('compress-failed', 'canvas.toBlob returned null')
-  return { blob, width, height }
+    const blob: Blob | null = await new Promise((resolve) => {
+      // canvas は finally でも参照するので非 null を閉じ込めず外側変数を使う
+      canvas!.toBlob((b) => resolve(b), 'image/jpeg', COMPRESS_QUALITY)
+    })
+    if (!blob) throw new ImageUploadError('compress-failed', 'canvas.toBlob returned null')
+    return { blob, width, height }
+  } finally {
+    // ImageBitmap が drawImage 前に throw した場合も含めて close
+    if (source && 'close' in source) (source as ImageBitmap).close()
+    // canvas のバックバッファを即時に解放: 1x1 に潰してから参照を切る。
+    // iOS/Android WebView で GPU/CPU 側のピクセルバッファ回収を促す常套手段。
+    if (canvas) {
+      canvas.width = 1
+      canvas.height = 1
+      canvas = null
+    }
+    // <img> の data URL（フルサイズ base64）を握り続けないよう src を解放
+    if (fallbackImg) {
+      fallbackImg.src = ''
+      fallbackImg = null
+    }
+  }
+}
+
+// JF-7: 圧縮（デコード→canvas→toBlob）は最もメモリを食う工程。並列で複数走らせると
+// 大きな canvas/ImageBitmap が同時に存在しモバイル WebView のヒープを枯渇させる。
+// アップロード（ネットワーク）は並列のままにしつつ、CPU/メモリ集約の圧縮だけは
+// プロセス内で逐次化（同時に 1 枚だけ）してピークメモリを抑える。
+let compressChain: Promise<unknown> = Promise.resolve()
+function compressSerialized(file: File): Promise<{ blob: Blob; width: number; height: number }> {
+  const run = compressChain.then(() => compressToJpeg(file))
+  // チェーンは「順番待ち」だけが目的。失敗しても後続を止めないよう握りつぶした尾を繋ぐ。
+  compressChain = run.catch(() => undefined)
+  return run
 }
 
 function makeObjectPath(userId: string, date: string): string {
@@ -146,9 +186,13 @@ export async function uploadJournalImage(
   let compressed: { blob: Blob; width: number; height: number }
   try {
     onStage?.('compressing')
-    compressed = await compressToJpeg(file)
+    // JF-7: 圧縮は逐次化（同時 1 枚）してモバイルのメモリ枯渇を避ける。
+    compressed = await compressSerialized(file)
   } catch (e) {
-    return { error: e instanceof ImageUploadError ? e : new ImageUploadError('compress-failed', String(e)) }
+    const err = e instanceof ImageUploadError ? e : new ImageUploadError('compress-failed', String(e))
+    // 本番でもどの段階で落ちたか追えるよう内部ログを残す（ユーザー向け文言は据え置き）。
+    console.error('[journalImages] compress failed', { code: err.code, message: err.message, type: file.type, size: file.size })
+    return { error: err }
   }
 
   onStage?.('uploading')
@@ -157,6 +201,7 @@ export async function uploadJournalImage(
     .from(BUCKET)
     .upload(path, compressed.blob, { contentType: 'image/jpeg', upsert: false })
   if (error) {
+    console.error('[journalImages] upload failed', { message: error.message })
     return { error: new ImageUploadError('upload-failed', error.message) }
   }
 

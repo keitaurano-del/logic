@@ -142,6 +142,11 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
   // unmount/close で確実に止めるための setTimeout id 集合。
   const mountedRef = useRef(true)
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
+  // JF-7: 並列アップロードワーカーがそれぞれ完了時に images 列を upsert する。
+  // 同時書き込みは last-write-wins になり、後着の方が古いスナップショットだと
+  // 直前に保存した画像が DB から消えうる（データ欠損）。書き込みを逐次化して
+  // 「最後に走る upsert が必ず最新の配列」になるよう順序保証する。
+  const imageWriteChainRef = useRef<Promise<unknown>>(Promise.resolve())
   const scheduleTimeout = (fn: () => void, ms: number) => {
     const id = setTimeout(() => {
       timersRef.current.delete(id)
@@ -499,7 +504,10 @@ export function JournalDetailSheet({ userId, date, initialJournal, initialPhase,
   const handleImagesChange = async (next: JournalImage[]) => {
     if (!mountedRef.current) return
     setImages(next)
-    const { error } = await upsertJournalImages(userId, date, next)
+    // 並列ワーカーからの呼び出しを逐次化（最後の upsert が最新配列で勝つ）。
+    const run = imageWriteChainRef.current.then(() => upsertJournalImages(userId, date, next))
+    imageWriteChainRef.current = run.catch(() => undefined)
+    const { error } = await run
     if (error || !mountedRef.current) return
     // ローカル journal キャッシュにも images だけ反映（他カラムは現状値を維持）。
     let saved: DailyJournal | null = null
