@@ -32,10 +32,14 @@ interface PendingUpload {
   status: PendingStatus
   /** status === 'error' のとき表示する文言キー */
   errorCode?: ImageUploadError['code']
+  /** 診断用: 実際の失敗メッセージ（原因切り分けのため画面にも控えめ表示）。 */
+  errorDetail?: string
 }
 
-// JF-1: 同時アップロード数の上限（Storage への過負荷とメインスレッド占有を避ける）
-const MAX_CONCURRENT_UPLOADS = 2
+// JF-8: ユーザー要望により「1枚ずつ確実に」完了させる完全逐次方式に変更（2→1）。
+// 複数枚を同時に走らせると 4 枚目以降で必ず失敗する症状が出ていたため、
+// 圧縮→アップロード→保存を 1 枚ずつ直列で確実に進める。
+const MAX_CONCURRENT_UPLOADS = 1
 
 export function JournalImageGrid({ userId, date, images, editing, onChange, disabled }: JournalImageGridProps) {
   const [urls, setUrls] = useState<Record<string, string | null>>({})
@@ -125,8 +129,9 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
       return { image }
     }
     const errorCode = e?.code ?? 'upload-failed'
+    const errorDetail = e?.message
     setPending((prev) => prev.map((p) =>
-      p.id === slot.id ? { ...p, status: 'error' as const, errorCode } : p,
+      p.id === slot.id ? { ...p, status: 'error' as const, errorCode, errorDetail } : p,
     ))
     return { errorCode }
   }, [date, userId, onChange])
@@ -182,7 +187,7 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
   // 失敗した pending を再アップロード（JF-2）。runUpload が成功/失敗の state 遷移を一手に担う。
   const handleRetry = useCallback(async (slot: PendingUpload) => {
     setPending((prev) => prev.map((p) =>
-      p.id === slot.id ? { ...p, status: 'compressing' as const, errorCode: undefined } : p,
+      p.id === slot.id ? { ...p, status: 'compressing' as const, errorCode: undefined, errorDetail: undefined } : p,
     ))
     await runUpload(slot)
   }, [runUpload])
@@ -334,6 +339,12 @@ export function JournalImageGrid({ userId, date, images, editing, onChange, disa
                     <div className="journal-images__overlay journal-images__overlay--error" aria-hidden="true" />
                     <div className="journal-images__status-label journal-images__status-label--error" role="alert">
                       {pendingErrorLabel(p.errorCode)}
+                      {/* 診断用: 実際の失敗原因を小さく併記（原因特定後に削除予定）。 */}
+                      {(p.errorCode || p.errorDetail) && (
+                        <span className="journal-images__error-detail">
+                          {p.errorCode}{p.errorDetail ? `: ${p.errorDetail}` : ''}
+                        </span>
+                      )}
                     </div>
                     <div className="journal-images__pending-actions">
                       <button

@@ -2775,6 +2775,17 @@
   color: #fff;
 }
 
+/* 診断用: 失敗原因の詳細（小さく折り返し表示・原因特定後に削除予定）。 */
+.journal-images__error-detail {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  line-height: 1.15;
+  opacity: 0.95;
+  word-break: break-word;
+}
+
 .journal-images__pending-actions {
   position: absolute;
   left: 0;
