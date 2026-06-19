@@ -69,22 +69,23 @@ async function decodeAndResize(file: File): Promise<DrawSource | null> {
  */
 async function compressToJpeg(file: File): Promise<{ blob: Blob; width: number; height: number }> {
   let source: DrawSource | null = await decodeAndResize(file)
-  // <img> フォールバック経路で確保した data URL / 要素を確実に解放するため保持しておく。
+  // <img> フォールバック経路で確保した objectURL / 要素を確実に解放するため保持しておく。
   let fallbackImg: HTMLImageElement | null = null
+  let fallbackObjectUrl: string | null = null
 
   if (!source) {
-    // フォールバック: FileReader → <img> デコード
-    const dataUrl: string = await new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result as string)
-      reader.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to read file'))
-      reader.readAsDataURL(file)
-    })
+    // フォールバック: URL.createObjectURL → <img> デコード。
+    // JF-9: 旧実装は FileReader.readAsDataURL で「巨大な base64 文字列」をメモリに展開しており、
+    // Android WebView で大きめの写真を読むとメモリ不足で onerror（'failed to read file'）になっていた
+    // （実機 Android スクショで確認）。createObjectURL はファイル本体を base64 化せず参照を渡すだけなので
+    // メモリをほぼ消費せず、この読み込み失敗を回避できる。
+    const objectUrl = URL.createObjectURL(file)
+    fallbackObjectUrl = objectUrl
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const i = new Image()
       i.onload = () => resolve(i)
       i.onerror = () => reject(new ImageUploadError('compress-failed', 'failed to decode image'))
-      i.src = dataUrl
+      i.src = objectUrl
     })
     source = img
     fallbackImg = img
@@ -135,10 +136,15 @@ async function compressToJpeg(file: File): Promise<{ blob: Blob; width: number; 
       canvas.height = 1
       canvas = null
     }
-    // <img> の data URL（フルサイズ base64）を握り続けないよう src を解放
+    // <img> の参照を解放
     if (fallbackImg) {
       fallbackImg.src = ''
       fallbackImg = null
+    }
+    // createObjectURL は明示的に revoke しないとリークする。
+    if (fallbackObjectUrl) {
+      URL.revokeObjectURL(fallbackObjectUrl)
+      fallbackObjectUrl = null
     }
   }
 }
