@@ -32,7 +32,8 @@ task-manager エージェントが管理するタスク台帳の正本。
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
 | LR-7 | RLS/権限の締め直し（placement_results の using(true) 公開撤廃／reports・feedback・fermi_scores の匿名 insert 制限／user_stats RLS 有効化＋record-score の userId/userName 検証／metabase_readonly の BYPASSRLS 見直し）#36,#37,#38,#39 | P1 | DONE（コード）／要マイグレ適用（2026-06-14 Son: コード=placement公開SELECT撤去・feedback anon直insert除去・fermi record-score認証束縛 を main マージ/自動デプロイ。**038_rls_hardening.sql は手動適用待ち**＝Keita が `npm run db:migrate` で適用[安全順序: コード先→migrate]。metabase BYPASSRLS節はコメントアウト＝適用前レビュー要。tsc/vitest796/eslint green） | dev-logic |
-| LR-8 | マイグレーション整合化（migrations 外の手動 SQL 2本を連番 migration へ取込・冪等化）#40 | P1 | TODO | dev-logic |
+| LR-51 | metabase 権限ハードニング（LR-7 §6 後続）：BYPASSRLS は維持したまま public 全テーブルの SELECT 権限を剥奪し、ダッシュボードが実使用する6リレーションのみ GRANT。profiles は機微列を含むため metabase_profiles view 化して日記/AI会話/nickname の露出を遮断 #36,#37,#38,#39 | P1 | TODO（2026-06-14 起票[Son 採番済 LR-51]。設計裏取り済・完全版ドラフト= docs/LR7_METABASE_HARDENING_PROPOSAL.md。依存=038_rls_hardening.sql 適用後が自然。適用は Keita 手番[破壊的DB]・林は防御姿勢で実行せず） | dev-logic |
+| LR-8 | マイグレーション整合化（migrations 外の手動 SQL 2本を連番 migration へ取込・冪等化）#40 | P1 | REVIEW（2026-06-14 Son via subagent: branch `feat/lr8-migration-consolidation` push済・Keita merge待ち。手動SQL2本[scripts/migrate_fermi_answers_20260427.sql・migrate_profiles_20260427.sql]を連番化→supabase/migrations/040_onboarding_profile_columns.sql・041_fermi_answers.sql 新規[idempotent: add column/create table/create index if not exists・drop policy if exists→再作成]＋030_birth_year.sql の age_range backfill を information_schema 動的判定化[新規DBの順序ハザード解消・既適用は no-op]。検証 tsc0/vitest814/eslint0。実DB未適用＝migrationはKeitaがマージ→db:migrate。留意: 030改修で既適用環境は run-migration --list が drift 警告[無害]） | dev-logic（実装 Son） |
 | LR-9 | 機微データの平文/保持対策（daily_journals 等の暗号化・保持TTL／set_updated_at の search_path 固定）#41 | P1 | BLOCKED（要Keita判断）（2026-06-14 Son: 設計案 docs/LR9_ENCRYPTION_DESIGN_20260614.md を提示。調査=AIはreq.body経由でDB読みでない→DB暗号化でもAI非破壊。推奨=クライアント側暗号＋サーバ配布DEK(エンベロープ)。判断点=暗号モデル(A/E2E)/対象列/保持TTL/鍵保管。合意後 Phase0(set_updated_at search_path固定)→Phase1実装。不可逆マイグレのため勝手に実装しない） | dev-logic ／2026-06-14 Son: **Phase0=039_fix_set_updated_at_search_path.sql を main マージ済**(手動適用待ち)。Phase1以降(暗号化本体)は暗号モデル等の判断待ちで据え置き。 |
 | LR-10 | AI 生成の認証付き rate limit ＋有料の月次原価ハードキャップ（body userId 無検証採用を撤廃）#42 | P1 | DONE（main マージ・自動デプロイ 2026-06-13／2026-06-10 Son: ブランチ feat/p1-ai-cost-cap-lr10[feat/p0-billing-auth-lr123 の上に積層]。AIクォータの本人識別を body.userId→resolveAuthedUser(Bearer)化＝userIdランダム化での月次リセット濫用を封鎖。有料は無制限→env AI_MONTHLY_HARD_CAP_PAID(既定10000)超過で429。ゲストはlimiterのみで非破壊。フロントAI fetchにBearer付与。tsc/vitest692/eslint green。要: Render env・billing-authブランチ先行マージ） | dev-logic |
 | LR-11 | 価格の正本一本化（subscription.ts:20-24 の 350/2450 を正本候補に landing 3500/6980・docs 各所のズレを統一。旧主張 800/7800・390/2730 は誤帰属で撤回）#6 | P1 | TODO | dev-logic＋Keita |
@@ -111,12 +112,12 @@ Keita 報告「ジャーナル機能がうまく動いていない」。3領域6
 
 | ID | タイトル | 優先度 | ステータス | 担当案 |
 |----|---------|--------|-----------|--------|
-| JF-1 | 画像アップロードの高速化＋複数枚エラー解消（compressToJpeg がメインスレッドを占有し重い／JournalImageGrid の逐次ループで状態クロージャ起因に複数枚で必ず失敗。圧縮の最適化・同時数制御・upsert衝突回避・state更新を関数更新形に。journalImages.ts:24-67, JournalImageGrid.tsx:108-140） | P0 | REVIEW | dev-logic |
-| JF-2 | アップロード再試行ボタンの修正（error スロットの retry が正しく再アップロードされない。JournalImageGrid のリトライ経路を修正） | P0 | REVIEW | dev-logic |
+| JF-1 | 画像アップロードの高速化＋複数枚エラー解消（compressToJpeg がメインスレッドを占有し重い／JournalImageGrid の逐次ループで状態クロージャ起因に複数枚で必ず失敗。圧縮の最適化・同時数制御・upsert衝突回避・state更新を関数更新形に。journalImages.ts:24-67, JournalImageGrid.tsx:108-140） | P0 | DONE | dev-logic |
+| JF-2 | アップロード再試行ボタンの修正（error スロットの retry が正しく再アップロードされない。JournalImageGrid のリトライ経路を修正） | P0 | DONE | dev-logic |
 | JF-3 | アップロード進捗バー表示（現状 status は uploading/error の2値のみで進捗不可視。枚数進捗＋各画像のインジケータ or %バーを追加。JournalImageGrid.tsx:23-36） | P1 | REVIEW | dev-logic |
 | JF-4 | ポイント獲得演出のリッチ化（現状は簡易 xpToast。コイン/紙吹雪/レベルアップ的な作り込んだ祝福アニメに。JournalDetailSheet.tsx:131,336-339 の xpToast を演出コンポーネント化） | P1 | REVIEW | dev-logic＋designer |
-| JF-5 | 編集時の二重ポイント付与を防止（設計上は「初回完成のみ」付与だが、編集再保存でポイントが出る不具合。wasMorning/wasEvening 判定 or awardJournalXp の永続ガードを検証し、既完成日の再保存では演出・付与とも出ないよう修正。JournalDetailSheet.tsx:308-339） | P0 | REVIEW | dev-logic |
-| JF-6 | 保存後にホームへ自動遷移（現状 handleSave は setEditing(false) のみで onClose を呼ばず編集シートに留まる→×が必要。保存成功後にシートを閉じてホームタブへ戻す導線に。AppV3 のタブ遷移へ onSaved 経由でコールバックを結線。JournalDetailSheet.tsx:326-330, JournalScreen.tsx, JournalCalendar.tsx） | P0 | REVIEW | dev-logic |
+| JF-5 | 編集時の二重ポイント付与を防止（設計上は「初回完成のみ」付与だが、編集再保存でポイントが出る不具合。wasMorning/wasEvening 判定 or awardJournalXp の永続ガードを検証し、既完成日の再保存では演出・付与とも出ないよう修正。JournalDetailSheet.tsx:308-339） | P0 | DONE | dev-logic |
+| JF-6 | 保存後にホームへ自動遷移（→ Keita改訂 014e2cf: 保存後はホームでなくジャーナル画面に戻す/onClose化。現状 onClose 結線・演出後に閉じる導線実装済。JournalDetailSheet.tsx:375-381, JournalScreen.tsx:249, JournalCalendar.tsx:239-251, AppV3.tsx:806） | P0 | DONE | dev-logic |
 
 ---
 
@@ -178,6 +179,7 @@ DF-F1=`0d8b799` / DF-F2=`a380c83`+`0e77a79`+`3a588dc`（codemod完了・実機�
 | DF-F20 | 特商法リンクが en UI にも残る（ja/日本配信時のみ出し分け） | P2 | DONE（DF-FV○・ProfileScreenV3でja限定ガード結線） | `5fe6833` | dev-logic |
 | DF-F21 | フィードバック投稿に識別情報・最低文字数チェックが無い | P2 | DONE（DF-FV○・クライアントガード+識別子送信+サーバ受領結線。※device列保存はmigration 034本番適用+backend手動deploy要） | `7819a34` | dev-logic |
 | DF-F22 | フェルミ問題プールの拡充（新規問題を追加・現50問→62問、手薄な cost/flow 分野と難易度バランスを補強） | P2 | DONE（2026-06-14 林: Keita 承認のもと push→PR #238→main マージ完了（merge 26cbb8f・CI build-and-lint/a11y green・Android 自動デプロイ）。2026-06-13 林: Keita 依頼「新しい問題増やして」。fermiData.ts の FERMI_POOL_JA/EN＋FERMI_STATS_JA/EN に index 並走で各 +12（50→62問）。ja=日本文脈・en=グローバル/US文脈[DF-F19準拠]、cost 1→5・flow 3→6 で薄いセルを補強、難易度 basic16/standard31/advanced15。作問アンカーは「（参考）」/レンジの概数で捏造精度なし[DF-F24/LR-24準拠]、既存50問と題材重複なし、新規分に全角／なし。tsc/build/eslint(.)0err/vitest 788 全 green） | 192ad80 | content-creator＋dev-logic |
+| DF-F25 | フェルミ問題100問追加（62→162）：コンサルのケース系50＋古典フェルミ50（ピアノ調律師等） | P2 | DONE（2026-06-14 main マージ済・Android 内部配信済。DF-F22(50→62) の後続バッチだがボード未起票だったため事後履歴化。内容＝コンサルのケース系50＋古典フェルミ50・ja/en 各162パリティ＋参考値[DF-F24/LR-24準拠の概数]・stats162。コミット e4a4460→merge fd0cdae） | `e4a4460` | content-creator＋dev-logic |
 | DF-FV  | DF-F 系 実効性網羅検証（コードはあるが実機で効くか○/×/△判定） | P0 | DONE（2026-05-31 全17件判定完了：○16/△1/×0、F2は別途○DONE。△=DF-F18→DF-FV-1起票） | — | test-functional |
 | DF-FV-1 | DF-F18 修正：フェルミ「解く前」段階の制限明示/有料無制限訴求を追加（現状は完了後導線のみ） | P2 | DONE（2026-05-31 実効性○判定確定。DailyFermiScreen.tsx:775 の `!replayMode && !isPaid() && onUpgrade && canAnswer && submitPhase==='idle'` ガードで解く前idleフェーズに制限明示+導線が描画＝dead codeでなくライブ結線。i18n limitNoteTitle/Desc/Cta は ja(1803-1805)/en(3712-3714) 両存在・中立丁寧体・絵文字/hex無し、数値1/10は getDailyFermiLimit() と一致。CTA onClick=onUpgrade→AppV3.tsx:584 navigate({type:'pricing'})→PricingScreen 実遷移。完了後導線(1164,result限定)と submitPhase で排他＝重複なし。元 finding「解く前に弱い」解消・別解すり替えなし。green: tsc0/eslint.0err(19既存warn)/vitest 22files389pass。commit fc87908 origin/main push 済（Android 自動配信）＋Web deploy dispatch 済） | `fc87908` | dev-logic |
 
@@ -1063,6 +1065,7 @@ Keita 朝の追加依頼8件。Keita は席を外しており、林の判断で�
 | T-E | Obsidian vault 最新化＋日次更新の仕込み化 | P1 | DONE（2026-06-07 完了：(a)✅Daily Note 追従完了(b)一部(c)✅日次自動生成実装完了。morning-briefing.sh 統合・毎日 07:00 自動生成稼働・2026-06-02～本日検証 green。(d) recurring は task-manager/apollo-keeper 委譲） | ceo（実装完了）+ task-manager/apollo-keeper（recurring） |
 | T-F | cron 自動化の root 権限エラー修復（ceo 朝ブリ・feedback-watcher が空振り） | P1（上位） | DONE（2026-05-29 Vultr 新箱「Claude Code Server 2」の非root `dev` ユーザへ cron 3本移設で解決。root の `claude -p` が skip-permissions ガードで弾かれていたのが空振りの正体。dev で3本とも実走グリーン→obsidian-vault push 成功。Supabase は service_role 直curl化。現箱 cron は二重push回避でコメントアウト。詳細は memory project-vultr-second-server） | ceo（自分のスクリプト群） |
 | T-G | night-patrol 夜間スモークが "No tests found" で空振り（監視死） | P1 | DONE（2026-05-29 main マージで config 本番反映。playwright config が 5/25・5/27 両 spec 計20件を拾い空振り解消。night-patrol 実走確認のみ次回夜間に残） | dev-logic / test-smoke |
+| T-W | render-smoke T7「コース一覧カテゴリ初期は全展開」が 06-12〜06-20 と9日連続 fail（本番バンドル古い＝再デプロイ未反映。修正コミット f46a3b6 が本番未配信）。※ID は T-I 重複だったため T-W へ採番修正（2026-06-21 Masayoshi） | P1 | BLOCKED（Keita 再デプロイ待ち。この箱は gh 未認証で workflow_dispatch 不可→Keita or Render dashboard で Clear build cache & deploy。ソース/テスト期待値は正・コード回帰ではない） | Keita（再デプロイ）/ dev-logic（任意コメント整理） |
 | T-H | BLOCKED（保留） | 公開戦略確定 | 「今の最新ビルドで先に公開、DF-F 系 P0 改善は公開後アップデート」。T-G スモーク・T-B テーマは 5/29 達成済。公開順序＝AM-O SKU 登録（Keita）→実機課金ハッピーパス検証→リリースノート整備〔担当アサイン要〕→Production promote（Keita 手動） |
 
 ### T-A — フェルミ「今日の1問」とタップ後がズレる　[P0 / DONE]
