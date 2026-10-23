@@ -173,6 +173,9 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'fontsize') return { type: 'font-size-settings' }
     if (preview === 'preferences') return { type: 'preferences' }
     if (preview === 'journal') return { type: 'journal' }
+    // The public review deployment starts in guest mode so screens can be
+    // checked without Supabase credentials. This does not grant account access.
+    if (location.hostname === 'logic-rebuild-preview.onrender.com') return { type: 'home' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ、最後のタブ位置を復元
   if (user) {
