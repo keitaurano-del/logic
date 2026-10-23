@@ -34,13 +34,14 @@ interface ProfileScreenV3Props {
   onOpenPlacementTest?: () => void
   onOpenLesson?: (lessonId: number) => void
   onOpenStudyTime?: () => void
+  onLogin?: () => void
   isLoggedIn?: boolean
 }
 
 type Sheet = null | 'streak' | 'lessons' | 'xp'
 
 export function ProfileScreenV3(props: ProfileScreenV3Props) {
-  const { userName, onOpenProfileEdit, onOpenNotifications, onOpenPreferences, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenStudyTime, isLoggedIn = false } = props
+  const { userName, onOpenProfileEdit, onOpenNotifications, onOpenPreferences, onOpenFeedback, onOpenPricing, onOpenPlacementTest, onOpenLesson, onOpenStudyTime, onLogin, isLoggedIn = false } = props
   const showTrialBanner = shouldShowTrialEndingBanner(isLoggedIn)
   const [sheet, setSheet] = useState<Sheet>(null)
   const [titleSheetOpen, setTitleSheetOpen] = useState(false)
@@ -266,8 +267,8 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
         {/* 設定 */}
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-v3-card-inset)' }}>
           {/* FB-31: プロフィール編集 + アカウント統合行 */}
-          {onOpenProfileEdit && (
-            <SettingRow icon="user" name={t('profile.account')} sub="" onClick={onOpenProfileEdit} />
+          {(onOpenProfileEdit || onLogin) && (
+            <SettingRow icon="user" name={isLoggedIn ? t('profile.account') : t('profile.loginCta')} sub="" onClick={isLoggedIn ? onOpenProfileEdit : onLogin} />
           )}
           <SettingRow icon="bell" name={t('profile.notifications')} sub="" onClick={onOpenNotifications} />
           {/* FB-32: 言語・テーマ・文字サイズを「環境設定」に集約 */}
@@ -279,10 +280,10 @@ export function ProfileScreenV3(props: ProfileScreenV3Props) {
             <SettingRow icon="scale" name={t('profile.tokushoho')} sub="" onClick={() => window.open(localizedHtmlPath('tokushoho'), '_blank')} />
           )}
         </div>
-        <button type="button" onClick={handleLogout}
+        {isLoggedIn && <button type="button" onClick={handleLogout}
           style={{ background: 'transparent', border: '1px solid rgba(252,165,165,.4)', borderRadius: 14, padding: 13, textAlign: 'center', fontSize: '0.9333rem', fontWeight: 700, color: 'var(--md-sys-color-error)', cursor: 'pointer', font: 'inherit', width: '100%', minHeight: 44 }}>
           {t('profile.logout')}
-        </button>
+        </button>}
       </div>
 
       {/* ボトムシート */}

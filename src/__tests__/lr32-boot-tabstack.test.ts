@@ -29,11 +29,11 @@ describe('LR-32 bootTiming', () => {
     vi.restoreAllMocks()
   })
 
-  it('getMinBootMs: 初回は長く（2000）、2回目以降は短い（400）', () => {
+  it('getMinBootMs: 初回は短い表示（500）、2回目以降は待たない（0）', () => {
     expect(getMinBootMs(true)).toBe(FIRST_LAUNCH_MIN_BOOT_MS)
-    expect(getMinBootMs(true)).toBe(2000)
+    expect(getMinBootMs(true)).toBe(500)
     expect(getMinBootMs(false)).toBe(REPEAT_LAUNCH_MIN_BOOT_MS)
-    expect(getMinBootMs(false)).toBe(400)
+    expect(getMinBootMs(false)).toBe(0)
     expect(REPEAT_LAUNCH_MIN_BOOT_MS).toBeLessThan(FIRST_LAUNCH_MIN_BOOT_MS)
   })
 
@@ -44,10 +44,10 @@ describe('LR-32 bootTiming', () => {
     expect(isFirstLaunch()).toBe(false)
   })
 
-  it('初回→markBooted→2回目で getMinBootMs が 2000→400 に切り替わる', () => {
-    expect(getMinBootMs(isFirstLaunch())).toBe(2000)
+  it('初回→markBooted→2回目で getMinBootMs が 500→0 に切り替わる', () => {
+    expect(getMinBootMs(isFirstLaunch())).toBe(500)
     markBooted()
-    expect(getMinBootMs(isFirstLaunch())).toBe(400)
+    expect(getMinBootMs(isFirstLaunch())).toBe(0)
   })
 
   it('localStorage.getItem が throw する環境では安全側で初回扱い（true）', () => {

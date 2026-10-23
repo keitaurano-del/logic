@@ -1,10 +1,11 @@
+import { anthropicText } from '../anthropicText.js'
 import { Router } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { RateLimitRequestHandler } from 'express-rate-limit'
 import { resolveAuthedUser } from '../auth.js'
 import { checkAndIncrementAIQuota } from '../aiQuota.js'
-import { aiModelLight } from '../config.js'
+import { aiLightRequest } from '../config.js'
 
 // =============================================
 // createProblemsRouter
@@ -76,14 +77,14 @@ export function createProblemsRouter(
 
     try {
       const response = await anthropic.messages.create({
-        // 復習フラッシュカード生成は軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // 復習フラッシュカード生成は軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 1000,
         system: [{ type: 'text' as const, text: isEn ? systemPromptEn : systemPromptJa, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
 
-      const text = response.content[0].type === 'text' ? response.content[0].text : ''
+      const text = anthropicText(response.content)
       const jsonMatch = text.match(/\[[\s\S]*\]/)
       if (jsonMatch) {
         const cards = JSON.parse(jsonMatch[0])
@@ -134,8 +135,8 @@ export function createProblemsRouter(
 [Study time] ${studyMinutes} minutes`
 
       const response = await anthropic.messages.create({
-        // 日記用の振り返り生成は軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // 日記用の振り返り生成は軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 400,
         messages: [{ role: 'user', content: isEn ? promptEn : promptJa }],
       })
@@ -243,8 +244,8 @@ Rules:
       const systemPrompt = isEn ? systemPromptEn : systemPromptJa
 
       const response = await anthropic.messages.create({
-        // AI 問題ジェネレーターは軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // AI 問題ジェネレーターは軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 1500,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: prompt }],
@@ -414,8 +415,8 @@ Respond in English.`
       const systemPrompt = isEn ? systemPromptEn : systemPromptJa
 
       const response = await anthropic.messages.create({
-        // デイリー問題生成は軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // デイリー問題生成は軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 1000,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: prompt }],

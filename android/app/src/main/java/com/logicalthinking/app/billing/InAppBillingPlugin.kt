@@ -1,7 +1,5 @@
 package com.logicalthinking.app.billing
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.*
 import com.getcapacitor.JSArray
@@ -17,9 +15,6 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
 
     companion object {
         private const val TAG = "InAppBilling"
-        private const val MAX_RECONNECT_ATTEMPTS = 5
-        private const val INITIAL_BACKOFF_MS = 1_000L
-        private const val MAX_BACKOFF_MS = 60_000L
     }
 
     private var billingClient: BillingClient? = null
@@ -27,16 +22,11 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
     private var pendingPurchaseCall: PluginCall? = null
     private val scope = CoroutineScope(Dispatchers.Main + Job())
 
-    private val reconnectHandler = Handler(Looper.getMainLooper())
-    private var reconnectAttempts = 0
-    private var reconnectRunnable: Runnable? = null
-
     override fun load() {
         Log.d(TAG, "Plugin loaded")
     }
 
     override fun handleOnDestroy() {
-        cancelPendingReconnect()
         scope.cancel()
         try {
             billingClient?.endConnection()
@@ -66,6 +56,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             .enablePendingPurchases(
                 PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
             )
+            .enableAutoServiceReconnection()
             .build()
 
         startBillingConnection(call)
@@ -74,71 +65,24 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
     /**
      * BillingClient への接続を開始する。
      * - 初回 initialize() からは `initialCall` を渡し、成功/失敗を JS 側に解決する
-     * - onBillingServiceDisconnected からの再接続では `initialCall = null` で呼び出す
+     * - 以後の切断は Billing Library の自動再接続に任せる
      */
     private fun startBillingConnection(initialCall: PluginCall?) {
         val client = billingClient ?: run {
             initialCall?.reject("Billing client not initialized")
             return
         }
-        // 既に張り直し試行が予約されているならクリアしてから即時 startConnection
-        cancelPendingReconnect()
-
         client.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 val ok = result.responseCode == BillingClient.BillingResponseCode.OK
                 Log.d(TAG, "Setup finished: ${result.responseCode}")
-                if (ok) {
-                    // 接続成立したら再試行カウンタをリセット
-                    reconnectAttempts = 0
-                }
                 initialCall?.resolve(JSObject().apply { put("success", ok) })
             }
 
             override fun onBillingServiceDisconnected() {
-                Log.w(TAG, "Service disconnected, scheduling reconnect (attempt=${reconnectAttempts + 1})")
-                scheduleReconnect()
+                Log.w(TAG, "Service disconnected; Billing Library will reconnect on the next API call")
             }
         })
-    }
-
-    /**
-     * BillingClient が切断されたときに exponential backoff で再接続を試みる。
-     * 1s → 2s → 4s → 8s → 16s（最大 60s でクランプ）、合計 MAX_RECONNECT_ATTEMPTS 回まで。
-     */
-    private fun scheduleReconnect() {
-        if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-            Log.e(TAG, "Reached max reconnect attempts ($MAX_RECONNECT_ATTEMPTS), giving up")
-            return
-        }
-        // 既存の予約があれば上書き
-        cancelPendingReconnect()
-
-        val delayMs = (INITIAL_BACKOFF_MS shl reconnectAttempts).coerceAtMost(MAX_BACKOFF_MS)
-        reconnectAttempts += 1
-        Log.d(TAG, "Reconnect scheduled in ${delayMs}ms (attempt $reconnectAttempts/$MAX_RECONNECT_ATTEMPTS)")
-
-        val runnable = Runnable {
-            reconnectRunnable = null
-            val client = billingClient
-            if (client == null) {
-                Log.w(TAG, "Billing client is null when retrying, abort")
-                return@Runnable
-            }
-            if (client.isReady) {
-                Log.d(TAG, "Billing client already ready, skip reconnect")
-                reconnectAttempts = 0
-                return@Runnable
-            }
-            startBillingConnection(null)
-        }
-        reconnectRunnable = runnable
-        reconnectHandler.postDelayed(runnable, delayMs)
-    }
-
-    private fun cancelPendingReconnect() {
-        reconnectRunnable?.let { reconnectHandler.removeCallbacks(it) }
-        reconnectRunnable = null
     }
 
     @PluginMethod
@@ -165,7 +109,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             return
         }
 
-        client.queryProductDetailsAsync(params) { result, detailsList ->
+        client.queryProductDetailsAsync(params) { result, productDetailsResult ->
             if (result.responseCode != BillingClient.BillingResponseCode.OK) {
                 Log.w(TAG, "queryProductDetails failed: ${result.responseCode}")
                 call.resolve(JSObject().apply { put("products", JSArray()) })
@@ -173,7 +117,7 @@ class InAppBillingPlugin : Plugin(), PurchasesUpdatedListener {
             }
 
             val products = JSArray()
-            detailsList.forEach { pd ->
+            productDetailsResult.productDetailsList.forEach { pd ->
                 val offer = pd.subscriptionOfferDetails?.firstOrNull() ?: return@forEach
                 val phase = offer.pricingPhases.pricingPhaseList.firstOrNull() ?: return@forEach
 

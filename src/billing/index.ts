@@ -195,8 +195,11 @@ export async function verifyPurchase(request: BillingVerifyRequest): Promise<{ c
     throw new Error(err.error ?? '購入の検証に失敗しました')
   }
   const data = (await res.json()) as { currentPeriodEnd?: string; plan?: string }
-  // サーバーが返す有効期限を使う。フォールバックとして1年後を計算。
-  const currentPeriodEnd = data.currentPeriodEnd ?? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+  // Play API が返した有効期限を持たない応答は購入成功として扱わない。
+  const currentPeriodEnd = data.currentPeriodEnd
+  if (!currentPeriodEnd || !Number.isFinite(Date.parse(currentPeriodEnd)) || Date.parse(currentPeriodEnd) <= Date.now()) {
+    throw new Error('購入の有効期限を確認できませんでした')
+  }
   return { currentPeriodEnd, plan: data.plan }
 }
 

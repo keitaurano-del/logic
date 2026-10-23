@@ -3,8 +3,7 @@
  *
  * createBillingRouter で実ルータを生成し、express アプリにマウントして
  * node:http で実リクエストを投げる（supertest 非依存）。
- * Supabase / Google Play は env 未設定 + モックで分岐させ、課金検証ロジック本体は
- * 通さずに「認証束縛」のみを検証する:
+ * Supabase / Google Play をモックして認証束縛と検証失敗時の非付与を確認する:
  *   - Authorization 無し → 401
  *   - 偽の body.userId を送っても upsert の user_id は authed userId になる
  */
@@ -14,6 +13,16 @@ import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createBillingRouter } from '../billing'
+
+const playGet = vi.hoisted(() => vi.fn())
+const playAcknowledge = vi.hoisted(() => vi.fn())
+vi.mock('googleapis', () => ({
+  google: { androidpublisher: () => ({ purchases: { subscriptions: { get: playGet, acknowledge: playAcknowledge } } }) },
+}))
+vi.mock('google-auth-library', () => ({
+  GoogleAuth: class {},
+  OAuth2Client: class {},
+}))
 
 // upsert に渡った payload を記録するための spy。
 const upsertSpy = vi.fn(async () => ({ data: null, error: null }))
@@ -61,16 +70,21 @@ function post(url: string, body: unknown, headers: Record<string, string> = {}):
 describe('POST /api/billing/verify — auth binding (LR-1)', () => {
   beforeEach(() => {
     upsertSpy.mockClear()
-    // Google Play は「設定済みだが packageName 無し」にして、実 API 呼び出し
-    // (purchases.subscriptions.get) をスキップさせる。これで verify ロジックは
-    // expiry を固定計算し、subscriptions upsert まで到達する。
+    playGet.mockReset()
+    playAcknowledge.mockReset()
+    playGet.mockResolvedValue({ data: {
+      paymentState: 1,
+      expiryTimeMillis: String(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      acknowledgementState: 1,
+    } })
     process.env.GOOGLE_PLAY_PRIVATE_KEY = '{}'
     process.env.GOOGLE_PLAY_CLIENT_EMAIL = 'svc@example.com'
-    delete process.env.GOOGLE_PLAY_PACKAGE_NAME
+    process.env.GOOGLE_PLAY_PACKAGE_NAME = 'com.logicalthinking.app'
   })
   afterEach(() => {
     delete process.env.GOOGLE_PLAY_PRIVATE_KEY
     delete process.env.GOOGLE_PLAY_CLIENT_EMAIL
+    delete process.env.GOOGLE_PLAY_PACKAGE_NAME
   })
 
   it('Authorization 無しは 401', async () => {
@@ -114,6 +128,45 @@ describe('POST /api/billing/verify — auth binding (LR-1)', () => {
       const payload = upsertSpy.mock.calls[0][0] as { user_id: string }
       expect(payload.user_id).toBe('real-user-uuid')
       expect(payload.user_id).not.toBe('attacker-uid')
+    } finally { srv.close() }
+  })
+
+  it('Play の package 名が未設定なら購入を付与しない', async () => {
+    delete process.env.GOOGLE_PLAY_PACKAGE_NAME
+    const sb = makeSupabase(() => ({ data: { user: { id: 'real-user-uuid' } }, error: null }))
+    const srv = await startServer(sb)
+    try {
+      const res = await post(`${srv.url}/api/billing/verify`,
+        { purchaseToken: 'tok', productId: 'logic_paid_monthly' },
+        { Authorization: 'Bearer good' })
+      expect(res.status).toBe(503)
+      expect(playGet).not.toHaveBeenCalled()
+      expect(upsertSpy).not.toHaveBeenCalled()
+    } finally { srv.close() }
+  })
+
+  it('Play が期限切れと返した購入を付与しない', async () => {
+    playGet.mockResolvedValue({ data: { paymentState: 1, expiryTimeMillis: String(Date.now() - 1000) } })
+    const sb = makeSupabase(() => ({ data: { user: { id: 'real-user-uuid' } }, error: null }))
+    const srv = await startServer(sb)
+    try {
+      const res = await post(`${srv.url}/api/billing/verify`,
+        { purchaseToken: 'tok', productId: 'logic_paid_monthly' },
+        { Authorization: 'Bearer good' })
+      expect(res.status).toBe(400)
+      expect(upsertSpy).not.toHaveBeenCalled()
+    } finally { srv.close() }
+  })
+
+  it('購読の保存に失敗したら成功を返さない', async () => {
+    upsertSpy.mockResolvedValueOnce({ data: null, error: { message: 'database unavailable' } })
+    const sb = makeSupabase(() => ({ data: { user: { id: 'real-user-uuid' } }, error: null }))
+    const srv = await startServer(sb)
+    try {
+      const res = await post(`${srv.url}/api/billing/verify`,
+        { purchaseToken: 'tok', productId: 'logic_paid_monthly' },
+        { Authorization: 'Bearer good' })
+      expect(res.status).toBe(500)
     } finally { srv.close() }
   })
 })

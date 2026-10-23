@@ -378,7 +378,7 @@ export async function startCheckout(plan: SubscriptionPlan): Promise<void> {
       purchaseToken: purchase.purchaseToken,
       productId: purchase.productId,
     })
-    const finalPlan = normalizeLegacyPlan(verifiedPlan) || plan
+    const finalPlan = verifiedPlan ? normalizeLegacyPlan(verifiedPlan) : plan
     setPaidPlan(finalPlan, currentPeriodEnd, purchase.purchaseToken)
   } catch (error) {
     const message = error instanceof Error ? error.message : '購入に失敗しました'

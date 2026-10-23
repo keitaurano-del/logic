@@ -2,8 +2,8 @@
  * LR-32: 起動 BootLoadingScreen の最低表示時間（MIN_BOOT_MS）を、
  * 初回起動だけ長く、2回目以降は短くするための純粋ロジック。
  *
- * 初回はブランドを認識してもらう余白として 2000ms 確保するが、
- * 2回目以降のユーザーはブランドを既に知っているため 400ms に短縮し、
+ * 初回はブランドを認識してもらう余白として 500ms 確保するが、
+ * 2回目以降のユーザーはブランドを既に知っているため 0ms に短縮し、
  * 起動を体感的に速くする。
  *
  * localStorage が使えない環境（プライベートモード / SSR 等）では、
@@ -12,9 +12,9 @@
  */
 
 /** 初回起動時の BootLoadingScreen 最低表示 ms */
-export const FIRST_LAUNCH_MIN_BOOT_MS = 2000
+export const FIRST_LAUNCH_MIN_BOOT_MS = 500
 /** 2回目以降の BootLoadingScreen 最低表示 ms */
-export const REPEAT_LAUNCH_MIN_BOOT_MS = 400
+export const REPEAT_LAUNCH_MIN_BOOT_MS = 0
 
 /** 一度でも boot 完了したかを記録する localStorage キー */
 export const BOOTED_ONCE_KEY = 'logic-booted-once'

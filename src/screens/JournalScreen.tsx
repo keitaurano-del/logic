@@ -126,7 +126,7 @@ export function JournalGuestPreview({ assistantName, onLogin }: JournalGuestPrev
             {t('journal.previewAssistantTitle', { name: assistantName })}
           </div>
           <div style={{ fontSize: '0.8667rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-            {t('journal.previewAssistantDesc')}
+            {t('journal.previewAssistantDesc', { name: assistantName })}
           </div>
           <div style={{
             background: 'var(--bg-primary)',

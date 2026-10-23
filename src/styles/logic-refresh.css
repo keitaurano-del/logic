@@ -1,0 +1,200 @@
+/* 2026 refresh: clearer first actions and a quieter course catalogue. */
+.logic-home-header,
+.logic-home-content,
+.logic-learning-page__content {
+  max-width: 720px;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.logic-home-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 2px 0 12px;
+}
+
+.logic-home-shortcuts button {
+  min-height: 76px;
+  padding: 12px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, .08);
+  font: 700 .8rem/1.25 var(--sans);
+  cursor: pointer;
+}
+
+.logic-home-shortcuts button:disabled { opacity: .45; cursor: default; }
+.logic-home-shortcuts button:not(:disabled):hover,
+.logic-home-shortcuts button:not(:disabled):focus-visible {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.logic-home-shortcuts__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  font: 800 .7rem var(--sans);
+}
+
+.logic-home-daily-card:hover,
+.logic-home-recommendation:hover {
+  filter: brightness(1.07);
+}
+
+.logic-home-recommendation {
+  border: 1px solid var(--border) !important;
+}
+
+.logic-learning-page__title {
+  font: 800 1.35rem/1.2 var(--sans);
+  letter-spacing: -.025em;
+}
+
+.logic-learning-page__intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: .87rem;
+  padding: 3px 2px 7px;
+}
+
+.logic-learning-page__intro button {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 0;
+  color: var(--accent-dark);
+  font: 700 .8rem var(--sans);
+  cursor: pointer;
+  min-height: 44px;
+  padding: 8px;
+}
+
+.logic-learning-goals {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 1px 6px;
+  scrollbar-width: none;
+}
+
+.logic-learning-goals::-webkit-scrollbar { display: none; }
+
+.logic-learning-goals button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font: 700 .8rem var(--sans);
+  cursor: pointer;
+}
+
+.logic-learning-goals button.is-selected {
+  border-color: var(--brand);
+  background: var(--accent-soft);
+  color: var(--brand);
+}
+
+.logic-learning-goals button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.logic-learning-starter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  text-align: left;
+  padding: 19px 20px;
+  min-height: 142px;
+  color: #fff;
+  background: linear-gradient(130deg, #496de0 0%, #253f8c 100%);
+  border: 0;
+  border-radius: 18px;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(36, 67, 150, .22);
+  font: 600 .95rem/1.45 var(--sans);
+}
+
+.logic-learning-starter strong {
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.logic-learning-starter__eyebrow { opacity: .83; font-size: .77rem; letter-spacing: .08em; }
+.logic-learning-starter__cta { margin-top: auto; font-weight: 800; }
+.logic-learning-starter:hover { filter: brightness(1.08); }
+
+.logic-learning-group {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 8px 12px 12px;
+}
+
+.logic-ranking-empty {
+  margin: 24px 16px;
+  padding: 28px 22px;
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+.logic-ranking-empty__icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.logic-ranking-empty button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 12px;
+  color: var(--accent-btn-fg);
+  background: var(--accent-btn);
+  font: 800 .95rem var(--sans);
+  cursor: pointer;
+}
+
+@media (max-width: 380px) {
+  .logic-home-shortcuts button { font-size: .72rem; }
+  .logic-home-shortcuts__icon { width: 26px; height: 26px; }
+}
+
+@media (max-width: 520px) {
+  .logic-learning-search-label { display: none; }
+  .logic-learning-page__title { flex: 0 0 auto; }
+}

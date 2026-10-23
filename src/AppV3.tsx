@@ -2,13 +2,13 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreenV3 } from './screens/HomeScreenV3'
-import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
-import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 import { LessonCompleteScreen, type NextCourseInfo } from './screens/LessonCompleteScreen'
 import { BootLoadingScreen } from './screens/BootLoadingScreen'
 
 // Lazy-load lower-frequency screens to keep initial bundle small.
+const RoadmapScreenV3 = lazy(() => import('./screens/RoadmapScreenV3').then(m => ({ default: m.RoadmapScreenV3 })))
+const ProfileScreenV3 = lazy(() => import('./screens/ProfileScreenV3').then(m => ({ default: m.ProfileScreenV3 })))
 const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
 const ReviewModeScreen = lazy(() => import('./screens/ReviewModeScreen').then(m => ({ default: m.ReviewModeScreen })))
 const ReviewHubScreen = lazy(() => import('./screens/ReviewHubScreen').then(m => ({ default: m.ReviewHubScreen })))
@@ -80,7 +80,7 @@ import { onAuthChange, getInitialUser, type User } from './supabase'
 import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
-import { syncOnLogin, syncOnLogout, syncSubscriptionFromRemote } from './syncService'
+import { syncOnLogin, syncOnLogout } from './syncService'
 import { canUseJournal, getJournalTrialDaysLeft, isPaid } from './subscription'
 import { initBilling } from './billing'
 import { SparklesIcon } from './icons'
@@ -173,6 +173,9 @@ function getInitialScreen(user: User | null): Screen {
     if (preview === 'fontsize') return { type: 'font-size-settings' }
     if (preview === 'preferences') return { type: 'preferences' }
     if (preview === 'journal') return { type: 'journal' }
+    // The public review deployment starts in guest mode so screens can be
+    // checked without Supabase credentials. This does not grant account access.
+    if (location.hostname === 'logic-rebuild-preview.onrender.com') return { type: 'home' }
   }
   // ログイン済みユーザーはオンボーディングをスキップ、最後のタブ位置を復元
   if (user) {
@@ -222,6 +225,7 @@ function AppV3() {
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
+  const [lessonsReady, setLessonsReady] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
   const [showFAB, setShowFAB] = useState(() => !tutorial.hasFABDismissed())
   const [showNamePopup, setShowNamePopup] = useState(false)
@@ -350,9 +354,9 @@ function AppV3() {
 
   useEffect(() => {
     applyTheme(loadTheme())
-    // BootLoadingScreen は最低 2 秒は出す（ユーザーがブランドを認識する余白 + 裏でリモート同期を確実に走らせる）
+    // 必要な認証と教材の読み込みが済んだらすぐ表示する。
     const bootStart = Date.now()
-    // LR-32: 初回起動は 2000ms（ブランド認識の余白）、2回目以降は短縮（400ms）。
+    // 初回のみ短いロゴ表示を入れ、再訪時の人工的な待ち時間は設けない。
     const MIN_BOOT_MS = getMinBootMs(isFirstLaunch())
     const ensureMinBoot = async () => {
       const elapsed = Date.now() - bootStart
@@ -370,18 +374,16 @@ function AppV3() {
       console.error('[lessons] preload failed', e)
       return undefined
     })
+    void lessonsPromise.then(() => setLessonsReady(true))
     // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
-      // subscription 状態だけ先に同期（admin_overrides / subscriptions を読む軽い処理）
-      // これにより「ログインし直すと有料状態が消える」を防ぐ
-      if (user) await syncSubscriptionFromRemote().catch(() => {/* silent */})
       const initial = getInitialScreen(user)
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')
       await ensureMinBoot()
       // レッスンデータのロード完了を待ってから画面を出す（未ロード由来のちらつき防止）
-      await lessonsPromise
+      if (initial.type !== 'onboarding' && initial.type !== 'login') await lessonsPromise
       markBooted() // LR-32: 次回起動を短縮するため boot 成立を記録
       setAuthReady(true)
       clearTimeout(splashTimer)
@@ -573,7 +575,7 @@ function AppV3() {
   }
 
   // 認証完了前はロゴ + 「読み込んでいます…」のロード画面を表示
-  if (!authReady) {
+  if (!authReady || (!lessonsReady && screen.type !== 'onboarding' && screen.type !== 'login' && screen.type !== 'welcome')) {
     return <BootLoadingScreen />
   }
 
@@ -611,7 +613,7 @@ function AppV3() {
     >
       {/* スクリーン遷移fade-in: screen.typeが変わるたびにkeyで再マウント */}
       <ErrorBoundary>
-      <Suspense fallback={null}>
+      <Suspense fallback={<BootLoadingScreen />}>
       <div key={screen.type} className="tab-fade-in" style={{ display: 'contents' }}>
       {screen.type === 'home' && (
         <HomeScreenV3
@@ -847,6 +849,7 @@ function AppV3() {
 
       {screen.type === 'profile' && (
         <ProfileScreenV3
+          onLogin={() => navigate({ type: 'login' })}
           userName={userName}
           isLoggedIn={!!currentUser}
           onOpenProfileEdit={() => navigate({ type: 'profile-edit' })}
