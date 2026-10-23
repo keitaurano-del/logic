@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { RequestHandler } from 'express'
-import { aiGradingRequest } from '../config.js'
+import { aiGradingRequest, DEFAULT_AI_MODEL_GRADING } from '../config.js'
 
 // =============================================
 // ロジカルライティング採点 (POST /api/writing-score)
@@ -195,7 +195,10 @@ export function createWritingScoreRouter(client: Anthropic, writingScoreLimiter:
               },
             },
           ],
-          tool_choice: { type: 'tool' as const, name: SCORE_TOOL_NAME },
+          // Sonnet 5.5 rejects forced tool use. The system prompt requires this tool.
+          tool_choice: aiGradingRequest().model === DEFAULT_AI_MODEL_GRADING
+            ? { type: 'auto' as const }
+            : { type: 'tool' as const, name: SCORE_TOOL_NAME },
           messages: [
             {
               role: 'user',
