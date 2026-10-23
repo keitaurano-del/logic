@@ -297,7 +297,8 @@ app.use('/api/account', createAccountRouter({ supabase }))
 
 // 静的ファイル（public/ → dist/）は配信する
 const distPath = path.resolve(__dirname, '..', 'dist')
-app.use(express.static(distPath))
+app.use('/assets', express.static(path.join(distPath, 'assets'), { maxAge: '1y', immutable: true }))
+app.use(express.static(distPath, { maxAge: 0 }))
 
 // Web UI — / と /auth/callback は SPA の index.html を返す
 app.get('/', (_req, res) => {

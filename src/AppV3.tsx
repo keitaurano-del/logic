@@ -80,7 +80,7 @@ import { onAuthChange, getInitialUser, type User } from './supabase'
 import { setUser as setSentryUser } from './sentry'
 import { hideSplash } from './platform'
 import { SnackbarProvider } from './components/Snackbar'
-import { syncOnLogin, syncOnLogout, syncSubscriptionFromRemote } from './syncService'
+import { syncOnLogin, syncOnLogout } from './syncService'
 import { canUseJournal, getJournalTrialDaysLeft, isPaid } from './subscription'
 import { initBilling } from './billing'
 import { SparklesIcon } from './icons'
@@ -350,9 +350,9 @@ function AppV3() {
 
   useEffect(() => {
     applyTheme(loadTheme())
-    // BootLoadingScreen は最低 2 秒は出す（ユーザーがブランドを認識する余白 + 裏でリモート同期を確実に走らせる）
+    // 必要な認証と教材の読み込みが済んだらすぐ表示する。
     const bootStart = Date.now()
-    // LR-32: 初回起動は 2000ms（ブランド認識の余白）、2回目以降は短縮（400ms）。
+    // 初回のみ短いロゴ表示を入れ、再訪時の人工的な待ち時間は設けない。
     const MIN_BOOT_MS = getMinBootMs(isFirstLaunch())
     const ensureMinBoot = async () => {
       const elapsed = Date.now() - bootStart
@@ -373,9 +373,6 @@ function AppV3() {
     // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
-      // subscription 状態だけ先に同期（admin_overrides / subscriptions を読む軽い処理）
-      // これにより「ログインし直すと有料状態が消える」を防ぐ
-      if (user) await syncSubscriptionFromRemote().catch(() => {/* silent */})
       const initial = getInitialScreen(user)
       setScreen(initial)
       window.history.replaceState({ screen: initial }, '')
