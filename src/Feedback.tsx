@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { getLocale } from './i18n'
 import './Feedback.css'
-import { Capacitor } from '@capacitor/core'
-
-const PROD_API = import.meta.env.VITE_API_URL ?? 'https://logic-u5wn.onrender.com'
-const _API_BASE = import.meta.env.DEV
-  ? `http://${window.location.hostname}:3001`
-  : Capacitor.isNativePlatform() ? PROD_API : ''
+import { API_BASE } from './apiBase'
 
 const CATEGORIES = ['機能追加', 'バグ報告', 'UI改善', 'その他'] as const
 
@@ -32,7 +27,7 @@ export default function Feedback({ onBack }: { onBack: () => void }) {
       // サーバーサイドAPI経由で送信（service-role で Supabase 保存 + Jira起票）。
       // LR-7: 以前は失敗時に anon キーで feedback テーブルへ直 insert するフォールバックが
       // あったが、RLS 締め直し（038）で匿名 insert を不可にするため API 経由のみに統一した。
-      const res = await fetch(`${_API_BASE}/api/feedback`, {
+      const res = await fetch(`${API_BASE}/api/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category, message: message.trim(), locale: getLocale() }),

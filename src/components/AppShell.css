@@ -36,6 +36,10 @@
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
   transform: translateY(0);
   transition: transform var(--motion-duration-medium2, 300ms) var(--motion-easing-standard, ease);
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, .16);
 }
 
 .app-tabbar--ios {
@@ -83,7 +87,12 @@
   border-radius: 8px;
 }
 
-.app-tab--active { color: var(--md-sys-color-primary); }
+.app-tab--active {
+  color: var(--md-sys-color-primary);
+  background: var(--md-sys-color-secondary-container);
+  border-radius: 14px;
+  font-weight: 800;
+}
 
 .app-tab__icon { display: inline-flex; align-items: center; justify-content: center; height: 24px; }
 .app-tab__label { white-space: nowrap; }
@@ -110,6 +119,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .app-tabbar { transition: none; }
+}
+
+@media (min-width: 721px) {
+  .app-tabbar { border-radius: 20px 20px 0 0; }
 }
 
 /* Narrow phones (iPhone SE 1st gen 320px, SE 2nd 375px): shrink label so 5 tabs fit. */

@@ -162,7 +162,7 @@ interface HomeScreenV3Props {
 const IMG = '/images/v3'
 
 export function HomeScreenV3(props: HomeScreenV3Props) {
-  const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenStudyTime, onOpenPricing, isLoggedIn = false, onOpenCategory: _onOpenCategory, onOpenRank: _onOpenRank, onOpenStats: _onOpenStats, onOpenRoadmap: _onOpenRoadmap } = props
+  const { userName, onOpenLesson, onOpenAIGen, onNavigateToDailyFermi, onOpenPlacementTest, onOpenReviewHub, onOpenStudyTime, onOpenPricing, onOpenRoadmap, isLoggedIn = false } = props
   const dailyCardRef = useRef<HTMLButtonElement>(null)
   const placementHeroRef = useRef<HTMLButtonElement>(null)
   const [showCoachmark, dismissCoachmark] = useShouldShowHomeCoachmark()
@@ -224,7 +224,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
     <>
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
       {/* Navbar */}
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="logic-home-header" style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-.02em', color: 'var(--logo-color)' }}>
           Logic<span style={{ color: 'var(--brand)' }}>.</span>
         </div>
@@ -234,7 +234,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
       </div>
 
       {/* Scrollable content - Responsive */}
-      <div style={{ flex: 1, padding: isTablet ? '0 24px 80px' : '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 12, maxWidth: isLargeTablet ? 1200 : undefined, margin: isLargeTablet ? '0 auto' : undefined, width: '100%' }}>
+      <div className="logic-home-content" style={{ flex: 1, padding: isTablet ? '0 24px 80px' : '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 12, maxWidth: isLargeTablet ? 1200 : undefined, margin: isLargeTablet ? '0 auto' : undefined, width: '100%' }}>
 
         {/* Greeting */}
         <div style={{ padding: '4px 4px 8px' }}>
@@ -244,6 +244,21 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
 
         {/* DF-F11: トライアル終了間際バナー（残り2日以下）。グリーティング直下に控えめに表示。 */}
         {shouldShowTrialEndingBanner(isLoggedIn) && <TrialEndingBanner onUpgrade={onOpenPricing} />}
+
+        <div className="logic-home-shortcuts">
+          <button type="button" onClick={onOpenRoadmap} disabled={!onOpenRoadmap}>
+            <span className="logic-home-shortcuts__icon" aria-hidden="true">01</span>
+            <span>{t('nav.training')}</span>
+          </button>
+          <button type="button" onClick={onNavigateToDailyFermi} disabled={!onNavigateToDailyFermi}>
+            <span className="logic-home-shortcuts__icon" aria-hidden="true">02</span>
+            <span>{t('home.todayProblem')}</span>
+          </button>
+          <button type="button" onClick={onOpenReviewHub} disabled={!onOpenReviewHub}>
+            <span className="logic-home-shortcuts__icon" aria-hidden="true">03</span>
+            <span>{t('home.reviewEyebrow')}</span>
+          </button>
+        </div>
 
         {/* DF-F16: 初回ユーザーは「実力診断」を画面最上段の唯一の大型ヒーロー CTA に昇格。
             視線を診断1点に集約するため、今日の1問・復習・学習時間・AI はこの下に従属配置する。 */}
@@ -259,11 +274,12 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         {/* a11y: 外側 div は非インタラクティブ。中の「カード本体」と「別の問題」は兄弟の <button> として配置し、nested-interactive を回避 */}
         <div id="home-fermi-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: '0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent)', flexShrink: 0 }}>
           <button
+            className="logic-home-daily-card"
             type="button"
             ref={dailyCardRef}
             onClick={onNavigateToDailyFermi}
             aria-label={allFermiDone ? t('home.allFermiDoneTitle') : t('home.dailyOpenAria')}
-            style={{ background: 'var(--accent-btn)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
+            style={{ background: 'linear-gradient(140deg, #233B72 0%, #172747 100%)', padding: '20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 180, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'inherit' }}
           >
             {/* フェルミ推定イメージ画像 */}
             <img src={resolveAssetUrl('/images/v3/fermi-card.webp')} alt="" loading="lazy" style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%', objectFit: 'cover', opacity: 0.14, pointerEvents: 'none', maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
@@ -328,17 +344,17 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             初回（診断ヒーロー表示中）は視線集約のため非表示。 */}
         {!(showPlacementHero && !placementHeroDismissed) && (
           <button
+            className="logic-home-recommendation"
             type="button"
             onClick={() => onOpenLesson(recommendedLesson.id)}
             aria-label={`${recommendedLesson.category} ${recommendedLesson.level}: ${recommendedLesson.title}`}
             style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-v3-card-inset)', flexShrink: 0, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%' }}
           >
-            {/* 1:1 PNG (1024×1024) を切らずに表示するため aspectRatio:1/1 + objectFit:contain。
-                背景は bg-card に揃えて letterbox 表示を自然に見せる。 */}
+            {/* おすすめ画像は見出しより目立ちすぎない高さに収める。 */}
             <LazyAssetImage
               localPath={recommendedLesson.image}
               alt=""
-              containerStyle={{ aspectRatio: '1 / 1', background: 'var(--bg-card)' }}
+              containerStyle={{ aspectRatio: '16 / 9', background: 'var(--bg-card)', maxHeight: 220 }}
               style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
             />
 
@@ -361,7 +377,6 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
             weak={cardStats.weak}
             total={cardStats.total}
             unresolved={wrongStats.unresolved}
-            paid={paid}
             onOpen={() => onOpenReviewHub?.()}
           />
         )}
@@ -386,14 +401,7 @@ export function HomeScreenV3(props: HomeScreenV3Props) {
         targetRef={showPlacementHero && !placementHeroDismissed ? placementHeroRef : dailyCardRef}
         body={showPlacementHero && !placementHeroDismissed ? t('coachmark.placementBody') : undefined}
         cta={showPlacementHero && !placementHeroDismissed ? t('coachmark.placementCta') : undefined}
-        onDismiss={() => {
-          dismissCoachmark()
-          if (showPlacementHero && !placementHeroDismissed) {
-            onOpenPlacementTest?.()
-          } else {
-            onNavigateToDailyFermi?.()
-          }
-        }}
+        onDismiss={dismissCoachmark}
       />
     )}
 
@@ -505,19 +513,14 @@ function UpgradeWelcomeToast({ onClose, onCta }: { onClose: () => void; onCta: (
   )
 }
 
-function ReviewCard({ due, weak, total, unresolved, paid, onOpen }: {
+function ReviewCard({ due, weak, total, unresolved, onOpen }: {
   due: number
   weak: number
   total: number
   unresolved: number
-  paid: boolean
   onOpen: () => void
 }) {
   const hasContent = total > 0 || unresolved > 0
-  // 無料ユーザーで復習データが無いときは、データ無しの空表示ではなく
-  // 復習ハブ（誤答復習・間隔反復SRS）が有料機能であることと価値を情報提示する
-  // （プレビュー→誘導: タップでハブ/プランの案内へ進める）。
-  const showPaidPreview = !paid && !hasContent
   const headline = hasContent
     ? (due > 0
         ? t('home.reviewTodayCount', { n: String(due) })
@@ -526,14 +529,10 @@ function ReviewCard({ due, weak, total, unresolved, paid, onOpen }: {
           : weak > 0
             ? t('home.reviewWeakCount', { n: String(weak) })
             : t('home.reviewAllDone'))
-    : showPaidPreview
-      ? t('home.reviewPaidHeadline')
-      : t('home.reviewEmptyHeadline')
+    : t('home.reviewEmptyHeadline')
   const sub = hasContent
     ? buildReviewSub(due, weak, total, unresolved)
-    : showPaidPreview
-      ? t('home.reviewPaidSub')
-      : t('home.reviewEmptySub')
+    : t('home.reviewEmptySub')
 
   return (
     <div
@@ -683,7 +682,7 @@ function PlacementHero({ heroRef, onTakeTest, onSkip }: {
         ref={heroRef}
         onClick={onTakeTest}
         aria-label={`${t('placementCard.heroTitle')}: ${t('placementCard.heroDesc')}`}
-        style={{ background: 'var(--accent-btn)', padding: '22px 20px 20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 188, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'var(--radius-lg)', boxShadow: '0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent)' }}
+        style={{ background: 'linear-gradient(135deg, #496DE0 0%, #2F4DAE 100%)', padding: '22px 20px 20px', cursor: 'pointer', position: 'relative', overflow: 'hidden', minHeight: 188, border: 'none', textAlign: 'left', color: 'inherit', font: 'inherit', display: 'block', width: '100%', borderRadius: 'var(--radius-lg)', boxShadow: '0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent)' }}
       >
         <div style={{ position: 'relative', zIndex: 1 }}>
           {/* eyebrow + 時計アイコン（診断＝所要時間の短さを示す） */}

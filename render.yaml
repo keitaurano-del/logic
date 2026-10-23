@@ -25,6 +25,15 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
+      # Google Play 購入検証。どれか欠けると /api/billing/verify は 503 を返す。
+      - key: GOOGLE_PLAY_PRIVATE_KEY
+        sync: false
+      - key: GOOGLE_PLAY_CLIENT_EMAIL
+        sync: false
+      - key: GOOGLE_PLAY_PACKAGE_NAME
+        sync: false
+      - key: RTDN_ENDPOINT_URL
+        sync: false
       # LR-28: Stripe env は全廃。Web 課金は 2026-05-04 に廃止済みで、コード上の
       # stripe 参照はコメント / レガシー DB 列名（stripe_subscription_id、実体は
       # Google Play トークン）のみ。process.env.STRIPE_* / VITE_STRIPE_* を実行時に
@@ -38,7 +47,7 @@ services:
         sync: false
       - key: SMTP_PASS
         sync: false
-      - key: REPORT_EMAIL_TO
+      - key: REPORT_EMAIL
         value: keita.urano2@gmail.com
       # Report problem: Jira
       - key: JIRA_URL

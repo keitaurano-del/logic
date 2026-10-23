@@ -154,52 +154,46 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
       const gpPrivateKey = process.env.GOOGLE_PLAY_PRIVATE_KEY
       const gpClientEmail = process.env.GOOGLE_PLAY_CLIENT_EMAIL
       const gpPackageName = process.env.GOOGLE_PLAY_PACKAGE_NAME
-      if (!gpPrivateKey || !gpClientEmail) {
+      if (!gpPrivateKey || !gpClientEmail || !gpPackageName || !supabase) {
         return res.status(503).json({ error: 'Google Play verification not configured' })
       }
 
-      let gpExpiryTimeMillis: number | null = null
-      if (gpPackageName) {
-        const auth = new GoogleAuth({
-          credentials: JSON.parse(gpPrivateKey) as Record<string, unknown>,
-          scopes: ['https://www.googleapis.com/auth/androidpublisher'],
+      const auth = new GoogleAuth({
+        credentials: JSON.parse(gpPrivateKey) as Record<string, unknown>,
+        scopes: ['https://www.googleapis.com/auth/androidpublisher'],
+      })
+      const androidpublisher = google.androidpublisher({ version: 'v3', auth })
+      const result = await androidpublisher.purchases.subscriptions.get({
+        packageName: gpPackageName,
+        subscriptionId: productId,
+        token: purchaseToken,
+      })
+      const sub = result.data
+      const paymentState = sub.paymentState
+      const expiryTimeMillis = Number(sub.expiryTimeMillis ?? '0')
+      const validPayment = paymentState === 1 || paymentState === 2
+      const notExpired = expiryTimeMillis > Date.now()
+      if (!validPayment || !notExpired) {
+        return res.status(400).json({
+          error: 'Purchase verification failed',
+          details: `paymentState=${paymentState}, expiryTimeMillis=${expiryTimeMillis}`,
         })
-        const androidpublisher = google.androidpublisher({ version: 'v3', auth })
-        const result = await androidpublisher.purchases.subscriptions.get({
-          packageName: gpPackageName,
-          subscriptionId: productId,
-          token: purchaseToken,
-        })
-        const sub = result.data
-        const paymentState = sub.paymentState
-        const expiryTimeMillis = Number(sub.expiryTimeMillis ?? '0')
-        const validPayment = paymentState === 1 || paymentState === 2
-        const notExpired = expiryTimeMillis > Date.now()
-        if (!validPayment || !notExpired) {
-          return res.status(400).json({
-            error: 'Purchase verification failed',
-            details: `paymentState=${paymentState}, expiryTimeMillis=${expiryTimeMillis}`,
+      }
+      // Acknowledgement — Play Billing 必須要件。3 日以内に ack しないと自動返金される。
+      // acknowledgementState: 0=未ack, 1=ack済。冪等性のため未ackのみ呼ぶ。
+      if (sub.acknowledgementState === 0) {
+        try {
+          await androidpublisher.purchases.subscriptions.acknowledge({
+            packageName: gpPackageName,
+            subscriptionId: productId,
+            token: purchaseToken,
+            requestBody: { developerPayload: '' },
           })
-        }
-        gpExpiryTimeMillis = expiryTimeMillis
-
-        // Acknowledgement — Play Billing 必須要件。3 日以内に ack しないと自動返金される。
-        // acknowledgementState: 0=未ack, 1=ack済。冪等性のため未ackのみ呼ぶ。
-        if (sub.acknowledgementState === 0) {
-          try {
-            await androidpublisher.purchases.subscriptions.acknowledge({
-              packageName: gpPackageName,
-              subscriptionId: productId,
-              token: purchaseToken,
-              requestBody: { developerPayload: '' },
-            })
-          } catch (ackErr) {
-            console.error('billing/verify acknowledge failed:', ackErr)
-            // ack 失敗は verify 自体は通すが、ログには残す。3日以内に再 ack できる余地を残す。
-          }
+        } catch (ackErr) {
+          console.error('billing/verify acknowledge failed:', ackErr)
+          // ack 失敗は verify 自体は通すが、ログには残す。3日以内に再 ack できる余地を残す。
         }
       }
-
       // productId からプランを特定（2026-05-15 単一有料プラン化）
       // - 新 ID: logic_paid_monthly / logic_paid_yearly
       // - legacy ID も後方互換のため受け付け、新型に正規化する
@@ -221,28 +215,23 @@ export function createBillingRouter(deps: BillingDeps): express.Router {
         return res.status(400).json({ error: `Unknown productId: ${productId}` })
       }
 
-      // 有効期限算出: APIレスポンスの expiryTimeMillis を優先、なければ固定計算
-      const isYearly = plan === 'paid_yearly'
-      const currentPeriodEnd = gpExpiryTimeMillis
-        ? new Date(gpExpiryTimeMillis).toISOString()
-        : new Date(Date.now() + (isYearly ? 365 : 30) * 24 * 60 * 60 * 1000).toISOString()
+      const currentPeriodEnd = new Date(expiryTimeMillis).toISOString()
 
       // Supabase に upsert（user_id は認証済みユーザーに束縛、body の値は使わない）
-      if (supabase) {
-        await supabase
-          .from('subscriptions')
-          .upsert(
-            {
-              user_id: userId,
-              plan,
-              status: 'active',
-              current_period_end: currentPeriodEnd,
-              // 購入トークンを将来の検証用に保存（カラム名は履歴互換で stripe_subscription_id だが Google Play 用に gp: プレフィックス付き）
-              stripe_subscription_id: `gp:${purchaseToken}`,
-            },
-            { onConflict: 'user_id' }
-          )
-      }
+      const { error: upsertError } = await supabase
+        .from('subscriptions')
+        .upsert(
+          {
+            user_id: userId,
+            plan,
+            status: 'active',
+            current_period_end: currentPeriodEnd,
+            // 購入トークンを将来の検証用に保存（カラム名は履歴互換で stripe_subscription_id だが Google Play 用に gp: プレフィックス付き）
+            stripe_subscription_id: `gp:${purchaseToken}`,
+          },
+          { onConflict: 'user_id' }
+        )
+      if (upsertError) throw upsertError
 
       res.json({ success: true, plan, currentPeriodEnd })
     } catch (e: unknown) {

@@ -371,10 +371,11 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const [progressFilters, setProgressFilters] = useState<Set<ProgressFilter>>(new Set())
   const [formatFilters, setFormatFilters] = useState<Set<FormatFilter>>(new Set())
   const [sortOption, setSortOption] = useState<SortOption>('relevance')
-  // 折りたたまれているグループの集合。
-  // 「閉じている方」を保持する。初期は空 Set（全カテゴリ展開状態）にする。
-  // ユーザーがヘッダをタップすれば各グループを個別に閉じられる。
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set<string>())
+  // 初回は最初の学習カテゴリだけを開き、長い一覧を見通しやすくする。
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
+    () => new Set<string>(['pinned-fermi', ...COURSE_GROUPS.map(group => group.id).filter(id => id !== 'foundations')]),
+  )
+  const allGroupsCollapsed = COURSE_GROUPS.every(group => collapsedGroups.has(group.id)) && collapsedGroups.has('pinned-fermi')
   const toggleGroup = useCallback((groupId: string) => {
     setCollapsedGroups(prev => {
       const next = new Set(prev)
@@ -395,6 +396,9 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   // 完了レッスン集合（コース一覧カードの進捗バー算出に使う）。
   // 一覧で全コース分を集計するため、ここで一度だけ Set 化して各カードに渡す。
   const completedLessons = useMemo(() => new Set(getCompletedLessons()), [])
+  const starterCourse = getCoursesByGroup('foundations')[0]
+  const starterLessonId = starterCourse?.lessonIds.find(id => !completedLessons.has(`lesson-${id}`)) ?? starterCourse?.lessonIds[0]
+  const starterLesson = starterLessonId == null ? null : getAllLessonsFlat()[starterLessonId]
 
   // 検索を閉じるときは入力・フィルタもリセットしてコース一覧に戻す
   // （フック呼び出し順を一定に保つため、early return より前に置く）
@@ -432,8 +436,9 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   }
 
   return (
-    <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
-      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+    <div className="logic-learning-page" style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: "'Noto Sans JP', sans-serif", color: 'var(--text-primary)' }}>
+      <div style={{ padding: 'calc(env(safe-area-inset-top, 44px) + 4px) 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="logic-learning-page__title">{t('nav.training')}</div>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
           {props.onOpenReviewHub && (
             <button
@@ -450,7 +455,8 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
                 fontSize: '0.8667rem', fontWeight: 700,
                 cursor: 'pointer',
                 fontFamily: "'Noto Sans JP', sans-serif",
-                minHeight: 36,
+                minHeight: 44,
+                whiteSpace: 'nowrap',
               }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
@@ -467,7 +473,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             aria-label={t('roadmap.searchAria')}
             style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              width: 36, height: 36, borderRadius: 'var(--radius-pill)',
+              minWidth: 44, minHeight: 44, gap: 7, padding: '8px 12px', borderRadius: 'var(--radius-pill)',
               background: 'var(--bg-card)',
               color: 'var(--text-secondary)',
               border: `1px solid var(--border)`,
@@ -475,11 +481,27 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             }}
           >
             <SearchIcon width={18} height={18} />
+            <span className="logic-learning-search-label">{t('roadmap.searchAria')}</span>
           </button>
         </div>
       </div>
 
-      <div style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div className="logic-learning-page__content" style={{ flex: 1, padding: '0 16px 80px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+        <div className="logic-learning-page__intro">
+          <span>{getLocale() === 'ja' ? '自分のペースで、ひとつずつ。' : 'Learn one skill at a time.'}</span>
+          <button type="button" onClick={() => setCollapsedGroups(allGroupsCollapsed ? new Set() : new Set(['pinned-fermi', ...COURSE_GROUPS.map(group => group.id)]))}>
+            {allGroupsCollapsed ? (getLocale() === 'ja' ? 'すべて開く' : 'Expand all') : (getLocale() === 'ja' ? 'すべて閉じる' : 'Collapse all')}
+          </button>
+        </div>
+
+        {starterLessonId != null && (
+          <button className="logic-learning-starter" type="button" onClick={() => props.onOpenLesson(starterLessonId)}>
+            <span className="logic-learning-starter__eyebrow">{getLocale() === 'ja' ? 'まずはここから' : 'START HERE'}</span>
+            <strong>{starterLesson?.title || starterCourse?.title}</strong>
+            <span className="logic-learning-starter__cta">{getLocale() === 'ja' ? 'レッスンを始める →' : 'Start lesson →'}</span>
+          </button>
+        )}
 
         {/* 検索は右上の虫眼鏡アイコンから開く（FB-35。常設の検索バーは廃止し、デフォルト非表示） */}
 
@@ -508,7 +530,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           const collapsed = collapsedGroups.has(pinnedGroupId)
           const panelId = `course-group-${pinnedGroupId}`
           return (
-            <div key="pinned-fermi" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div key="pinned-fermi" className="logic-learning-group" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button
                 type="button"
                 onClick={() => toggleGroup(pinnedGroupId)}
@@ -565,7 +587,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
           const collapsed = collapsedGroups.has(group.id)
           const panelId = `course-group-${group.id}`
           return (
-            <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div key={group.id} className="logic-learning-group" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button
                 type="button"
                 onClick={() => toggleGroup(group.id)}

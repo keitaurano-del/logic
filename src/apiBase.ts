@@ -2,7 +2,8 @@
 // Import this instead of defining API_BASE locally in each file.
 import { Capacitor } from '@capacitor/core'
 
-const PROD_API = import.meta.env.VITE_API_URL ?? 'https://logic-u5wn.onrender.com'
+// Android CI と Render の共通設定名を優先する。旧 VITE_API_URL も移行用に受け付ける。
+const PROD_API = (import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_URL || 'https://logic-u5wn.onrender.com').replace(/\/$/, '')
 
 export const API_BASE = import.meta.env.DEV
   ? `http://${window.location.hostname}:3001`

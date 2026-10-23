@@ -847,6 +847,7 @@ function AppV3() {
 
       {screen.type === 'profile' && (
         <ProfileScreenV3
+          onLogin={() => navigate({ type: 'login' })}
           userName={userName}
           isLoggedIn={!!currentUser}
           onOpenProfileEdit={() => navigate({ type: 'profile-edit' })}

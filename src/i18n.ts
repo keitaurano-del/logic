@@ -94,7 +94,7 @@ const STRINGS: Record<Locale, Strings> = {
     'nav.lessons': 'レッスン',
     'nav.profile': 'プロフィール',
     'nav.training': '学ぶ',
-    'nav.ranking': 'フェルミ',
+    'nav.ranking': 'ランキング',
     'nav.journal': 'ジャーナル',
     'nav.mainNav': 'メインナビゲーション',
 
@@ -2182,7 +2182,7 @@ const STRINGS: Record<Locale, Strings> = {
     'nav.lessons': 'Lessons',
     'nav.profile': 'Profile',
     'nav.training': 'Learn',
-    'nav.ranking': 'Fermi',
+    'nav.ranking': 'Ranking',
     'nav.journal': 'Journal',
     'nav.mainNav': 'Main navigation',
 

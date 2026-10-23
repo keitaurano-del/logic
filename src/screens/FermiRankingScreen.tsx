@@ -218,7 +218,7 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
       </div>
 
       {/* フェルミに挑戦する CTA（FB-34: 小さく右寄せ・控えめなテキストリンク調） */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 20px 12px' }}>
+      {entries.length > 0 && <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 20px 12px' }}>
         <button
           onClick={onSolveFermi}
           style={{
@@ -232,7 +232,7 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
           <span>{t('fermiRank.solveCta')}</span>
           <ArrowRightIcon width={14} height={14} aria-hidden="true" />
         </button>
-      </div>
+      </div>}
 
       {/* 期間タブ */}
       <div style={{ display: 'flex', gap: 8, padding: '0 20px 16px' }}>
@@ -341,9 +341,11 @@ export function FermiRankingScreen({ onSolveFermi }: FermiRankingScreenProps) {
 
       {/* 空状態 */}
       {!loading && entries.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
-          <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 6 }}>{t('fermiRank.empty.title')}</div>
+        <div className="logic-ranking-empty">
+          <div className="logic-ranking-empty__icon" aria-hidden="true">∑</div>
+          <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: 6, color: 'var(--text-primary)' }}>{t('fermiRank.empty.title')}</div>
           <div style={{ fontSize: '0.8667rem' }}>{t('fermiRank.empty.desc')}</div>
+          <button type="button" onClick={onSolveFermi}>{t('fermiRank.solveCta')} <ArrowRightIcon width={16} height={16} aria-hidden="true" /></button>
         </div>
       )}
     </div>
