@@ -35,7 +35,7 @@ import type { LessonData } from '../lessonData'
 import { getCompletedLessons } from '../stats'
 import { getAllCompletionCounts } from '../db/completionCountDb'
 import { CompletionBadge } from '../components/CompletionBadge'
-import { getCoursesByCategory, getCoursesByGroup, getPinnedCourses, COURSES, COURSE_GROUPS, type Course } from '../courseData'
+import { getCoursesByCategory, getCoursesByGroup, getPinnedCourses, COURSES, COURSE_GROUPS, type Course, type CourseGroupId } from '../courseData'
 import { courseProgress } from '../courseProgress'
 import { loadPersonalCourse, axisLabel } from '../placementData'
 import { isSaved, toggleSaved } from '../savedItemsStore'
@@ -366,6 +366,7 @@ interface RoadmapScreenV3Props {
 export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   // 検索 UI は右上の虫眼鏡起点で開閉する（常時展開しない）
   const [searchOpen, setSearchOpen] = useState(false)
+  const [selectedGoal, setSelectedGoal] = useState<CourseGroupId | 'all'>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [levelFilters, setLevelFilters] = useState<Set<LevelFilter>>(new Set())
   const [progressFilters, setProgressFilters] = useState<Set<ProgressFilter>>(new Set())
@@ -375,7 +376,18 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
     () => new Set<string>(['pinned-fermi', ...COURSE_GROUPS.map(group => group.id).filter(id => id !== 'foundations')]),
   )
-  const allGroupsCollapsed = COURSE_GROUPS.every(group => collapsedGroups.has(group.id)) && collapsedGroups.has('pinned-fermi')
+  const visibleGroups = selectedGoal === 'all' ? COURSE_GROUPS : COURSE_GROUPS.filter(group => group.id === selectedGoal)
+  const allGroupsCollapsed = visibleGroups.every(group => collapsedGroups.has(group.id)) && (selectedGoal !== 'all' || collapsedGroups.has('pinned-fermi'))
+  const selectGoal = useCallback((goal: CourseGroupId | 'all') => {
+    setSelectedGoal(goal)
+    if (goal !== 'all') {
+      setCollapsedGroups(prev => {
+        const next = new Set(prev)
+        next.delete(goal)
+        return next
+      })
+    }
+  }, [])
   const toggleGroup = useCallback((groupId: string) => {
     setCollapsedGroups(prev => {
       const next = new Set(prev)
@@ -396,7 +408,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
   // 完了レッスン集合（コース一覧カードの進捗バー算出に使う）。
   // 一覧で全コース分を集計するため、ここで一度だけ Set 化して各カードに渡す。
   const completedLessons = useMemo(() => new Set(getCompletedLessons()), [])
-  const starterCourse = getCoursesByGroup('foundations')[0]
+  const starterCourse = getCoursesByGroup(selectedGoal === 'all' ? 'foundations' : selectedGoal)[0]
   const starterLessonId = starterCourse?.lessonIds.find(id => !completedLessons.has(`lesson-${id}`)) ?? starterCourse?.lessonIds[0]
   const starterLesson = starterLessonId == null ? null : getAllLessonsFlat()[starterLessonId]
 
@@ -490,9 +502,29 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
 
         <div className="logic-learning-page__intro">
           <span>{getLocale() === 'ja' ? '自分のペースで、ひとつずつ。' : 'Learn one skill at a time.'}</span>
-          <button type="button" onClick={() => setCollapsedGroups(allGroupsCollapsed ? new Set() : new Set(['pinned-fermi', ...COURSE_GROUPS.map(group => group.id)]))}>
+          <button type="button" onClick={() => setCollapsedGroups(prev => {
+            const next = new Set(prev)
+            for (const group of visibleGroups) {
+              if (allGroupsCollapsed) next.delete(group.id); else next.add(group.id)
+            }
+            if (selectedGoal === 'all') {
+              if (allGroupsCollapsed) next.delete('pinned-fermi'); else next.add('pinned-fermi')
+            }
+            return next
+          })}>
             {allGroupsCollapsed ? (getLocale() === 'ja' ? 'すべて開く' : 'Expand all') : (getLocale() === 'ja' ? 'すべて閉じる' : 'Collapse all')}
           </button>
+        </div>
+
+        <div className="logic-learning-goals" role="group" aria-label={getLocale() === 'ja' ? '学ぶ目的' : 'Learning goal'}>
+          <button type="button" className={selectedGoal === 'all' ? 'is-selected' : ''} aria-pressed={selectedGoal === 'all'} onClick={() => selectGoal('all')}>
+            {getLocale() === 'ja' ? 'すべて' : 'All'}
+          </button>
+          {COURSE_GROUPS.map(group => (
+            <button key={group.id} type="button" className={selectedGoal === group.id ? 'is-selected' : ''} aria-pressed={selectedGoal === group.id} onClick={() => selectGoal(group.id)}>
+              {group.label}
+            </button>
+          ))}
         </div>
 
         {starterLessonId != null && (
@@ -521,7 +553,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
             （重複を避けるため一覧トップの単独トグルは撤去）。 */}
 
         {/* ピン留め: pinned フラグ付きコース（フェルミ系）— トレーニングの最上位に表示 */}
-        {(() => {
+        {selectedGoal === 'all' && (() => {
           const pinnedCourses = getPinnedCourses()
           if (pinnedCourses.length === 0) return null
           // 他カテゴリと同じ collapsedGroups の開閉メカニズムに含める（擬似グループID）
@@ -581,7 +613,7 @@ export function RoadmapScreenV3(props: RoadmapScreenV3Props) {
         })()}
 
         {/* グループ別コース一覧 — 7グループ・全41コース（フェルミ系は pinned で最上段に別出しするので除外） */}
-        {COURSE_GROUPS.map(group => {
+        {visibleGroups.map(group => {
           const groupCourses = getCoursesByGroup(group.id).filter(c => !c.pinned)
           if (groupCourses.length === 0) return null
           const collapsed = collapsedGroups.has(group.id)

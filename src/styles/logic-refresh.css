@@ -84,6 +84,37 @@
   padding: 8px;
 }
 
+.logic-learning-goals {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 1px 6px;
+  scrollbar-width: thin;
+}
+
+.logic-learning-goals button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font: 700 .8rem var(--sans);
+  cursor: pointer;
+}
+
+.logic-learning-goals button.is-selected {
+  border-color: var(--brand);
+  background: var(--accent-soft);
+  color: var(--brand);
+}
+
+.logic-learning-goals button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
 .logic-learning-starter {
   display: flex;
   flex-direction: column;

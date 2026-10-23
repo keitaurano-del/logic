@@ -2,13 +2,13 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react'
 import { AppShell, type Tab } from './components/AppShell'
 import { HomeScreenV3 } from './screens/HomeScreenV3'
-import { RoadmapScreenV3 } from './screens/RoadmapScreenV3'
-import { ProfileScreenV3 } from './screens/ProfileScreenV3'
 import { LessonStoriesScreen } from './screens/LessonStoriesScreen'
 import { LessonCompleteScreen, type NextCourseInfo } from './screens/LessonCompleteScreen'
 import { BootLoadingScreen } from './screens/BootLoadingScreen'
 
 // Lazy-load lower-frequency screens to keep initial bundle small.
+const RoadmapScreenV3 = lazy(() => import('./screens/RoadmapScreenV3').then(m => ({ default: m.RoadmapScreenV3 })))
+const ProfileScreenV3 = lazy(() => import('./screens/ProfileScreenV3').then(m => ({ default: m.ProfileScreenV3 })))
 const FlashcardsScreen = lazy(() => import('./screens/FlashcardsScreen').then(m => ({ default: m.FlashcardsScreen })))
 const ReviewModeScreen = lazy(() => import('./screens/ReviewModeScreen').then(m => ({ default: m.ReviewModeScreen })))
 const ReviewHubScreen = lazy(() => import('./screens/ReviewHubScreen').then(m => ({ default: m.ReviewHubScreen })))
@@ -611,7 +611,7 @@ function AppV3() {
     >
       {/* スクリーン遷移fade-in: screen.typeが変わるたびにkeyで再マウント */}
       <ErrorBoundary>
-      <Suspense fallback={null}>
+      <Suspense fallback={<BootLoadingScreen />}>
       <div key={screen.type} className="tab-fade-in" style={{ display: 'contents' }}>
       {screen.type === 'home' && (
         <HomeScreenV3
