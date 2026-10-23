@@ -89,8 +89,10 @@
   gap: 8px;
   overflow-x: auto;
   padding: 0 1px 6px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
+
+.logic-learning-goals::-webkit-scrollbar { display: none; }
 
 .logic-learning-goals button {
   flex: 0 0 auto;
