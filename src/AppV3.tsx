@@ -222,6 +222,7 @@ function AppV3() {
   const [screen, setScreen] = useState<Screen>(() => getInitialScreen(null))
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authReady, setAuthReady] = useState(false)
+  const [lessonsReady, setLessonsReady] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
   const [showFAB, setShowFAB] = useState(() => !tutorial.hasFABDismissed())
   const [showNamePopup, setShowNamePopup] = useState(false)
@@ -370,6 +371,7 @@ function AppV3() {
       console.error('[lessons] preload failed', e)
       return undefined
     })
+    void lessonsPromise.then(() => setLessonsReady(true))
     // 初回起動時にセッションを取得し、ログイン済ならホームへ。同時にリモートと同期して最新化。
     getInitialUser().then(async (user) => {
       setCurrentUser(user)
@@ -378,7 +380,7 @@ function AppV3() {
       window.history.replaceState({ screen: initial }, '')
       await ensureMinBoot()
       // レッスンデータのロード完了を待ってから画面を出す（未ロード由来のちらつき防止）
-      await lessonsPromise
+      if (initial.type !== 'onboarding' && initial.type !== 'login') await lessonsPromise
       markBooted() // LR-32: 次回起動を短縮するため boot 成立を記録
       setAuthReady(true)
       clearTimeout(splashTimer)
@@ -570,7 +572,7 @@ function AppV3() {
   }
 
   // 認証完了前はロゴ + 「読み込んでいます…」のロード画面を表示
-  if (!authReady) {
+  if (!authReady || (!lessonsReady && screen.type !== 'onboarding' && screen.type !== 'login' && screen.type !== 'welcome')) {
     return <BootLoadingScreen />
   }
 
