@@ -1,3 +1,4 @@
+import { anthropicText } from '../anthropicText.js'
 import { Router, type Request, type Response } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { RequestHandler } from 'express'
@@ -6,7 +7,7 @@ import type { RequestHandler } from 'express'
 // （ランタイムは tsx。`tsc -b` の対象外、`eslint .` の対象内）。
 import { buildVocabularyPromptHint } from '../../src/components/journal/tagVocabulary.js'
 import { parseConsolidations, stripConsolidationsSection } from '../../src/components/journal/tagConsolidation.js'
-import { aiModelLight } from '../config.js'
+import { aiLightRequest } from '../config.js'
 
 const MOOD_LABELS_JA: Record<number, string> = {
   1: '最悪', 2: 'イマイチ', 3: '普通', 4: '良い', 5: '最高',
@@ -282,13 +283,13 @@ ${(scheduleNotes || '').toString().trim() || '未入力'}
 【ユーザーの既存タグ（まずこれを再利用。重複は統合してよい）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
 
       const response = await client.messages.create({
-        // 日記サマリ生成は軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // 日記サマリ生成は軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 800,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
-      const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+      const raw = anthropicText(response.content).trim()
 
       // SUMMARY: / FOLLOW_UP: / TAGS: / CONSOLIDATIONS: をパース。形式違反時は raw 全体を summary に倒す
       let summary = raw
@@ -515,14 +516,14 @@ ${courseCatalogText}`
 
       const response = await client.messages.create({
         // 学習日記の総括フィードバックは日記機能の付随タスク。
-        // LR-25 #47 の「採点・添削」の中核（writing-score / fermi feedback）ではないため軽タスク扱い（Haiku 据え置き）。
+        // LR-25 #47 の「採点・添削」の中核（writing-score / fermi feedback）ではないため軽タスク扱い（Haiku 5.5）。
         // 上位モデル化したい場合は env AI_MODEL_GRADING 化を別途検討（Keita 確認）。
-        model: aiModelLight(),
+        ...aiLightRequest(),
         max_tokens: 1000,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
-      const rawText = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+      const rawText = anthropicText(response.content).trim()
       // 末尾から順に剥がす: 先に RECOMMENDED_COURSES → 次に RECOMMENDED_LESSONS
       const { body: bodyAfterCourses, ids: courseIds } = parseRecommendedCourses(rawText, validCourseIds)
       const { body, ids: lessonIds } = parseRecommendedLessons(bodyAfterCourses, validLessonIds)
@@ -623,13 +624,13 @@ ${evening || '（なし）'}
 【ユーザーの既存タグ（まずこれを再利用。重複は統合してよい）】 ${sanitizedExisting.length ? sanitizedExisting.join('、') : '（なし）'}`
 
       const response = await client.messages.create({
-        // タグ生成は軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // タグ生成は軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 320,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: userMessage }],
       })
-      const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+      const raw = anthropicText(response.content).trim()
       // D3: CONSOLIDATIONS: セクションをパースして本文（タグ行）から剥がす。
       const consolidations = parseConsolidations(raw)
       const tagsBody = stripConsolidationsSection(raw)
@@ -706,13 +707,13 @@ Output ONLY the cleaned/structured text. No preamble, no explanation, no quotes 
 出力は **整形・構造化済みテキストのみ**。前置き・説明・引用符は付けない。`
 
       const response = await client.messages.create({
-        // 日記テキストの整形/構造化は軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // 日記テキストの整形/構造化は軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 1200,
         system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }],
         messages: [{ role: 'user', content: trimmed }],
       })
-      const cleaned = response.content[0].type === 'text' ? response.content[0].text.trim() : ''
+      const cleaned = anthropicText(response.content).trim()
       res.json({ cleaned })
     } catch (e: unknown) {
       console.error('journal cleanup error:', e)

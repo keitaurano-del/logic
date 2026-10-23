@@ -1,7 +1,8 @@
+import { anthropicText } from '../anthropicText.js'
 import { Router, type Request, type Response } from 'express'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { RequestHandler } from 'express'
-import { aiModelLight } from '../config.js'
+import { aiLightRequest } from '../config.js'
 
 // =============================================
 // AI セマンティック検索 (POST /api/search)
@@ -200,12 +201,12 @@ export function createSearchRouter(client: Anthropic, searchLimiter: RequestHand
 
       const prompt = buildSearchPrompt(query, locale, catalog)
       const response = await client.messages.create({
-        // セマンティック検索は軽タスク（現状維持の Haiku）
-        model: aiModelLight(),
+        // セマンティック検索は軽タスク（Haiku 5.5）
+        ...aiLightRequest(),
         max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }],
       })
-      const rawText = response.content[0]?.type === 'text' ? response.content[0].text : ''
+      const rawText = anthropicText(response.content)
       const results = parseSearchResults(rawText, catalog)
 
       res.json({ results, query })
